@@ -1,66 +1,55 @@
 import React, { useState } from 'react';
 import './App.css';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com'; // Your backend URL
+const BACKEND_URL = 'https://locoshop-backend.onrender.com';
 
 function App() {
-  const [form, setForm] = useState({
+  const [formData, setFormData] = useState({
     name: '',
     address: '',
     phone: '',
-    tags: ''
+    lat: '',
+    lng: '',
+    tags: '',
   });
+  const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
-    if (!form.name || !form.address || !form.phone || !form.tags) {
-      alert("Please fill in all fields");
-      return;
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    // Convert address to coordinates using OpenStreetMap API
-    const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(form.address)}`);
-    const geoData = await geoRes.json();
-
-    if (!geoData[0]) {
-      alert("Unable to get location from address");
-      return;
-    }
-
-    const newStore = {
-      name: form.name,
-      address: form.address,
-      phone: form.phone,
-      tags: form.tags.toLowerCase().split(',').map(tag => tag.trim()),
-      lat: parseFloat(geoData[0].lat),
-      lng: parseFloat(geoData[0].lon),
-    };
-
-    const res = await fetch(`${BACKEND_URL}/api/stores`, {
+    const response = await fetch(`${BACKEND_URL}/api/stores/add`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newStore)
+      body: JSON.stringify(formData),
     });
 
-    if (res.ok) {
-      alert("Store added successfully!");
-      setForm({ name: '', address: '', phone: '', tags: '' });
+    const data = await response.json();
+
+    if (response.ok) {
+      setMessage('✅ Store added successfully!');
+      setFormData({ name: '', address: '', phone: '', lat: '', lng: '', tags: '' });
     } else {
-      alert("Failed to add store");
+      setMessage('❌ ' + data.message);
     }
   };
 
   return (
     <div className="App">
-      <h2>Add New Store</h2>
-      <input type="text" name="name" placeholder="Store Name" value={form.name} onChange={handleChange} />
-      <input type="text" name="address" placeholder="Address" value={form.address} onChange={handleChange} />
-      <input type="text" name="phone" placeholder="Phone" value={form.phone} onChange={handleChange} />
-      <input type="text" name="tags" placeholder="Tags (comma separated)" value={form.tags} onChange={handleChange} />
-      <button onClick={handleSubmit}>Add Store</button>
+      <h2>Locoshop Admin – Add Store</h2>
+      <form onSubmit={handleSubmit}>
+        <input type="text" name="name" placeholder="Store Name" value={formData.name} onChange={handleChange} required />
+        <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} required />
+        <input type="text" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} required />
+        <input type="text" name="lat" placeholder="Latitude" value={formData.lat} onChange={handleChange} required />
+        <input type="text" name="lng" placeholder="Longitude" value={formData.lng} onChange={handleChange} required />
+        <input type="text" name="tags" placeholder="Tags (e.g. bike, repair)" value={formData.tags} onChange={handleChange} required />
+        <button type="submit">Add Store</button>
+      </form>
+      {message && <p>{message}</p>}
     </div>
   );
 }
