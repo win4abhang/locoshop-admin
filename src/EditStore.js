@@ -15,15 +15,19 @@ function EditStore() {
     try {
       const res = await fetch(`${BACKEND_URL}/api/stores/by-name/${encodeURIComponent(editName)}`);
       const data = await res.json();
+  
       if (res.ok) {
-        if (data.stores.length === 1) {
-          setFormData({ ...data.stores[0], tags: data.stores[0].tags.join(', ') });
-          setIsLoaded(true);
-          setMessage('✅ Store loaded successfully.');
-        } else if (data.stores.length > 1) {
-          setStoreList(data.stores);
-          setMessage('❌ Multiple stores found. Please select one.');
-        }
+        // Directly use data (not data.stores[0])
+        setFormData({
+          name: data.name || '',
+          address: data.address || '',
+          phone: data.phone || '',
+          lat: data.location?.coordinates?.[1] || '',
+          lng: data.location?.coordinates?.[0] || '',
+          tags: data.tags?.join(', ') || '',
+        });
+        setIsLoaded(true);
+        setMessage('✅ Store loaded successfully.');
       } else {
         setMessage('❌ Store not found.');
       }
@@ -31,7 +35,7 @@ function EditStore() {
       setMessage('❌ Error loading store.');
       console.error(err);
     }
-  };
+  };  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,15 +43,24 @@ function EditStore() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    
     const tagsArray = formData.tags.split(',').map(tag => tag.trim());
-    const updatedData = { ...formData, tags: tagsArray };
-
+  
+    // Ensure lat/lng are numbers (not strings)
+    const updatedData = {
+      ...formData,
+      lat: parseFloat(formData.lat),
+      lng: parseFloat(formData.lng),
+      tags: tagsArray,
+    };
+  
     try {
       const res = await fetch(`${BACKEND_URL}/api/stores/update-by-name/${encodeURIComponent(editName)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
       });
+  
       const data = await res.json();
       if (res.ok) {
         setMessage('✅ Store updated successfully.');
