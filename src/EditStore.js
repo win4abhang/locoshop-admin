@@ -10,12 +10,13 @@ function EditStore() {
   const [message, setMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   const [storeList, setStoreList] = useState([]);
+  const [selectedStoreId, setSelectedStoreId] = useState(null); // New state for selected store ID
 
   const handleLoad = async () => {
     try {
       const res = await fetch(`${BACKEND_URL}/api/stores/by-name/${encodeURIComponent(editName)}`);
       const data = await res.json();
-  
+
       if (res.ok && Array.isArray(data.stores)) {
         if (data.stores.length === 0) {
           setMessage('❌ Store not found.');
@@ -29,11 +30,12 @@ function EditStore() {
             lng: store.location?.coordinates?.[0] || '',
             tags: (store.tags || []).join(', '),
           });
+          setSelectedStoreId(store._id); // Set the selected store ID
           setIsLoaded(true);
           setMessage('✅ Store loaded successfully.');
         } else {
-          // Multiple stores with same name
           setStoreList(data.stores);
+          setSelectedStoreId(null);
           setMessage('⚠️ Multiple stores found. Please select one.');
         }
       } else {
@@ -43,7 +45,7 @@ function EditStore() {
       setMessage('❌ Error loading store.');
       console.error(err);
     }
-  }; 
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -51,24 +53,28 @@ function EditStore() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    
+
+    if (!selectedStoreId) {
+      setMessage('❌ No store selected.');
+      return;
+    }
+
     const tagsArray = formData.tags.split(',').map(tag => tag.trim());
-  
-    // Ensure lat/lng are numbers (not strings)
+
     const updatedData = {
       ...formData,
       lat: parseFloat(formData.lat),
       lng: parseFloat(formData.lng),
       tags: tagsArray,
     };
-  
+
     try {
-      const res = await fetch(`${BACKEND_URL}/api/stores/update-by-name/${encodeURIComponent(editName)}`, {
+      const res = await fetch(`${BACKEND_URL}/api/stores/${selectedStoreId}`, {  // Use the store ID
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
       });
-  
+
       const data = await res.json();
       if (res.ok) {
         setMessage('✅ Store updated successfully.');
@@ -96,11 +102,20 @@ function EditStore() {
         <div>
           <h3>Multiple stores found. Please select one:</h3>
           <ul>
-            {storeList.map((store, index) => (
-              <li key={index}>
+            {storeList.map((store) => (
+              <li key={store._id}>
                 <button onClick={() => {
-                  setFormData({ ...store, tags: store.tags.join(', ') });
+                  setFormData({
+                    name: store.name || '',
+                    address: store.address || '',
+                    phone: store.phone || '',
+                    lat: store.location?.coordinates?.[1] || '',
+                    lng: store.location?.coordinates?.[0] || '',
+                    tags: (store.tags || []).join(', '),
+                  });
+                  setSelectedStoreId(store._id);  // Set selected store ID
                   setIsLoaded(true);
+                  setMessage('✅ Store loaded successfully.');
                 }}>
                   {store.name} - {store.address}
                 </button>
