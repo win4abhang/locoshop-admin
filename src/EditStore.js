@@ -9,6 +9,7 @@ function EditStore() {
   });
   const [message, setMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
+  const [storeList, setStoreList] = useState([]); // ✅ ADD THIS LINE
 
   const handleLoad = async () => {
     try {
