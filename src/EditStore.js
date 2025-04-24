@@ -16,26 +16,34 @@ function EditStore() {
       const res = await fetch(`${BACKEND_URL}/api/stores/by-name/${encodeURIComponent(editName)}`);
       const data = await res.json();
   
-      if (res.ok) {
-        // Directly use data (not data.stores[0])
-        setFormData({
-          name: data.name || '',
-          address: data.address || '',
-          phone: data.phone || '',
-          lat: data.location?.coordinates?.[1] || '',
-          lng: data.location?.coordinates?.[0] || '',
-          tags: data.tags?.join(', ') || '',
-        });
-        setIsLoaded(true);
-        setMessage('✅ Store loaded successfully.');
+      if (res.ok && Array.isArray(data.stores)) {
+        if (data.stores.length === 0) {
+          setMessage('❌ Store not found.');
+        } else if (data.stores.length === 1) {
+          const store = data.stores[0];
+          setFormData({
+            name: store.name || '',
+            address: store.address || '',
+            phone: store.phone || '',
+            lat: store.location?.coordinates?.[1] || '',
+            lng: store.location?.coordinates?.[0] || '',
+            tags: (store.tags || []).join(', '),
+          });
+          setIsLoaded(true);
+          setMessage('✅ Store loaded successfully.');
+        } else {
+          // Multiple stores with same name
+          setStoreList(data.stores);
+          setMessage('⚠️ Multiple stores found. Please select one.');
+        }
       } else {
-        setMessage('❌ Store not found.');
+        setMessage('❌ Unexpected response format.');
       }
     } catch (err) {
       setMessage('❌ Error loading store.');
       console.error(err);
     }
-  };  
+  }; 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
