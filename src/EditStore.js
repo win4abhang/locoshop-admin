@@ -69,7 +69,7 @@ function EditStore() {
     };
 
     try {
-      const res = await fetch(`${BACKEND_URL}/api/stores/${selectedStoreId}`, {  // Use the store ID
+      const res = await fetch(`${BACKEND_URL}/api/stores/update-by-id/${selectedStoreId}`, {  // Use the store ID
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
