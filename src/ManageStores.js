@@ -8,41 +8,28 @@ function ManageStores() {
   const [currentPage, setCurrentPage] = useState(1);
   const [storesPerPage, setStoresPerPage] = useState(50);
   const [loading, setLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
-    const fetchStores = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get('https://locoshop-backend.onrender.com/api/stores/admin', {
-          params: {
-            page: currentPage,
-            perPage: storesPerPage
-          }
-        });
-
-        // Check if data is wrapped in a `data` field or not
-        const storeData = Array.isArray(response.data) ? response.data : response.data.data;
-        setStores(storeData);
-        setFilteredStores(storeData);
-      } catch (error) {
-        console.error('Fetch error:', error);
-        if (error.response) {
-          console.error('Response data:', error.response.data);
-          console.error('Status:', error.response.status);
-          console.error('Headers:', error.response.headers);
-        } else if (error.request) {
-          console.error('No response received:', error.request);
-        } else {
-          console.error('Error message:', error.message);
-        }
-        alert('There was an error fetching the stores. Please try again later.');
-      } finally {
-        setLoading(false);
+    setLoading(true);
+    axios.get('https://locoshop-backend.onrender.com/api/stores/admin', {
+      params: {
+        page: currentPage,
+        limit: storesPerPage
       }
-    };
-
-    fetchStores();
+    })
+    .then(response => {
+      setStores(response.data.stores);
+      setFilteredStores(response.data.stores);
+      setTotalCount(response.data.totalCount); // NEW
+    })
+    .catch(err => {
+      console.error('Fetch error:', err);
+      alert('There was an error fetching the stores. Please try again later.');
+    })
+    .finally(() => setLoading(false));
   }, [currentPage, storesPerPage]);
+  
 
   useEffect(() => {
     const keyword = search.toLowerCase();
@@ -74,7 +61,7 @@ function ManageStores() {
   const indexOfLast = currentPage * storesPerPage;
   const indexOfFirst = indexOfLast - storesPerPage;
   const currentStores = filteredStores.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(filteredStores.length / storesPerPage);
+  const totalPages = Math.ceil(totalCount / storesPerPage);
 
   if (loading) {
     return <div>Loading stores...</div>;
