@@ -13,7 +13,7 @@ function ManageStores() {
     const fetchStores = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('https://locoshop-backend.onrender.com/api/stores', {
+        const response = await axios.get('https://locoshop-backend.onrender.com/api/stores/admin', {
           params: {
             page: currentPage,
             perPage: storesPerPage
