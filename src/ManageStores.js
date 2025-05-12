@@ -11,7 +11,8 @@ function ManageStores() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get('/api/stores')
+    // Set the correct backend URL
+    axios.get('https://locoshop-backend.onrender.com/api/stores')
       .then(response => {
         setStores(response.data);
         setFilteredStores(response.data);
@@ -37,7 +38,7 @@ function ManageStores() {
   const handleDelete = async (id) => {
     if (window.confirm('Delete this store?')) {
       try {
-        await axios.delete(`/api/stores/${id}`);
+        await axios.delete(`https://locoshop-backend.onrender.com/api/stores/${id}`);
         const updatedStores = stores.filter(store => store._id !== id);
         setStores(updatedStores);
       } catch (error) {
@@ -49,7 +50,7 @@ function ManageStores() {
 
   const handlePlay = async (id) => {
     try {
-      const res = await axios.get(`/api/stores/${id}`);
+      const res = await axios.get(`https://locoshop-backend.onrender.com/api/stores/${id}`);
       const updated = res.data;
       setStores(prev =>
         prev.map(s => (s._id === id ? { ...s, ...updated } : s))
