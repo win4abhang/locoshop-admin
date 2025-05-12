@@ -12,17 +12,22 @@ function ManageStores() {
   useEffect(() => {
     setLoading(true);
     // Set the correct backend URL
-    axios.get('https://locoshop-backend.onrender.com/api/stores')
-      .then(response => {
-        setStores(response.data);
-        setFilteredStores(response.data);
-      })
-      .catch(err => {
-        console.error('Fetch error:', err);
-        alert('There was an error fetching the stores. Please try again later.');
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    axios.get('https://locoshop-backend.onrender.com/api/stores', {
+      params: {
+        page: currentPage, // Send the current page
+        perPage: storesPerPage // Send the number of stores per page
+      }
+    })
+    .then(response => {
+      setStores(response.data);
+      setFilteredStores(response.data); // Assuming filtered stores come from the backend
+    })
+    .catch(err => {
+      console.error('Fetch error:', err);
+      alert('There was an error fetching the stores. Please try again later.');
+    })
+    .finally(() => setLoading(false));
+  }, [currentPage, storesPerPage]); // Run whenever the currentPage or storesPerPage changes  
 
   useEffect(() => {
     const keyword = search.toLowerCase();
@@ -41,6 +46,9 @@ function ManageStores() {
         await axios.delete(`https://locoshop-backend.onrender.com/api/stores/${id}`);
         const updatedStores = stores.filter(store => store._id !== id);
         setStores(updatedStores);
+        if (updatedStores.length === 0 && currentPage > 1) {
+          setCurrentPage(prev => prev - 1); // Go to the previous page if no stores left
+        }
       } catch (error) {
         console.error('Delete error:', error);
         alert('Error deleting store. Please try again.');
