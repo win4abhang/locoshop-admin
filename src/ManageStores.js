@@ -2,43 +2,57 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function ManageStores() {
-  const [stores, setStores] = useState([]); // Raw store data from backend
-  const [filteredStores, setFilteredStores] = useState([]); // Stores after filtering
+  const [stores, setStores] = useState([]);
+  const [filteredStores, setFilteredStores] = useState([]);
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [storesPerPage, setStoresPerPage] = useState(50);
   const [loading, setLoading] = useState(false);
-  const [totalStores, setTotalStores] = useState(0); // Total stores count from the backend
 
   useEffect(() => {
-    setLoading(true);
-    axios.get('https://locoshop-backend.onrender.com/api/stores', {
-      params: {
-        page: currentPage,
-        perPage: storesPerPage,
-      },
-    })
-      .then(response => {
-        setStores(response.data.data);
-        setTotalStores(response.data.total); // Total stores from backend
-        setFilteredStores(response.data.data); // Set filtered stores as well
-      })
-      .catch(err => {
-        console.error('Fetch error:', err);
+    const fetchStores = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('https://locoshop-backend.onrender.com/api/stores', {
+          params: {
+            page: currentPage,
+            perPage: storesPerPage
+          }
+        });
+
+        // Check if data is wrapped in a `data` field or not
+        const storeData = Array.isArray(response.data) ? response.data : response.data.data;
+        setStores(storeData);
+        setFilteredStores(storeData);
+      } catch (error) {
+        console.error('Fetch error:', error);
+        if (error.response) {
+          console.error('Response data:', error.response.data);
+          console.error('Status:', error.response.status);
+          console.error('Headers:', error.response.headers);
+        } else if (error.request) {
+          console.error('No response received:', error.request);
+        } else {
+          console.error('Error message:', error.message);
+        }
         alert('There was an error fetching the stores. Please try again later.');
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStores();
   }, [currentPage, storesPerPage]);
 
   useEffect(() => {
     const keyword = search.toLowerCase();
     const filtered = stores.filter(store =>
-      store.name.toLowerCase().includes(keyword) ||
-      store.tags.join(', ').toLowerCase().includes(keyword) ||
+      store.name?.toLowerCase().includes(keyword) ||
+      store.tags?.join(', ').toLowerCase().includes(keyword) ||
       (store.address || '').toLowerCase().includes(keyword)
     );
     setFilteredStores(filtered);
-    setCurrentPage(1); // Reset to the first page whenever search changes
+    setCurrentPage(1);
   }, [search, stores]);
 
   const handleDelete = async (id) => {
@@ -47,9 +61,8 @@ function ManageStores() {
         await axios.delete(`https://locoshop-backend.onrender.com/api/stores/${id}`);
         const updatedStores = stores.filter(store => store._id !== id);
         setStores(updatedStores);
-        setFilteredStores(updatedStores); // Keep filtered stores in sync
         if (updatedStores.length === 0 && currentPage > 1) {
-          setCurrentPage(prev => prev - 1); // Go to the previous page if no stores left
+          setCurrentPage(prev => prev - 1);
         }
       } catch (error) {
         console.error('Delete error:', error);
@@ -61,7 +74,7 @@ function ManageStores() {
   const indexOfLast = currentPage * storesPerPage;
   const indexOfFirst = indexOfLast - storesPerPage;
   const currentStores = filteredStores.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(filteredStores.length / storesPerPage); // Use filteredStores for pagination
+  const totalPages = Math.ceil(filteredStores.length / storesPerPage);
 
   if (loading) {
     return <div>Loading stores...</div>;
@@ -83,10 +96,13 @@ function ManageStores() {
 
         <div>
           <label>Stores per page: </label>
-          <select value={storesPerPage} onChange={(e) => {
-            setStoresPerPage(Number(e.target.value));
-            setCurrentPage(1);
-          }}>
+          <select
+            value={storesPerPage}
+            onChange={(e) => {
+              setStoresPerPage(Number(e.target.value));
+              setCurrentPage(1);
+            }}
+          >
             <option value={50}>50</option>
             <option value={100}>100</option>
             <option value={200}>200</option>
