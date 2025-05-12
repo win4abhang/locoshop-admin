@@ -10,38 +10,46 @@ function ManageStores() {
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
 
+  // 🟡 Fetch data from backend (paginated only when no search)
   useEffect(() => {
+    if (search.trim()) return; // skip API fetch when search is active
     setLoading(true);
-    axios.get('https://locoshop-backend.onrender.com/api/stores/admin', {
-      params: {
-        page: currentPage,
-        limit: storesPerPage
-      }
-    })
-    .then(response => {
-      setStores(response.data.stores);
-      setFilteredStores(response.data.stores);
-      setTotalCount(response.data.totalCount); // NEW
-    })
-    .catch(err => {
-      console.error('Fetch error:', err);
-      alert('There was an error fetching the stores. Please try again later.');
-    })
-    .finally(() => setLoading(false));
-  }, [currentPage, storesPerPage]);
-  
+    axios
+      .get('https://locoshop-backend.onrender.com/api/stores/admin', {
+        params: {
+          page: currentPage,
+          limit: storesPerPage
+        }
+      })
+      .then(response => {
+        setStores(response.data.stores);
+        setFilteredStores(response.data.stores); // same initially
+        setTotalCount(response.data.totalCount);
+      })
+      .catch(err => {
+        console.error('Fetch error:', err);
+        alert('There was an error fetching the stores. Please try again later.');
+      })
+      .finally(() => setLoading(false));
+  }, [currentPage, storesPerPage, search]);
 
+  // 🔵 Search Filtering (client-side)
   useEffect(() => {
     const keyword = search.toLowerCase();
-    const filtered = stores.filter(store =>
-      store.name?.toLowerCase().includes(keyword) ||
-      store.tags?.join(', ').toLowerCase().includes(keyword) ||
-      (store.address || '').toLowerCase().includes(keyword)
-    );
-    setFilteredStores(filtered);
-    setCurrentPage(1);
+    if (keyword) {
+      const filtered = stores.filter(store =>
+        store.name?.toLowerCase().includes(keyword) ||
+        store.tags?.join(', ').toLowerCase().includes(keyword) ||
+        (store.address || '').toLowerCase().includes(keyword)
+      );
+      setFilteredStores(filtered);
+      setCurrentPage(1); // reset to page 1
+    } else {
+      setFilteredStores(stores); // reset to full store list
+    }
   }, [search, stores]);
 
+  // 🔴 Delete Store
   const handleDelete = async (id) => {
     if (window.confirm('Delete this store?')) {
       try {
@@ -58,10 +66,19 @@ function ManageStores() {
     }
   };
 
-  const indexOfLast = currentPage * storesPerPage;
-  const indexOfFirst = indexOfLast - storesPerPage;
-  const currentStores = filteredStores.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(totalCount / storesPerPage);
+  // 🟢 Pagination Logic (separate for search and non-search mode)
+  let currentStores = [];
+  let totalPages = 1;
+
+  if (search.trim()) {
+    const indexOfLast = currentPage * storesPerPage;
+    const indexOfFirst = indexOfLast - storesPerPage;
+    currentStores = filteredStores.slice(indexOfFirst, indexOfLast);
+    totalPages = Math.ceil(filteredStores.length / storesPerPage);
+  } else {
+    currentStores = stores; // backend already sent paginated list
+    totalPages = Math.ceil(totalCount / storesPerPage);
+  }
 
   if (loading) {
     return <div>Loading stores...</div>;
@@ -71,7 +88,7 @@ function ManageStores() {
     <div style={{ padding: '20px' }}>
       <h2>All Stores</h2>
 
-      {/* Search + Per Page Controls */}
+      {/* 🔍 Search + Per Page Controls */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
         <input
           type="text"
@@ -97,7 +114,7 @@ function ManageStores() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* 📋 Table */}
       <table border="1" cellPadding="10" cellSpacing="0" style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
@@ -128,7 +145,7 @@ function ManageStores() {
         </tbody>
       </table>
 
-      {/* Pagination */}
+      {/* ⏭️ Pagination */}
       <div style={{ marginTop: '20px' }}>
         <button
           disabled={currentPage === 1}
@@ -140,7 +157,7 @@ function ManageStores() {
           Page {currentPage} of {totalPages}
         </span>
         <button
-          disabled={currentPage === totalPages}
+          disabled={currentPage >= totalPages}
           onClick={() => setCurrentPage(prev => prev + 1)}
         >
           Next
