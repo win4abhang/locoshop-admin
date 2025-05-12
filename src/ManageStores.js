@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';  // If you're using React Router
 
 function ManageStores() {
+  const history = useHistory();  // React Router hook, if applicable
   const [stores, setStores] = useState([]);
   const [filteredStores, setFilteredStores] = useState([]);
   const [search, setSearch] = useState('');
@@ -11,7 +13,6 @@ function ManageStores() {
 
   useEffect(() => {
     setLoading(true);
-    // Set the correct backend URL
     axios.get('https://locoshop-backend.onrender.com/api/stores')
       .then(response => {
         setStores(response.data);
@@ -48,23 +49,30 @@ function ManageStores() {
     }
   };
 
-  const handlePlay = async (id) => {
-    try {
-      const res = await axios.get(`https://locoshop-backend.onrender.com/api/stores/${id}`);
-      const updated = res.data;
-      setStores(prev =>
-        prev.map(s => (s._id === id ? { ...s, ...updated } : s))
-      );
-    } catch (err) {
-      alert('Failed to load full details.');
-      console.error('Play error:', err);
-    }
+  const debounce = (func, delay) => {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), delay);
+    };
   };
+
+  const handleSearch = debounce((query) => {
+    setSearch(query);
+  }, 500);  // Delay of 500ms after the user stops typing
 
   const indexOfLast = currentPage * storesPerPage;
   const indexOfFirst = indexOfLast - storesPerPage;
   const currentStores = filteredStores.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredStores.length / storesPerPage);
+
+  const handlePageChange = (direction) => {
+    if (direction === 'next' && currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    } else if (direction === 'prev' && currentPage > 1) {
+      setCurrentPage(prev => prev - 1);
+    }
+  };
 
   if (loading) {
     return <div>Loading stores...</div>;
@@ -74,16 +82,14 @@ function ManageStores() {
     <div style={{ padding: '20px' }}>
       <h2>All Stores</h2>
 
-      {/* Search + Per Page Controls */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
         <input
           type="text"
           placeholder="Search by name, tags or address"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => handleSearch(e.target.value)}
           style={{ padding: '5px', width: '300px' }}
         />
-
         <div>
           <label>Stores per page: </label>
           <select value={storesPerPage} onChange={(e) => {
@@ -97,7 +103,6 @@ function ManageStores() {
         </div>
       </div>
 
-      {/* Table */}
       <table border="1" cellPadding="10" cellSpacing="0" style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
@@ -121,15 +126,9 @@ function ManageStores() {
                 <td>{store.address || 'N/A'}</td>
                 <td>
                   {store.phone || store.mobile || 'N/A'}
-                  <button
-                    onClick={() => handlePlay(store._id)}
-                    style={{ marginLeft: '8px', padding: '2px 6px' }}
-                  >
-                    ▶ Play
-                  </button>
                 </td>
                 <td>
-                  <button onClick={() => window.location.href = `/edit?id=${store._id}`}>✏️ Edit</button>{' '}
+                  <button onClick={() => history.push(`/edit?id=${store._id}`)}>✏️ Edit</button>{' '}
                   <button onClick={() => handleDelete(store._id)}>🗑️ Delete</button>
                 </td>
               </tr>
@@ -138,11 +137,10 @@ function ManageStores() {
         </tbody>
       </table>
 
-      {/* Pagination */}
       <div style={{ marginTop: '20px' }}>
         <button
           disabled={currentPage === 1}
-          onClick={() => setCurrentPage(prev => prev - 1)}
+          onClick={() => handlePageChange('prev')}
         >
           Previous
         </button>
@@ -151,7 +149,7 @@ function ManageStores() {
         </span>
         <button
           disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(prev => prev + 1)}
+          onClick={() => handlePageChange('next')}
         >
           Next
         </button>
