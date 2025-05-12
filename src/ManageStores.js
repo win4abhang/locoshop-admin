@@ -41,6 +41,19 @@ function ManageStores() {
     }
   };
 
+  const handlePlay = async (id) => {
+    try {
+      const res = await axios.get(`https://locoshop-backend.onrender.com/api/stores/${id}`);
+      const updated = res.data;
+      setStores(prev =>
+        prev.map(s => (s._id === id ? { ...s, ...updated } : s))
+      );
+    } catch (err) {
+      alert('Failed to load full details.');
+      console.error(err);
+    }
+  };
+
   const indexOfLast = currentPage * storesPerPage;
   const indexOfFirst = indexOfLast - storesPerPage;
   const currentStores = filteredStores.slice(indexOfFirst, indexOfLast);
@@ -80,7 +93,7 @@ function ManageStores() {
             <th>Name</th>
             <th>Tags</th>
             <th>Address</th>
-            <th>Open Hours</th>
+            <th>Mobile</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -90,7 +103,15 @@ function ManageStores() {
               <td>{store.name}</td>
               <td>{store.tags?.join(', ') || 'N/A'}</td>
               <td>{store.address || 'N/A'}</td>
-              <td>{store.openHours || '9:00 AM - 6:00 PM'}</td>
+              <td>
+                {store.phone || store.mobile || 'N/A'}
+                <button
+                  onClick={() => handlePlay(store._id)}
+                  style={{ marginLeft: '8px', padding: '2px 6px' }}
+                >
+                  ▶ Play
+                </button>
+              </td>
               <td>
                 <button onClick={() => window.location.href = `/edit?id=${store._id}`}>✏️ Edit</button>{' '}
                 <button onClick={() => handleDelete(store._id)}>🗑️ Delete</button>
