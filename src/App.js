@@ -13,14 +13,14 @@ function App() {
         <nav>
           <Link to="/">➕ Add Store</Link> |{" "}
           <Link to="/edit">✏️ Edit Store</Link> |{" "}
-          <Link to="/manage">🗂️ Manage All</Link>
+          <Link to="/manage">🗂️ Manage All </Link>
         </nav>
         <Routes>
           <Route path="/" element={<AddStore />} />
           <Route path="/edit" element={<EditStore />} />
           <Route path="/manage" element={<ManageStores />} />
         </Routes>
-      </div>
+      </div>  
     </Router>
   );
 }
