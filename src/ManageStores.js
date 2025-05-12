@@ -7,14 +7,20 @@ function ManageStores() {
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [storesPerPage, setStoresPerPage] = useState(50);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    axios.get('https://locoshop-backend.onrender.com/api/stores')
+    setLoading(true);
+    axios.get('/api/stores')
       .then(response => {
         setStores(response.data);
         setFilteredStores(response.data);
       })
-      .catch(err => console.error('Fetch error:', err));
+      .catch(err => {
+        console.error('Fetch error:', err);
+        alert('There was an error fetching the stores. Please try again later.');
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -31,26 +37,26 @@ function ManageStores() {
   const handleDelete = async (id) => {
     if (window.confirm('Delete this store?')) {
       try {
-        await axios.delete(`https://locoshop-backend.onrender.com/api/stores/${id}`);
+        await axios.delete(`/api/stores/${id}`);
         const updatedStores = stores.filter(store => store._id !== id);
         setStores(updatedStores);
       } catch (error) {
         console.error('Delete error:', error);
-        alert('Error deleting store.');
+        alert('Error deleting store. Please try again.');
       }
     }
   };
 
   const handlePlay = async (id) => {
     try {
-      const res = await axios.get(`https://locoshop-backend.onrender.com/api/stores/${id}`);
+      const res = await axios.get(`/api/stores/${id}`);
       const updated = res.data;
       setStores(prev =>
         prev.map(s => (s._id === id ? { ...s, ...updated } : s))
       );
     } catch (err) {
       alert('Failed to load full details.');
-      console.error(err);
+      console.error('Play error:', err);
     }
   };
 
@@ -58,6 +64,10 @@ function ManageStores() {
   const indexOfFirst = indexOfLast - storesPerPage;
   const currentStores = filteredStores.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredStores.length / storesPerPage);
+
+  if (loading) {
+    return <div>Loading stores...</div>;
+  }
 
   return (
     <div style={{ padding: '20px' }}>
@@ -98,48 +108,52 @@ function ManageStores() {
           </tr>
         </thead>
         <tbody>
-          {currentStores.map(store => (
-            <tr key={store._id}>
-              <td>{store.name}</td>
-              <td>{store.tags?.join(', ') || 'N/A'}</td>
-              <td>{store.address || 'N/A'}</td>
-              <td>
-                {store.phone || store.mobile || 'N/A'}
-                <button
-                  onClick={() => handlePlay(store._id)}
-                  style={{ marginLeft: '8px', padding: '2px 6px' }}
-                >
-                  ▶ Play
-                </button>
-              </td>
-              <td>
-                <button onClick={() => window.location.href = `/edit?id=${store._id}`}>✏️ Edit</button>{' '}
-                <button onClick={() => handleDelete(store._id)}>🗑️ Delete</button>
-              </td>
+          {currentStores.length === 0 ? (
+            <tr>
+              <td colSpan="5" style={{ textAlign: 'center' }}>No stores found.</td>
             </tr>
-          ))}
+          ) : (
+            currentStores.map(store => (
+              <tr key={store._id}>
+                <td>{store.name}</td>
+                <td>{store.tags?.join(', ') || 'N/A'}</td>
+                <td>{store.address || 'N/A'}</td>
+                <td>
+                  {store.phone || store.mobile || 'N/A'}
+                  <button
+                    onClick={() => handlePlay(store._id)}
+                    style={{ marginLeft: '8px', padding: '2px 6px' }}
+                  >
+                    ▶ Play
+                  </button>
+                </td>
+                <td>
+                  <button onClick={() => window.location.href = `/edit?id=${store._id}`}>✏️ Edit</button>{' '}
+                  <button onClick={() => handleDelete(store._id)}>🗑️ Delete</button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
 
-      {/* Pagination Controls */}
-      <div style={{ marginTop: '15px' }}>
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button
-            key={i + 1}
-            onClick={() => setCurrentPage(i + 1)}
-            style={{
-              marginRight: '5px',
-              padding: '5px 10px',
-              backgroundColor: currentPage === i + 1 ? '#007bff' : '#ccc',
-              color: currentPage === i + 1 ? '#fff' : '#000',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            {i + 1}
-          </button>
-        ))}
+      {/* Pagination */}
+      <div style={{ marginTop: '20px' }}>
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(prev => prev - 1)}
+        >
+          Previous
+        </button>
+        <span style={{ padding: '0 10px' }}>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(prev => prev + 1)}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
