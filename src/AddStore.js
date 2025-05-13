@@ -3,6 +3,7 @@ import './App.css';
 import Papa from 'papaparse';
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com';
+const [uploadProgress, setUploadProgress] = useState(0);
 
 function App() {
   const [formData, setFormData] = useState({
@@ -45,37 +46,47 @@ function App() {
   const handleCSVUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
+  
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
-      complete: async (results) => {
-        try {
-          const stores = results.data.map(row => ({
-            name: row.name,
-            address: row.address,
-            phone: row.phone,
-            lat: row.lat,
-            lng: row.lng,
-            tags: row.tags,
-          }));
-
-          const response = await fetch(`${BACKEND_URL}/api/stores/bulk`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(stores),
-          });
-
-          const data = await response.json();
-          if (response.ok) {
+      complete: (results) => {
+        const stores = results.data.map(row => ({
+          name: row.name,
+          address: row.address,
+          phone: row.phone,
+          lat: row.lat,
+          lng: row.lng,
+          tags: row.tags,
+        }));
+  
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", `${BACKEND_URL}/api/stores/bulk`, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+  
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = Math.round((event.loaded / event.total) * 100);
+            setUploadProgress(percent); // ← your state hook
+          }
+        };
+  
+        xhr.onload = () => {
+          if (xhr.status === 200) {
             setBulkMessage('✅ Bulk stores uploaded successfully!');
           } else {
-            setBulkMessage('❌ ' + data.message);
+            const data = JSON.parse(xhr.responseText);
+            setBulkMessage('❌ ' + (data.message || 'Upload failed.'));
           }
-        } catch (err) {
-          console.error("CSV Upload Error:", err);
-          setBulkMessage('❌ Error processing CSV file.');
-        }
+          setUploadProgress(0); // Reset progress
+        };
+  
+        xhr.onerror = () => {
+          setBulkMessage('❌ Upload error.');
+          setUploadProgress(0);
+        };
+  
+        xhr.send(JSON.stringify(stores));
       }
     });
   };
@@ -98,6 +109,12 @@ function App() {
       <h3>📁 Bulk Upload CSV</h3>
       <input type="file" accept=".csv" onChange={handleCSVUpload} />
       {bulkMessage && <p>{bulkMessage}</p>}
+      {uploadProgress > 0 && (
+          <div>
+            Uploading: {uploadProgress}%
+            <progress value={uploadProgress} max="100"></progress>
+          </div>
+        )}
     </div>
   );
 }
