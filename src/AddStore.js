@@ -3,7 +3,6 @@ import './App.css';
 import Papa from 'papaparse';
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com';
-const [uploadProgress, setUploadProgress] = useState(0);
 
 function App() {
   const [formData, setFormData] = useState({
@@ -16,6 +15,7 @@ function App() {
   });
   const [message, setMessage] = useState('');
   const [bulkMessage, setBulkMessage] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0); // ✅ Moved inside component
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -46,7 +46,7 @@ function App() {
   const handleCSVUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-  
+
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
@@ -59,18 +59,18 @@ function App() {
           lng: row.lng,
           tags: row.tags,
         }));
-  
+
         const xhr = new XMLHttpRequest();
         xhr.open("POST", `${BACKEND_URL}/api/stores/bulk`, true);
         xhr.setRequestHeader("Content-Type", "application/json");
-  
+
         xhr.upload.onprogress = (event) => {
           if (event.lengthComputable) {
             const percent = Math.round((event.loaded / event.total) * 100);
-            setUploadProgress(percent); // ← your state hook
+            setUploadProgress(percent);
           }
         };
-  
+
         xhr.onload = () => {
           if (xhr.status === 200) {
             setBulkMessage('✅ Bulk stores uploaded successfully!');
@@ -80,12 +80,12 @@ function App() {
           }
           setUploadProgress(0); // Reset progress
         };
-  
+
         xhr.onerror = () => {
           setBulkMessage('❌ Upload error.');
           setUploadProgress(0);
         };
-  
+
         xhr.send(JSON.stringify(stores));
       }
     });
@@ -110,11 +110,11 @@ function App() {
       <input type="file" accept=".csv" onChange={handleCSVUpload} />
       {bulkMessage && <p>{bulkMessage}</p>}
       {uploadProgress > 0 && (
-          <div>
-            Uploading: {uploadProgress}%
-            <progress value={uploadProgress} max="100"></progress>
-          </div>
-        )}
+        <div>
+          Uploading: {uploadProgress}%
+          <progress value={uploadProgress} max="100"></progress>
+        </div>
+      )}
     </div>
   );
 }
