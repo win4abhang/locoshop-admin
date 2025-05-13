@@ -1,170 +1,186 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function ManageStores() {
-  const [stores, setStores] = useState([]);
-  const [filteredStores, setFilteredStores] = useState([]);
-  const [search, setSearch] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [storesPerPage, setStoresPerPage] = useState(50);
+function EditStore({ storeId }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    address: '',
+    lat: '',
+    lng: '',
+    tags: [],
+  });
+  const [message, setMessage] = useState('');
+  const [tagsArray, setTagsArray] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [totalCount, setTotalCount] = useState(0);
 
-  // 🟡 Fetch data from backend (paginated only when no search)
   useEffect(() => {
-    if (search.trim()) return; // skip API fetch when search is active
-    setLoading(true);
-    axios
-      .get('https://locoshop-backend.onrender.com/api/stores/admin', {
-        params: {
-          page: currentPage,
-          limit: storesPerPage
-        }
-      })
-      .then(response => {
-        setStores(response.data.stores);
-        setFilteredStores(response.data.stores); // same initially
-        setTotalCount(response.data.totalCount);
-      })
-      .catch(err => {
-        console.error('Fetch error:', err);
-        alert('There was an error fetching the stores. Please try again later.');
-      })
-      .finally(() => setLoading(false));
-  }, [currentPage, storesPerPage, search]);
-
-  // 🔵 Search Filtering (client-side)
-  useEffect(() => {
-    const keyword = search.toLowerCase();
-    if (keyword) {
-      const filtered = stores.filter(store =>
-        store.name?.toLowerCase().includes(keyword) ||
-        store.tags?.join(', ').toLowerCase().includes(keyword) ||
-        (store.address || '').toLowerCase().includes(keyword)
-      );
-      setFilteredStores(filtered);
-      setCurrentPage(1); // reset to page 1
-    } else {
-      setFilteredStores(stores); // reset to full store list
-    }
-  }, [search, stores]);
-
-  // 🔴 Delete Store
-  const handleDelete = async (id) => {
-    if (window.confirm('Delete this store?')) {
+    // Fetch store data from backend
+    const fetchStoreData = async () => {
+      setLoading(true);
       try {
-        await axios.delete(`https://locoshop-backend.onrender.com/api/stores/${id}`);
-        const updatedStores = stores.filter(store => store._id !== id);
-        setStores(updatedStores);
-        if (updatedStores.length === 0 && currentPage > 1) {
-          setCurrentPage(prev => prev - 1);
-        }
-      } catch (error) {
-        console.error('Delete error:', error);
-        alert('Error deleting store. Please try again.');
+        const response = await axios.get(
+          `https://locoshop-backend.onrender.com/api/stores/${storeId}`
+        );
+        setFormData(response.data);
+        setTagsArray(response.data.tags || []);
+      } catch (err) {
+        console.error('Error fetching store data:', err);
+        setMessage('❌ Failed to load store data.');
+      } finally {
+        setLoading(false);
       }
+    };
+
+    if (storeId) fetchStoreData();
+  }, [storeId]);
+
+  // Handle form field changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle tags input change
+  const handleTagsChange = (e) => {
+    const tags = e.target.value.split(',').map((tag) => tag.trim());
+    setTagsArray(tags);
+  };
+
+  // Validate coordinates
+  const isValidCoordinates = (lat, lng) => {
+    return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+  };
+
+  // Handle form submission
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    // Validate coordinates before submitting
+    const lat = parseFloat(formData.lat);
+    const lng = parseFloat(formData.lng);
+    if (!isValidCoordinates(lat, lng)) {
+      setMessage('❌ Invalid coordinates.');
+      return;
+    }
+
+    const updatedData = {
+      ...formData,
+      lat,
+      lng,
+      tags: tagsArray,
+    };
+
+    try {
+      setLoading(true);
+      await axios.put(
+        `https://locoshop-backend.onrender.com/api/stores/${storeId}`,
+        updatedData
+      );
+      setMessage('✅ Store updated successfully!');
+    } catch (err) {
+      console.error('Update error:', err);
+      setMessage('❌ Error updating store.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // 🟢 Pagination Logic (separate for search and non-search mode)
-  let currentStores = [];
-  let totalPages = 1;
-
-  if (search.trim()) {
-    const indexOfLast = currentPage * storesPerPage;
-    const indexOfFirst = indexOfLast - storesPerPage;
-    currentStores = filteredStores.slice(indexOfFirst, indexOfLast);
-    totalPages = Math.ceil(filteredStores.length / storesPerPage);
-  } else {
-    currentStores = stores; // backend already sent paginated list
-    totalPages = Math.ceil(totalCount / storesPerPage);
-  }
+  // Get current geolocation
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setFormData({
+            ...formData,
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        () => {
+          setMessage('❌ Unable to retrieve your location.');
+        }
+      );
+    } else {
+      setMessage('❌ Geolocation not supported by your browser.');
+    }
+  };
 
   if (loading) {
-    return <div>Loading stores...</div>;
+    return <div>Loading store data...</div>;
   }
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>All Stores</h2>
-
-      {/* 🔍 Search + Per Page Controls */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-        <input
-          type="text"
-          placeholder="Search by name, tags or address"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ padding: '5px', width: '300px' }}
-        />
+      <h2>Edit Store</h2>
+      {message && <p>{message}</p>}
+      <form onSubmit={handleUpdate}>
+        <div>
+          <label>Name: </label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            placeholder="Store name"
+          />
+        </div>
 
         <div>
-          <label>Stores per page: </label>
-          <select
-            value={storesPerPage}
-            onChange={(e) => {
-              setStoresPerPage(Number(e.target.value));
-              setCurrentPage(1);
-            }}
-          >
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-            <option value={200}>200</option>
-          </select>
+          <label>Address: </label>
+          <input
+            type="text"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            required
+            placeholder="Store address"
+          />
         </div>
-      </div>
 
-      {/* 📋 Table */}
-      <table border="1" cellPadding="10" cellSpacing="0" style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Tags</th>
-            <th>Address</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentStores.length === 0 ? (
-            <tr>
-              <td colSpan="4" style={{ textAlign: 'center' }}>No stores found.</td>
-            </tr>
-          ) : (
-            currentStores.map(store => (
-              <tr key={store._id}>
-                <td>{store.name}</td>
-                <td>{store.tags?.join(', ') || 'N/A'}</td>
-                <td>{store.address || 'N/A'}</td>
-                <td>
-                  <button onClick={() => window.location.href = `/edit?id=${store._id}`}>✏️ Edit</button>{' '}
-                  <button onClick={() => handleDelete(store._id)}>🗑️ Delete</button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+        <div>
+          <label>Latitude: </label>
+          <input
+            type="text"
+            name="lat"
+            value={formData.lat}
+            onChange={handleChange}
+            required
+            placeholder="Latitude"
+          />
+        </div>
 
-      {/* ⏭️ Pagination */}
-      <div style={{ marginTop: '20px' }}>
-        <button
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(prev => prev - 1)}
-        >
-          Previous
+        <div>
+          <label>Longitude: </label>
+          <input
+            type="text"
+            name="lng"
+            value={formData.lng}
+            onChange={handleChange}
+            required
+            placeholder="Longitude"
+          />
+        </div>
+
+        <div>
+          <label>Tags: </label>
+          <input
+            type="text"
+            value={tagsArray.join(', ')}
+            onChange={handleTagsChange}
+            placeholder="Comma-separated tags"
+          />
+        </div>
+
+        <button type="button" onClick={getCurrentLocation}>
+          Use Current Location
         </button>
-        <span style={{ padding: '0 10px' }}>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          disabled={currentPage >= totalPages}
-          onClick={() => setCurrentPage(prev => prev + 1)}
-        >
-          Next
-        </button>
-      </div>
+
+        <div style={{ marginTop: '10px' }}>
+          <button type="submit">Update Store</button>
+        </div>
+      </form>
     </div>
   );
 }
 
-export default ManageStores;
+export default EditStore;

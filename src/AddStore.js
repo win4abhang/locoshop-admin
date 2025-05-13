@@ -9,13 +9,13 @@ function App() {
     name: '',
     address: '',
     phone: '',
-    lat: '',
-    lng: '',
+    latitude: '',
+    longitude: '',
     tags: '',
   });
   const [message, setMessage] = useState('');
   const [bulkMessage, setBulkMessage] = useState('');
-  const [uploadProgress, setUploadProgress] = useState(0); // ✅ Moved inside component
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,7 +25,7 @@ function App() {
     e.preventDefault();
 
     const tagsArray = formData.tags.split(',').map(tag => tag.trim());
-    const storeData = { ...formData, tags: tagsArray };
+    const storeData = { ...formData, tags: tagsArray, latitude: formData.latitude, longitude: formData.longitude };
 
     const response = await fetch(`${BACKEND_URL}/api/stores/add`, {
       method: 'POST',
@@ -37,7 +37,7 @@ function App() {
 
     if (response.ok) {
       setMessage('✅ Store added successfully!');
-      setFormData({ name: '', address: '', phone: '', lat: '', lng: '', tags: '' });
+      setFormData({ name: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
     } else {
       setMessage('❌ ' + data.message);
     }
@@ -55,8 +55,8 @@ function App() {
           name: row.name,
           address: row.address,
           phone: row.phone,
-          lat: row.lat,
-          lng: row.lng,
+          latitude: row.lat,
+          longitude: row.lng,
           tags: row.tags,
         }));
 
@@ -76,13 +76,13 @@ function App() {
             setBulkMessage('✅ Bulk stores uploaded successfully!');
           } else {
             const data = JSON.parse(xhr.responseText);
-            setBulkMessage('❌ ' + (data.message || 'Upload failed.'));
+            setBulkMessage((data.message || 'Upload failed.'));
           }
           setUploadProgress(0); // Reset progress
         };
 
         xhr.onerror = () => {
-          setBulkMessage('❌ Upload error.');
+          setBulkMessage('Upload error.');
           setUploadProgress(0);
         };
 
@@ -98,8 +98,8 @@ function App() {
         <input type="text" name="name" placeholder="Store Name" value={formData.name} onChange={handleChange} required />
         <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} required />
         <input type="text" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} required />
-        <input type="text" name="lat" placeholder="Latitude" value={formData.lat} onChange={handleChange} required />
-        <input type="text" name="lng" placeholder="Longitude" value={formData.lng} onChange={handleChange} required />
+        <input type="text" name="latitude" placeholder="Latitude" value={formData.latitude} onChange={handleChange} required />
+        <input type="text" name="longitude" placeholder="Longitude" value={formData.longitude} onChange={handleChange} required />
         <input type="text" name="tags" placeholder="Tags (e.g. bike, repair)" value={formData.tags} onChange={handleChange} required />
         <button type="submit">Add Store</button>
       </form>

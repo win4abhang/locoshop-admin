@@ -10,7 +10,7 @@ function EditStore() {
   const [message, setMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   const [storeList, setStoreList] = useState([]);
-  const [selectedStoreId, setSelectedStoreId] = useState(null); // New state for selected store ID
+  const [selectedStoreId, setSelectedStoreId] = useState(null); // State for selected store ID
 
   const handleLoad = async () => {
     try {
@@ -69,7 +69,7 @@ function EditStore() {
     };
 
     try {
-      const res = await fetch(`${BACKEND_URL}/api/stores/update-by-id/${selectedStoreId}`, {  // Use the store ID
+      const res = await fetch(`${BACKEND_URL}/api/stores/update-by-id/${selectedStoreId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
