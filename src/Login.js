@@ -13,7 +13,7 @@ function Login() {
     setError('');
 
     try {
-      const res = await axios.post('/api/users/login', { username, password });
+      const res = await axios.post('/api/auth/login', { username, password });
       const { token, user } = res.data; // user contains username and userType
 
       // Save token and user info
