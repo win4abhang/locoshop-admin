@@ -79,7 +79,7 @@ const Users = () => {
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '600px', margin: 'auto' }}>
+    <div style={{ padding: '1rem', maxWidth: '600px', margin: 'auto' }}>
       <h2>Users Management</h2>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}

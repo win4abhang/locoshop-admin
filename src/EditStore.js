@@ -127,7 +127,8 @@ function EditStore() {
                   setIsLoaded(true);
                   setMessage('✅ Store loaded successfully.');
                 }}>
-                  {store.name} - {store.address}
+                  <strong>{store.name}</strong>
+                  <div className="text-sm text-gray-600">- {store.address}</div>
                 </button>
               </li>
             ))}

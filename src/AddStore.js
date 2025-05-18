@@ -109,8 +109,8 @@ function AddStore() {
   };
 
   return (
-    <div className="App" style={{ padding: '2rem' }}>
-      <h2>Locoshop Admin – Add Store</h2>
+    <div className="App" style={{ padding: '1rem' }}>
+      <h2>Add Store</h2>
       <form onSubmit={handleSubmit}>
         <input type="text" name="name" placeholder="Store Name" value={formData.name} onChange={handleChange} required />
         <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} required />
