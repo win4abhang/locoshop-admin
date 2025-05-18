@@ -29,7 +29,7 @@ function Login() {
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div className="App" style={{ padding: '1rem' }}>
       <h2>Admin Login</h2>
       <form onSubmit={handleLogin}>
         <input

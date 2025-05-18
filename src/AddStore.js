@@ -118,12 +118,20 @@ function AddStore() {
         <input type="text" name="latitude" placeholder="Latitude" value={formData.latitude} onChange={handleChange} required />
         <input type="text" name="longitude" placeholder="Longitude" value={formData.longitude} onChange={handleChange} required />
         <input type="text" name="tags" placeholder="Tags (e.g. bike, repair)" value={formData.tags} onChange={handleChange} required />
-        <button type="submit">Add Store</button>
       </form>
-      {message && <p>{message}</p>}
+      <button type="submit">Add Store</button>
+      
+      <label className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          onChange={(e) => {
+            if (e.target.checked) getCurrentLocation();
+          }}
+          />
+          <span>📍 Use Current Location</span>
+        </label>
 
-      <hr />
-      <button type="button" onClick={getCurrentLocation}>📍 Use Current Location</button>
+      {message && <p>{message}</p>}
 
       <hr />
       <h3>📁 Bulk Upload CSV</h3>
