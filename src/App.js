@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import AddStore from './AddStore';
 import EditStore from './EditStore';
-import ManageStores from './ManageStores';
 import './App.css';
 
 function App() {
@@ -24,17 +23,15 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1>Locoshop Admin</h1>
+        <h1>Loco Admin</h1>
         <nav>
           <Link to="/">➕ Add Store</Link> |{" "}
           <Link to="/edit">✏️ Edit Store</Link> |{" "}
-          <Link to="/manage">🗂️ Manage All</Link> |{" "}
           <button onClick={handleDeleteAll} style={{ marginLeft: "10px" }}>🗑️ Delete All</button>
         </nav>
         <Routes>
           <Route path="/" element={<AddStore />} />
           <Route path="/edit" element={<EditStore />} />
-          <Route path="/manage" element={<ManageStores />} />
         </Routes>
       </div>
     </Router>
