@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com';
+const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 
 function EditStore() {
   const [editName, setEditName] = useState('');
   const [formData, setFormData] = useState({
-    name: '', address: '', phone: '', lat: '', lng: '', tags: ''
+    name: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
   });
   const [message, setMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
@@ -14,38 +14,48 @@ function EditStore() {
 
   const handleLoad = async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/stores/by-name/${encodeURIComponent(editName)}`);
+      const res = await fetch(`${BACKEND_URL}/by-name/${encodeURIComponent(editName)}`);
       const data = await res.json();
-
-      if (res.ok && Array.isArray(data.stores)) {
-        if (data.stores.length === 0) {
-          setMessage('❌ Store not found.');
-        } else if (data.stores.length === 1) {
-          const store = data.stores[0];
-          setFormData({
-            name: store.name || '',
-            address: store.address || '',
-            phone: store.phone || '',
-            lat: store.location?.coordinates?.[1] || '',
-            lng: store.location?.coordinates?.[0] || '',
-            tags: (store.tags || []).join(', '),
-          });
-          setSelectedStoreId(store._id); // Set the selected store ID
-          setIsLoaded(true);
-          setMessage('✅ Store loaded successfully.');
-        } else {
-          setStoreList(data.stores);
-          setSelectedStoreId(null);
-          setMessage('⚠️ Multiple stores found. Please select one.');
-        }
+  
+      if (!res.ok) {
+        setMessage(`❌ ${data.message || 'Failed to fetch store data.'}`);
+        return;
+      }
+  
+      const stores = data.stores || [];
+  
+      if (stores.length === 0) {
+        setMessage('❌ Store not found.');
+        setIsLoaded(false);
+        setSelectedStoreId(null);
+      } else if (stores.length === 1) {
+        const store = stores[0];
+  
+        setFormData({
+          name: store.name || '',
+          address: store.address || '',
+          phone: store.phone || '',
+          latitude: store.location?.coordinates?.[1]?.toString() || '',
+          longitude: store.location?.coordinates?.[0]?.toString() || '',
+          tags: (store.tags || []).join(', '),
+        });
+  
+        setSelectedStoreId(store._id);
+        setIsLoaded(true);
+        setMessage('✅ Store loaded successfully.');
       } else {
-        setMessage('❌ Unexpected response format.');
+        setStoreList(stores);
+        setSelectedStoreId(null);
+        setIsLoaded(false);
+        setMessage('⚠️ Multiple stores found. Please select one.');
       }
     } catch (err) {
+      console.error('Load error:', err);
       setMessage('❌ Error loading store.');
-      console.error(err);
+      setIsLoaded(false);
     }
   };
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -63,13 +73,13 @@ function EditStore() {
 
     const updatedData = {
       ...formData,
-      lat: parseFloat(formData.lat),
-      lng: parseFloat(formData.lng),
+      latitude: parseFloat(formData.latitude),
+      longitude: parseFloat(formData.longitude),
       tags: tagsArray,
     };
 
     try {
-      const res = await fetch(`${BACKEND_URL}/api/stores/update-by-id/${selectedStoreId}`, {
+      const res = await fetch(`${BACKEND_URL}/update-by-id/${selectedStoreId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
@@ -109,8 +119,8 @@ function EditStore() {
                     name: store.name || '',
                     address: store.address || '',
                     phone: store.phone || '',
-                    lat: store.location?.coordinates?.[1] || '',
-                    lng: store.location?.coordinates?.[0] || '',
+                    latitude: store.location?.coordinates?.[1] || '',
+                    longitude: store.location?.coordinates?.[0] || '',
                     tags: (store.tags || []).join(', '),
                   });
                   setSelectedStoreId(store._id);  // Set selected store ID
@@ -130,8 +140,8 @@ function EditStore() {
           <input type="text" name="name" value={formData.name} onChange={handleChange} required />
           <input type="text" name="address" value={formData.address} onChange={handleChange} required />
           <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
-          <input type="text" name="lat" value={formData.lat} onChange={handleChange} required />
-          <input type="text" name="lng" value={formData.lng} onChange={handleChange} required />
+          <input type="text" name="latitude" value={formData.latitude} onChange={handleChange} required />
+          <input type="text" name="longitude" value={formData.longitude} onChange={handleChange} required />
           <input type="text" name="tags" value={formData.tags} onChange={handleChange} required />
           <button type="submit">Update Store</button>
         </form>

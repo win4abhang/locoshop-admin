@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import Papa from 'papaparse';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com';
+const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 
 function App() {
   const [formData, setFormData] = useState({
@@ -23,18 +23,31 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const tagsArray = formData.tags.split(',').map(tag => tag.trim());
-    const storeData = { ...formData, tags: tagsArray, latitude: formData.latitude, longitude: formData.longitude };
-
-    const response = await fetch(`${BACKEND_URL}/api/stores/add`, {
+  
+    const storeData = {
+      name: formData.name,
+      address: formData.address,
+      phone: formData.phone,
+      tags: tagsArray,
+      location: {
+        type: "Point",
+        coordinates: [
+          parseFloat(formData.longitude),
+          parseFloat(formData.latitude)
+        ]
+      }
+    };
+  
+    const response = await fetch(`${BACKEND_URL}/add`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(storeData),
     });
-
+  
     const data = await response.json();
-
+  
     if (response.ok) {
       setMessage('✅ Store added successfully!');
       setFormData({ name: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
@@ -42,6 +55,26 @@ function App() {
       setMessage('❌ ' + data.message);
     }
   };
+
+    // Get current geolocation
+    const getCurrentLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setFormData({
+              ...formData,
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            });
+          },
+          () => {
+            setMessage('❌ Unable to retrieve your location.');
+          }
+        );
+      } else {
+        setMessage('❌ Geolocation not supported by your browser.');
+      }
+    };
 
   const handleCSVUpload = (e) => {
     const file = e.target.files[0];
@@ -61,7 +94,7 @@ function App() {
         }));
 
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", `${BACKEND_URL}/api/stores/bulk`, true);
+        xhr.open("POST", `${BACKEND_URL}/bulk`, true);
         xhr.setRequestHeader("Content-Type", "application/json");
 
         xhr.upload.onprogress = (event) => {
@@ -106,6 +139,10 @@ function App() {
       {message && <p>{message}</p>}
 
       <hr />
+      <button type="button" onClick={getCurrentLocation}>
+          Use Current Location
+        </button>
+      <hr /> 
       <h3>📁 Bulk Upload CSV</h3>
       <input type="file" accept=".csv" onChange={handleCSVUpload} />
       {bulkMessage && <p>{bulkMessage}</p>}
