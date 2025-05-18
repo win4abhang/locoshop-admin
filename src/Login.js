@@ -1,22 +1,29 @@
-// src/Login.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = '1234';
+import axios from 'axios';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    setError('');
+
+    try {
+      const res = await axios.post('/api/users/login', { username, password });
+      const { token, user } = res.data; // user contains username and userType
+
+      // Save token and user info
+      localStorage.setItem('token', token);
+      localStorage.setItem('userType', user.userType);
       localStorage.setItem('isLoggedIn', 'true');
+
       navigate('/');
-    } else {
-      alert('Invalid credentials');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Login failed');
     }
   };
 
@@ -40,6 +47,7 @@ function Login() {
         /><br /><br />
         <button type="submit">Login</button>
       </form>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }

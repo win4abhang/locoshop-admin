@@ -6,6 +6,7 @@ import EditStore from './EditStore';
 import Login from './Login';
 import ProtectedRoute from './ProtectedRoute';
 import AdminLayout from './AdminLayout';
+import Users from './Users'; // 🆕 Import the Users page component
 import './App.css';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         >
           <Route index element={<AddStore />} />
           <Route path="edit" element={<EditStore />} />
+          <Route path="users" element={<Users />} />  {/* 🆕 Add this route */}
           {/* You can add more admin pages here */}
         </Route>
       </Routes>

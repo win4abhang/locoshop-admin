@@ -1,4 +1,3 @@
-// src/AdminLayout.js
 import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
@@ -31,6 +30,7 @@ function AdminLayout() {
       <nav>
         <Link to="/">➕ Add Store</Link> |{" "}
         <Link to="/edit">✏️ Edit Store</Link> |{" "}
+        <Link to="/users">👥 Manage Users</Link> |{" "}
         <button onClick={handleDeleteAll} style={{ marginLeft: "10px" }}>🗑️ Delete All</button> |{" "}
         <button onClick={handleLogout} style={{ marginLeft: "10px" }}>🚪 Logout</button>
       </nav>
