@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const BACKEND_URL = 'https://locoshop-backend.onrender.com';
+
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +15,7 @@ function Login() {
     setError('');
 
     try {
-      const res = await axios.post('/api/auth/login', { username, password });
+      const res = await axios.post(`${BACKEND_URL}/api/auth/login`, { username, password });
       const { token, user } = res.data; // user contains username and userType
 
       // Save token and user info
