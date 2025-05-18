@@ -121,15 +121,13 @@ function AddStore() {
       </form>
       <button type="submit">Add Store</button>
       
-      <label className="flex items-center space-x-2">
-        <input
-          type="checkbox"
-          onChange={(e) => {
-            if (e.target.checked) getCurrentLocation();
-          }}
-          />
-          <span>📍 Use Current Location</span>
-        </label>
+      <input
+        type="checkbox"
+        onChange={(e) => {
+          if (e.target.checked) getCurrentLocation();
+        }}
+        Use Current Location
+      />
 
       {message && <p>{message}</p>}
 
