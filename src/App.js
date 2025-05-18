@@ -1,7 +1,10 @@
+// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import AddStore from './AddStore';
 import EditStore from './EditStore';
+import Login from './Login';
+import ProtectedRoute from './ProtectedRoute';
 import './App.css';
 
 function App() {
@@ -20,18 +23,29 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn');
+    window.location.href = '/login';
+  };
+
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
   return (
     <Router>
       <div className="App">
         <h1>Loco Admin</h1>
-        <nav>
-          <Link to="/">➕ Add Store</Link> |{" "}
-          <Link to="/edit">✏️ Edit Store</Link> |{" "}
-          <button onClick={handleDeleteAll} style={{ marginLeft: "10px" }}>🗑️ Delete All</button>
-        </nav>
+        {isLoggedIn && (
+          <nav>
+            <Link to="/">➕ Add Store</Link> |{" "}
+            <Link to="/edit">✏️ Edit Store</Link> |{" "}
+            <button onClick={handleDeleteAll} style={{ marginLeft: "10px" }}>🗑️ Delete All</button> |{" "}
+            <button onClick={handleLogout} style={{ marginLeft: "10px" }}>🚪 Logout</button>
+          </nav>
+        )}
         <Routes>
-          <Route path="/" element={<AddStore />} />
-          <Route path="/edit" element={<EditStore />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<ProtectedRoute><AddStore /></ProtectedRoute>} />
+          <Route path="/edit" element={<ProtectedRoute><EditStore /></ProtectedRoute>} />
         </Routes>
       </div>
     </Router>
