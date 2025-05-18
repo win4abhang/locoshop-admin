@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const BACKEND_URL = 'https://locoshop-backend.onrender.com';
+
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [form, setForm] = useState({
@@ -14,10 +16,11 @@ const Users = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('/api/users');
+      const res = await axios.get(`${BACKEND_URL}/api/users`);
       setUsers(res.data);
     } catch (err) {
-      setError('Failed to fetch users');
+      console.error(err);
+      setError('Failed to load users');
     }
   };
 
@@ -36,9 +39,9 @@ const Users = () => {
 
     try {
       if (editingUserId) {
-        await axios.put(`/api/users/${editingUserId}`, form);
+        await axios.put(`${BACKEND_URL}/api/users/${editingUserId}`, form);
       } else {
-        await axios.post('/api/users', form);
+        await axios.post(`${BACKEND_URL}/api/users`, form);
       }
       setForm({ username: '', password: '', userType: 'staff' });
       setEditingUserId(null);
@@ -68,7 +71,7 @@ const Users = () => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      await axios.delete(`/api/users/${id}`);
+      await axios.delete(`${BACKEND_URL}/api/users/${id}`);
       fetchUsers();
     } catch (err) {
       alert('Failed to delete user');
@@ -142,7 +145,10 @@ const Users = () => {
               <td style={{ padding: '8px' }}>{username}</td>
               <td style={{ padding: '8px' }}>{userType}</td>
               <td style={{ padding: '8px', textAlign: 'center' }}>
-                <button onClick={() => handleEdit({ _id, username, userType })} style={{ marginRight: '0.5rem' }}>
+                <button
+                  onClick={() => handleEdit({ _id, username, userType })}
+                  style={{ marginRight: '0.5rem' }}
+                >
                   Edit
                 </button>
                 <button onClick={() => handleDelete(_id)} style={{ color: 'red' }}>

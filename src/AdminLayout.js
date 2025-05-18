@@ -3,6 +3,7 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 
 function AdminLayout() {
   const navigate = useNavigate();
+  const userType = localStorage.getItem('userType');
 
   const handleDeleteAll = async () => {
     if (window.confirm("Are you sure you want to delete ALL stores?")) {
@@ -21,6 +22,8 @@ function AdminLayout() {
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userType');
+    localStorage.removeItem('token');
     navigate('/login');
   };
 
@@ -29,10 +32,14 @@ function AdminLayout() {
       <h1>Loco Admin</h1>
       <nav>
         <Link to="/">➕ Add Store</Link> |{" "}
-        <Link to="/edit">✏️ Edit Store</Link> |{" "}
-        <Link to="/users">👥 Manage Users</Link> |{" "}
-        <button onClick={handleDeleteAll} style={{ marginLeft: "10px" }}>🗑️ Delete All</button> |{" "}
-        <button onClick={handleLogout} style={{ marginLeft: "10px" }}>🚪 Logout</button>
+        <Link to="/edit">✏️ Edit Store</Link>
+        {userType === 'admin' && (
+          <>
+            {" "} | <Link to="/users">👥 Manage Users</Link>
+            {" "} | <button onClick={handleDeleteAll} style={{ marginLeft: "10px" }}>🗑️ Delete All</button>
+          </>
+        )}
+        {" "} | <button onClick={handleLogout} style={{ marginLeft: "10px" }}>🚪 Logout</button>
       </nav>
       <hr />
       <Outlet />

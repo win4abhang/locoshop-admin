@@ -16,10 +16,7 @@ function Login() {
 
     try {
       const res = await axios.post(`${BACKEND_URL}/api/auth/login`, { username, password });
-      console.log('Result body:', res.data);
       const { token, userType } = res.data; // user contains username and userType
-
-
       // Save token and user info
       localStorage.setItem('token', token);
       localStorage.setItem('userType', userType);

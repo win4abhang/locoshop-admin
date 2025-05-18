@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import axiosClient from './api/axiosClient';
+import axios from 'axios';
 import Papa from 'papaparse';
+
+const BACKEND_URL = 'https://locoshop-backend.onrender.com';
 
 function AddStore() {
   const [formData, setFormData] = useState({
@@ -40,7 +42,7 @@ function AddStore() {
     };
 
     try {
-      await axiosClient.post('/stores/add', storeData);
+      await axios.post(`${BACKEND_URL}/stores/add`, storeData);
       setMessage('✅ Store added successfully!');
       setFormData({ name: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
     } catch (error) {
@@ -90,7 +92,7 @@ function AddStore() {
         }));
 
         try {
-          await axiosClient.post('/stores/bulk', stores, {
+          await axios.post(`${BACKEND_URL}/stores/bulk`, stores, {
             onUploadProgress: (progressEvent) => {
               const percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
               setUploadProgress(percent);
