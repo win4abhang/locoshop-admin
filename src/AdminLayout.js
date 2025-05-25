@@ -29,7 +29,7 @@ function AdminLayout() {
 
   return (
     <div className="App">
-      <h1>Loco Admin</h1>
+      <h1 style="color: Royal Blue;">LocalZ</h1>
       <nav>
         <Link to="/">➕ Add Store</Link> |{" "}
         <Link to="/edit">✏️ Edit Store</Link>

@@ -1,23 +1,27 @@
 // src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from './LandingPage'; // 🆕 New
+import Register from './Register'; // 🆕 You will create this
+import Login from './Login'; // Admin login
 import AddStore from './AddStore';
 import EditStore from './EditStore';
-import Login from './Login';
+import Users from './Users';
 import ProtectedRoute from './ProtectedRoute';
 import AdminLayout from './AdminLayout';
-import Users from './Users'; // 🆕 Import the Users page component
 import './App.css';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<LandingPage />} /> {/* 🆕 Landing Page */}
+        <Route path="/register" element={<Register />} /> {/* 🆕 Registration Page */}
+        <Route path="/admin/login" element={<Login />} /> {/* 🆕 Admin Login */}
         
-        {/* Wrap all admin pages with layout + protection */}
+        {/* Admin Panel Route */}
         <Route
-          path="/"
+          path="/admin"
           element={
             <ProtectedRoute>
               <AdminLayout />
@@ -26,8 +30,7 @@ function App() {
         >
           <Route index element={<AddStore />} />
           <Route path="edit" element={<EditStore />} />
-          <Route path="users" element={<Users />} />  {/* 🆕 Add this route */}
-          {/* You can add more admin pages here */}
+          <Route path="users" element={<Users />} />
         </Route>
       </Routes>
     </Router>
