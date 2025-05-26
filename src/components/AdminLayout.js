@@ -31,11 +31,11 @@ function AdminLayout() {
     <div className="App">
       <h1 style="color: Royal Blue;">LocalZ</h1>
       <nav>
-        <Link to="/">➕ Add Store</Link> |{" "}
-        <Link to="/edit">✏️ Edit Store</Link>
+        <Link to="">➕ Add Store</Link> |{" "}
+        <Link to="edit">✏️ Edit Store</Link>
         {userType === 'admin' && (
           <>
-            {" "} | <Link to="/users">👥 Manage Users</Link>
+            {" "} | <Link to="users">👥 Manage Users</Link>
             {" "} | <button onClick={handleDeleteAll} style={{ marginLeft: "10px" }}>🗑️ Delete All</button>
           </>
         )}
