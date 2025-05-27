@@ -20,7 +20,7 @@ function EditStoreByOwner() {
 
     const loadStore = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/update-by-id/${id}`);
+        const res = await fetch(`${BACKEND_URL}/get-by-id/${id}`);
         const data = await res.json();
 
         if (!res.ok || !data.stores || data.stores.length === 0) {
