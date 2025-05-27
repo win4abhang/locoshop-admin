@@ -19,12 +19,13 @@ function Login() {
       const { token, userType } = res.data;
   
       // Save token and user info
-      localStorage.setItem('username', username);
+      localStorage.setItem('storeOwnerName', username);
       localStorage.setItem('token', token);
       localStorage.setItem('userType', userType);
       localStorage.setItem('isLoggedIn', 'true');
   
       // ✅ Debug: Check login status
+      console.log('User', username);
       console.log('Login successful');
       console.log('User type:', userType);
       console.log('Token:', token);

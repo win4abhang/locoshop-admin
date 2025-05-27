@@ -1,36 +1,46 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 
 function EditStoreByOwner() {
-  const [id, setEditName] = useState('');
   const [formData, setFormData] = useState({
     name: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
   });
   const [message, setMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   const [storeList, setStoreList] = useState([]);
-  const [selectedStoreId, setSelectedStoreId] = useState(null); // State for selected store ID
+  const [selectedStoreId, setSelectedStoreId] = useState(null);
+  const [ownerName, setOwnerName] = useState('');
 
-  const handleLoad = async () => {
+  // Load store when page loads using owner name
+  useEffect(() => {
+    const storedName = localStorage.getItem('storeOwnerName'); // e.g., 'ashiyana' or 'vinod'
+    if (storedName) {
+      setOwnerName(storedName);
+      loadStore(storedName);
+    } else {
+      setMessage('❌ No store owner name found in localStorage.');
+    }
+  }, []);
+
+  const loadStore = async (name) => {
     try {
-      const res = await fetch(`${BACKEND_URL}/by-id/${encodeURIComponent(id)}`);
+      const res = await fetch(`${BACKEND_URL}/by-id/${name}`);
       const data = await res.json();
-  
+
       if (!res.ok) {
         setMessage(`❌ ${data.message || 'Failed to fetch store data.'}`);
         return;
       }
-  
+
       const stores = data.stores || [];
-  
+
       if (stores.length === 0) {
         setMessage('❌ Store not found.');
         setIsLoaded(false);
         setSelectedStoreId(null);
       } else if (stores.length === 1) {
         const store = stores[0];
-  
         setFormData({
           name: store.name || '',
           address: store.address || '',
@@ -39,14 +49,13 @@ function EditStoreByOwner() {
           longitude: store.location?.coordinates?.[0]?.toString() || '',
           tags: (store.tags || []).join(', '),
         });
-  
         setSelectedStoreId(store._id);
         setIsLoaded(true);
         setMessage('✅ Store loaded successfully.');
       } else {
         setStoreList(stores);
-        setSelectedStoreId(null);
         setIsLoaded(false);
+        setSelectedStoreId(null);
         setMessage('⚠️ Multiple stores found. Please select one.');
       }
     } catch (err) {
@@ -55,7 +64,6 @@ function EditStoreByOwner() {
       setIsLoaded(false);
     }
   };
-  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -99,15 +107,7 @@ function EditStoreByOwner() {
 
   return (
     <div>
-      <h2>Edit Store by Name</h2>
-      <input
-        type="text"
-        placeholder="Enter store name"
-        value={id}
-        onChange={(e) => setEditName(e.target.value)}
-      />
-      <button onClick={handleLoad}>Load Store</button>
-
+      <h2>Edit My Store</h2>
       {storeList.length > 0 && (
         <div>
           <h3>Multiple stores found. Please select one:</h3>
@@ -123,7 +123,7 @@ function EditStoreByOwner() {
                     longitude: store.location?.coordinates?.[0] || '',
                     tags: (store.tags || []).join(', '),
                   });
-                  setSelectedStoreId(store._id);  // Set selected store ID
+                  setSelectedStoreId(store._id);
                   setIsLoaded(true);
                   setMessage('✅ Store loaded successfully.');
                 }}>
