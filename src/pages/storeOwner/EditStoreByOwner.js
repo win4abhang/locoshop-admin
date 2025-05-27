@@ -19,7 +19,7 @@ function EditStoreByOwner() {
       setOwnerName(storedName);
       loadStore(storedName);
     } else {
-      setMessage('❌ No store owner name found in localStorage.');
+      setMessage('❌ No store ID found in localStorage.');
     }
   }, []);
 
