@@ -13,22 +13,32 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-
+  
     try {
       const res = await axios.post(`${BACKEND_URL}/api/auth/login`, { username, password });
-      const { token, userType } = res.data; // user contains username and userType
+      const { token, userType } = res.data;
+  
       // Save token and user info
       localStorage.setItem('token', token);
       localStorage.setItem('userType', userType);
       localStorage.setItem('isLoggedIn', 'true');
-
-      if (userType === 'admin') navigate('/admin');
-      else if (userType === 'staff') navigate('/staff');
-      else if (userType === 'store_owner') navigate('/store_owner');
+  
+      // ✅ Debug: Check login status
+      console.log('Login successful');
+      console.log('User type:', userType);
+      console.log('Token:', token);
+  
+      // ❌ Temporarily disable redirect
+      // if (userType === 'admin') navigate('/admin');
+      // else if (userType === 'staff') navigate('/staff');
+      // else if (userType === 'store_owner') navigate('/store_owner');
+      
     } catch (err) {
+      console.error('Login error:', err);
       setError(err.response?.data?.error || 'Login failed');
     }
   };
+  
 
   return (
     <div className="App" style={{ padding: '1rem' }}>
