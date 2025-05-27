@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
-import EditStore from './EditStore';
+import EditStore from './EditStoreByOwner';
 
 const StoreOwnerDashboard = () => {
   const navigate = useNavigate();
