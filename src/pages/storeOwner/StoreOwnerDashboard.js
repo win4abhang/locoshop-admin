@@ -13,7 +13,7 @@ const StoreOwnerDashboard = () => {
 
   return (
     <div style={{ padding: '1rem' }}>
-      <h1>Admin Dashboard</h1>
+      <h1>Store Owner Dashboard</h1>
 
       {/* ✅ Navigation Links */}
       <nav style={{ marginBottom: '1rem' }}>
@@ -23,7 +23,7 @@ const StoreOwnerDashboard = () => {
 
       {/* ✅ Admin Routes */}
       <Routes>
-        <Route index element={<p>Welcome to Admin Panel</p>} />
+        <Route index element={<p>Welcome to Store Owner Panel</p>} />
         <Route path="edit-store" element={<EditStore />} />
         <Route path="*" element={<p>404 - Page Not Found in Admin</p>} />
       </Routes>

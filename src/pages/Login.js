@@ -19,6 +19,7 @@ function Login() {
       const { token, userType } = res.data;
   
       // Save token and user info
+      localStorage.setItem('username', username);
       localStorage.setItem('token', token);
       localStorage.setItem('userType', userType);
       localStorage.setItem('isLoggedIn', 'true');
