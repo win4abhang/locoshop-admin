@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 
 function EditStoreByOwner() {
-  const [editName, setEditName] = useState('');
+  const [id, setEditName] = useState('');
   const [formData, setFormData] = useState({
     name: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
   });
@@ -14,7 +14,7 @@ function EditStoreByOwner() {
 
   const handleLoad = async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/by-name/${encodeURIComponent(editName)}`);
+      const res = await fetch(`${BACKEND_URL}/by-id/${encodeURIComponent(id)}`);
       const data = await res.json();
   
       if (!res.ok) {
@@ -103,7 +103,7 @@ function EditStoreByOwner() {
       <input
         type="text"
         placeholder="Enter store name"
-        value={editName}
+        value={id}
         onChange={(e) => setEditName(e.target.value)}
       />
       <button onClick={handleLoad}>Load Store</button>
