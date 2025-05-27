@@ -69,45 +69,6 @@ function AddStore() {
     }
   };
 
-  const handleCSVUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: async (results) => {
-        const stores = results.data.map(row => ({
-          name: row.name,
-          address: row.address,
-          phone: row.phone,
-          tags: row.tags.split(',').map(tag => tag.trim()),
-          location: {
-            type: "Point",
-            coordinates: [
-              parseFloat(row.lng),
-              parseFloat(row.lat)
-            ]
-          }
-        }));
-
-        try {
-          await axios.post(`${BACKEND_URL}/stores/bulk`, stores, {
-            onUploadProgress: (progressEvent) => {
-              const percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-              setUploadProgress(percent);
-            }
-          });
-          setBulkMessage('✅ Bulk stores uploaded successfully!');
-        } catch (error) {
-          setBulkMessage('❌ ' + (error.response?.data?.message || 'Bulk upload failed.'));
-        } finally {
-          setUploadProgress(0);
-        }
-      }
-    });
-  };
-
   return (
     <div className="App" style={{ padding: '1rem' }}>
       <h2>Add Store</h2>
@@ -134,15 +95,6 @@ function AddStore() {
       {message && <p>{message}</p>}
 
       <hr />
-      <h3>📁 Bulk Upload CSV</h3>
-      <input type="file" accept=".csv" onChange={handleCSVUpload} />
-      {bulkMessage && <p>{bulkMessage}</p>}
-      {uploadProgress > 0 && (
-        <div>
-          Uploading: {uploadProgress}%
-          <progress value={uploadProgress} max="100"></progress>
-        </div>
-      )}
     </div>
   );
 }
