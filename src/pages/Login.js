@@ -28,10 +28,10 @@ function Login() {
       console.log('User type:', userType);
       console.log('Token:', token);
   
-      // ❌ Temporarily disable redirect
-      // if (userType === 'admin') navigate('/admin');
-      // else if (userType === 'staff') navigate('/staff');
-      // else if (userType === 'store_owner') navigate('/store_owner');
+
+      if (userType === 'admin') navigate('/admin/AdminDashboard');
+      else if (userType === 'staff') navigate('/staff');
+      else if (userType === 'store_owner') navigate('/store_owner');
       
     } catch (err) {
       console.error('Login error:', err);
