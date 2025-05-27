@@ -12,6 +12,8 @@ function EditStoreByOwner() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const id = localStorage.getItem('username');
+    setMessage('store ID =.', id);
+
 
     if (!id) {
       setMessage('❌ No store ID provided.');
