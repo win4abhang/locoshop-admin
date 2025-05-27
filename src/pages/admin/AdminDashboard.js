@@ -6,16 +6,19 @@ import Users from './Users';
 
 const AdminDashboard = () => {
   return (
-    <div>
+    <div style={{ padding: '1rem' }}>
       <h1>Admin Dashboard</h1>
-      <nav>
-        <Link to="">Home</Link> | <Link to="Users">Manage Users</Link> | <Link to="AddStore">AddStore</Link> | <Link to="EditStore">EditStore</Link>
+      <nav style={{ marginBottom: '1rem' }}>
+        <Link to="add-store">➕ Add Store</Link> |{' '}
+        <Link to="edit-store">✏️ Edit Store</Link> |{' '}
+        <Link to="users">👥 Manage Users</Link>
       </nav>
 
       <Routes>
-        <Route path="AddStore" element={<AddStore />} />
-        <Route path="EditStore" element={<EditStore />} />
-        <Route path="Users" element={<Users />} />
+        <Route path="add-store" element={<AddStore />} />
+        <Route path="edit-store" element={<EditStore />} />
+        <Route path="users" element={<Users />} />
+        <Route path="*" element={<p>404 - Page Not Found in Admin</p>} />
       </Routes>
     </div>
   );
