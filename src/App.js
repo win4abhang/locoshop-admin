@@ -20,38 +20,13 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Admin Dashboard */}
-        <Route
-          path="/admin/*"
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Staff Dashboard */}
-        <Route
-          path="/staff/*"
-          element={
-            <ProtectedRoute allowedRoles={['staff']}>
-              <StaffDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Store Owner Dashboard */}
-        <Route
-          path="/storeOwner/*"
-          element={
-            <ProtectedRoute allowedRoles={['store_owner']}>
-              <StoreOwnerDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Catch-all */}
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/admin/*" element={<AdminDashboard />} />
+        <Route path="/staff/*" element={<StaffDashboard />} />
+        <Route path="/store_owner/*" element={<StoreOwnerDashboard />} />
+        {/* Optional fallback */}
+        <Route path="*" element={<h2>404 Page Not Found</h2>} />
+       
       </Routes>
     </Router>
   );
