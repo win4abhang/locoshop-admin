@@ -22,7 +22,9 @@ function Login() {
       localStorage.setItem('userType', userType);
       localStorage.setItem('isLoggedIn', 'true');
 
-      navigate('/users');
+      if (userType === 'admin') navigate('/admin');
+      else if (userType === 'staff') navigate('/staff');
+      else if (userType === 'store_owner') navigate('/store_owner');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
     }
