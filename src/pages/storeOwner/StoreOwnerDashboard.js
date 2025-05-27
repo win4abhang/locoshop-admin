@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
-function StoreDashboard() {
+function StoreOwnerDashboard() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
