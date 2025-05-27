@@ -1,25 +1,34 @@
 import React from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import EditStore from './EditStore';
 
-function StoreOwnerDashboard() {
+const StoreOwnerDashboard = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    // ✅ Clear localStorage and redirect to login
     localStorage.clear();
     navigate('/login');
   };
 
   return (
     <div style={{ padding: '1rem' }}>
-      <h1 style={{ color: 'OrangeRed' }}>Store Dashboard</h1>
+      <h1>Admin Dashboard</h1>
+
+      {/* ✅ Navigation Links */}
       <nav style={{ marginBottom: '1rem' }}>
-        <Link to="edit">✏️ Edit Store</Link> |{" "}
-        <button onClick={handleLogout}>🚪 Logout</button>
+        <Link to="/store_owner/edit-store">✏️ Edit Store</Link> |{' '}
+        <button onClick={handleLogout} style={{ marginLeft: '1rem' }}>🚪 Logout</button>
       </nav>
-      <hr />
-      <Outlet />
+
+      {/* ✅ Admin Routes */}
+      <Routes>
+        <Route index element={<p>Welcome to Admin Panel</p>} />
+        <Route path="edit-store" element={<EditStore />} />
+        <Route path="*" element={<p>404 - Page Not Found in Admin</p>} />
+      </Routes>
     </div>
   );
-}
+};
 
 export default StoreOwnerDashboard;
