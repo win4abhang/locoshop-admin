@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Papa from 'papaparse';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com';
+const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 
 function AddStore() {
   const [formData, setFormData] = useState({
