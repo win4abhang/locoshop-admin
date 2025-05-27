@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 
-function EditStore() {
+function EditStoreByOwner() {
   const [formData, setFormData] = useState({
     name: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
   });
