@@ -8,13 +8,17 @@ const AdminDashboard = () => {
   return (
     <div style={{ padding: '1rem' }}>
       <h1>Admin Dashboard</h1>
+
+      {/* ✅ Use absolute paths in Link */}
       <nav style={{ marginBottom: '1rem' }}>
-        <Link to="add-store">➕ Add Store</Link> |{' '}
-        <Link to="edit-store">✏️ Edit Store</Link> |{' '}
-        <Link to="users">👥 Manage Users</Link>
+        <Link to="/admin/add-store">➕ Add Store</Link> |{' '}
+        <Link to="/admin/edit-store">✏️ Edit Store</Link> |{' '}
+        <Link to="/admin/users">👥 Manage Users</Link>
       </nav>
 
+      {/* ✅ Route paths remain relative */}
       <Routes>
+        <Route index element={<p>Welcome to Admin Panel</p>} />
         <Route path="add-store" element={<AddStore />} />
         <Route path="edit-store" element={<EditStore />} />
         <Route path="users" element={<Users />} />
