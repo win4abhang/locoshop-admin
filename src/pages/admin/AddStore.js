@@ -42,7 +42,7 @@ function AddStore() {
     };
 
     try {
-      await axios.post(`${BACKEND_URL}/stores/add`, storeData);
+      await axios.post(`${BACKEND_URL}/add`, storeData);
       setMessage('✅ Store added successfully!');
       setFormData({ name: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
     } catch (error) {
