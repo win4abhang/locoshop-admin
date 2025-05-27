@@ -2,30 +2,33 @@ import React, { useEffect, useState } from 'react';
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 
-function EditStoreByOwner() {
+function EditStoreById() {
   const [formData, setFormData] = useState({
     name: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
   });
   const [message, setMessage] = useState('');
+  const [storeId, setStoreId] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [storeList, setStoreList] = useState([]);
-  const [selectedStoreId, setSelectedStoreId] = useState(null);
-  const [ownerName, setOwnerName] = useState('');
 
-  // Load store when page loads using owner name
+  // Helper to get query parameter from URL
+  const getStoreIdFromUrl = () => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id'); // expects ?id=...
+  };
+
   useEffect(() => {
-    const storedName = localStorage.getItem('storeOwnerName'); // e.g., 'ashiyana' or 'vinod'
-    if (storedName) {
-      setOwnerName(storedName);
-      loadStore(storedName);
+    const id = getStoreIdFromUrl();
+    if (id) {
+      setStoreId(id);
+      loadStoreById(id);
     } else {
-      setMessage('❌ No store ID found in localStorage.');
+      setMessage('❌ No store ID found in URL.');
     }
   }, []);
 
-  const loadStore = async (name) => {
+  const loadStoreById = async (id) => {
     try {
-      const res = await fetch(`${BACKEND_URL}/by-id/${name}`);
+      const res = await fetch(`${BACKEND_URL}/one/${id}`);
       const data = await res.json();
 
       if (!res.ok) {
@@ -33,14 +36,12 @@ function EditStoreByOwner() {
         return;
       }
 
-      const stores = data.stores || [];
+      const store = data.store;
 
-      if (stores.length === 0) {
+      if (!store) {
         setMessage('❌ Store not found.');
         setIsLoaded(false);
-        setSelectedStoreId(null);
-      } else if (stores.length === 1) {
-        const store = stores[0];
+      } else {
         setFormData({
           name: store.name || '',
           address: store.address || '',
@@ -49,14 +50,8 @@ function EditStoreByOwner() {
           longitude: store.location?.coordinates?.[0]?.toString() || '',
           tags: (store.tags || []).join(', '),
         });
-        setSelectedStoreId(store._id);
         setIsLoaded(true);
         setMessage('✅ Store loaded successfully.');
-      } else {
-        setStoreList(stores);
-        setIsLoaded(false);
-        setSelectedStoreId(null);
-        setMessage('⚠️ Multiple stores found. Please select one.');
       }
     } catch (err) {
       console.error('Load error:', err);
@@ -72,8 +67,8 @@ function EditStoreByOwner() {
   const handleUpdate = async (e) => {
     e.preventDefault();
 
-    if (!selectedStoreId) {
-      setMessage('❌ No store selected.');
+    if (!storeId) {
+      setMessage('❌ Store ID is missing.');
       return;
     }
 
@@ -87,7 +82,7 @@ function EditStoreByOwner() {
     };
 
     try {
-      const res = await fetch(`${BACKEND_URL}/update-by-id/${selectedStoreId}`, {
+      const res = await fetch(`${BACKEND_URL}/update-by-id/${storeId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
@@ -107,36 +102,8 @@ function EditStoreByOwner() {
 
   return (
     <div>
-      <h2>Edit My Store</h2>
-      {storeList.length > 0 && (
-        <div>
-          <h3>Multiple stores found. Please select one:</h3>
-          <ul>
-            {storeList.map((store) => (
-              <li key={store._id}>
-                <button onClick={() => {
-                  setFormData({
-                    name: store.name || '',
-                    address: store.address || '',
-                    phone: store.phone || '',
-                    latitude: store.location?.coordinates?.[1] || '',
-                    longitude: store.location?.coordinates?.[0] || '',
-                    tags: (store.tags || []).join(', '),
-                  });
-                  setSelectedStoreId(store._id);
-                  setIsLoaded(true);
-                  setMessage('✅ Store loaded successfully.');
-                }}>
-                  <strong>{store.name}</strong>
-                  <div className="text-sm text-gray-600">{store.address}</div>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {isLoaded && (
+      <h2>Edit Store By ID</h2>
+      {isLoaded ? (
         <form onSubmit={handleUpdate}>
           <input type="text" name="name" value={formData.name} onChange={handleChange} required />
           <input type="text" name="address" value={formData.address} onChange={handleChange} required />
@@ -146,6 +113,8 @@ function EditStoreByOwner() {
           <input type="text" name="tags" value={formData.tags} onChange={handleChange} required />
           <button type="submit">Update Store</button>
         </form>
+      ) : (
+        <p>Loading or waiting for ID...</p>
       )}
 
       {message && <p>{message}</p>}
@@ -153,4 +122,4 @@ function EditStoreByOwner() {
   );
 }
 
-export default EditStoreByOwner;
+export default EditStoreById;

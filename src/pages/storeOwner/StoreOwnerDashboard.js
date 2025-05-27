@@ -1,12 +1,14 @@
 import React from 'react';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
-import EditStore from './EditStoreByOwner';
+import EditStoreById from './EditStoreById';
 
 const StoreOwnerDashboard = () => {
   const navigate = useNavigate();
 
+  // 👇 Store ID is assumed to be saved in localStorage after login
+  const storeId = localStorage.getItem('storeOwnerName'); // e.g., "66517352b63c98..."
+
   const handleLogout = () => {
-    // ✅ Clear localStorage and redirect to login
     localStorage.clear();
     navigate('/login');
   };
@@ -15,16 +17,14 @@ const StoreOwnerDashboard = () => {
     <div style={{ padding: '1rem' }}>
       <h1>Store Owner Dashboard</h1>
 
-      {/* ✅ Navigation Links */}
       <nav style={{ marginBottom: '1rem' }}>
-        <Link to="/store_owner/edit-store">✏️ Edit Store</Link> |{' '}
+        <Link to={`/store_owner/edit-store?id=${storeId}`}>✏️ Edit Store</Link> |{' '}
         <button onClick={handleLogout} style={{ marginLeft: '1rem' }}>🚪 Logout</button>
       </nav>
 
-      {/* ✅ Admin Routes */}
       <Routes>
         <Route index element={<p>Welcome to Store Owner Panel</p>} />
-        <Route path="edit-store" element={<EditStore />} />
+        <Route path="edit-store" element={<EditStoreById />} />
         <Route path="*" element={<p>404 - Page Not Found in Admin</p>} />
       </Routes>
     </div>
