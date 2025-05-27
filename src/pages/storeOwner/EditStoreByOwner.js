@@ -1,176 +1,156 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from 'react';
 
-const BASE_URL = 'https://locoshop-backend.onrender.com'; // update if needed
+const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 
-const EditStoreByOwner = () => {
-  const { storeId } = useParams();
-  const navigate = useNavigate();
+function EditStoreByOwner() {
+  const [editName, setEditName] = useState('');
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    location: {
-      type: 'Point',
-      coordinates: [0, 0],
-    },
-    address: '',
-    tags: [],
-    workingHours: {
-      open: '09:00',
-      close: '21:00',
-    },
+    name: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [storeList, setStoreList] = useState([]);
+  const [selectedStoreId, setSelectedStoreId] = useState(null); // State for selected store ID
 
-  // Fetch existing store data
-  useEffect(() => {
-    const fetchStore = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/stores/${storeId}`);
-        const store = res.data;
-
-        setFormData({
-          ...store,
-          tags: store.tags || [],
-          location: {
-            type: 'Point',
-            coordinates: store.location?.coordinates || [0, 0],
-          },
-          workingHours: {
-            open: store.workingHours?.open || '09:00',
-            close: store.workingHours?.close || '21:00',
-          },
-        });
-        setLoading(false);
-      } catch (err) {
-        console.error('Error loading store:', err);
-        setError('Failed to load store');
-        setLoading(false);
+  const handleLoad = async () => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/by-name/${encodeURIComponent(editName)}`);
+      const data = await res.json();
+  
+      if (!res.ok) {
+        setMessage(`❌ ${data.message || 'Failed to fetch store data.'}`);
+        return;
       }
-    };
-
-    fetchStore();
-  }, [storeId]);
+  
+      const stores = data.stores || [];
+  
+      if (stores.length === 0) {
+        setMessage('❌ Store not found.');
+        setIsLoaded(false);
+        setSelectedStoreId(null);
+      } else if (stores.length === 1) {
+        const store = stores[0];
+  
+        setFormData({
+          name: store.name || '',
+          address: store.address || '',
+          phone: store.phone || '',
+          latitude: store.location?.coordinates?.[1]?.toString() || '',
+          longitude: store.location?.coordinates?.[0]?.toString() || '',
+          tags: (store.tags || []).join(', '),
+        });
+  
+        setSelectedStoreId(store._id);
+        setIsLoaded(true);
+        setMessage('✅ Store loaded successfully.');
+      } else {
+        setStoreList(stores);
+        setSelectedStoreId(null);
+        setIsLoaded(false);
+        setMessage('⚠️ Multiple stores found. Please select one.');
+      }
+    } catch (err) {
+      console.error('Load error:', err);
+      setMessage('❌ Error loading store.');
+      setIsLoaded(false);
+    }
+  };
+  
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === 'latitude' || name === 'longitude') {
-      const coords = [...formData.location.coordinates];
-      const index = name === 'longitude' ? 0 : 1;
-      coords[index] = parseFloat(value);
-      setFormData({
-        ...formData,
-        location: {
-          ...formData.location,
-          coordinates: coords,
-        },
-      });
-    } else if (name === 'open' || name === 'close') {
-      setFormData({
-        ...formData,
-        workingHours: {
-          ...formData.workingHours,
-          [name]: value,
-        },
-      });
-    } else if (name === 'tags') {
-      setFormData({
-        ...formData,
-        tags: value.split(',').map((tag) => tag.trim()),
-      });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
+
+    if (!selectedStoreId) {
+      setMessage('❌ No store selected.');
+      return;
+    }
+
+    const tagsArray = formData.tags.split(',').map(tag => tag.trim());
+
+    const updatedData = {
+      ...formData,
+      latitude: parseFloat(formData.latitude),
+      longitude: parseFloat(formData.longitude),
+      tags: tagsArray,
+    };
+
     try {
-      await axios.put(`${BASE_URL}/stores/${storeId}`, formData);
-      alert('Store updated successfully!');
-      navigate('/dashboard'); // or wherever you want
+      const res = await fetch(`${BACKEND_URL}/update-by-id/${selectedStoreId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setMessage('✅ Store updated successfully.');
+      } else {
+        setMessage('❌ ' + data.message);
+      }
     } catch (err) {
-      console.error('Update error:', err);
-      alert('Failed to update store.');
+      setMessage('❌ Update failed.');
+      console.error(err);
     }
   };
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
-    <div className="max-w-xl mx-auto p-4 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Edit Store</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Store Name"
-          className="w-full border p-2 rounded"
-        />
-        <input
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          placeholder="Phone"
-          className="w-full border p-2 rounded"
-        />
-        <input
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          placeholder="Address"
-          className="w-full border p-2 rounded"
-        />
-        <input
-          name="latitude"
-          type="number"
-          value={formData.location.coordinates[1]}
-          onChange={handleChange}
-          placeholder="Latitude"
-          className="w-full border p-2 rounded"
-        />
-        <input
-          name="longitude"
-          type="number"
-          value={formData.location.coordinates[0]}
-          onChange={handleChange}
-          placeholder="Longitude"
-          className="w-full border p-2 rounded"
-        />
-        <input
-          name="tags"
-          value={formData.tags.join(', ')}
-          onChange={handleChange}
-          placeholder="Tags (comma separated)"
-          className="w-full border p-2 rounded"
-        />
-        <div className="flex gap-2">
-          <input
-            name="open"
-            type="time"
-            value={formData.workingHours.open}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
-          <input
-            name="close"
-            type="time"
-            value={formData.workingHours.close}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
+    <div>
+      <h2>Edit Store by Name</h2>
+      <input
+        type="text"
+        placeholder="Enter store name"
+        value={editName}
+        onChange={(e) => setEditName(e.target.value)}
+      />
+      <button onClick={handleLoad}>Load Store</button>
+
+      {storeList.length > 0 && (
+        <div>
+          <h3>Multiple stores found. Please select one:</h3>
+          <ul>
+            {storeList.map((store) => (
+              <li key={store._id}>
+                <button onClick={() => {
+                  setFormData({
+                    name: store.name || '',
+                    address: store.address || '',
+                    phone: store.phone || '',
+                    latitude: store.location?.coordinates?.[1] || '',
+                    longitude: store.location?.coordinates?.[0] || '',
+                    tags: (store.tags || []).join(', '),
+                  });
+                  setSelectedStoreId(store._id);  // Set selected store ID
+                  setIsLoaded(true);
+                  setMessage('✅ Store loaded successfully.');
+                }}>
+                  <strong>{store.name}</strong>
+                  <div className="text-sm text-gray-600">{store.address}</div>
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          Update Store
-        </button>
-      </form>
+      )}
+
+      {isLoaded && (
+        <form onSubmit={handleUpdate}>
+          <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+          <input type="text" name="address" value={formData.address} onChange={handleChange} required />
+          <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
+          <input type="text" name="latitude" value={formData.latitude} onChange={handleChange} required />
+          <input type="text" name="longitude" value={formData.longitude} onChange={handleChange} required />
+          <input type="text" name="tags" value={formData.tags} onChange={handleChange} required />
+          <button type="submit">Update Store</button>
+        </form>
+      )}
+
+      {message && <p>{message}</p>}
     </div>
   );
-};
+}
 
 export default EditStoreByOwner;
