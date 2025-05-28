@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 
@@ -14,6 +15,25 @@ function EditStoreById() {
   const getStoreIdFromUrl = () => {
     const params = new URLSearchParams(window.location.search);
     return params.get('id'); // expects ?id=...
+  };
+
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setFormData({
+            ...formData,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        () => {
+          setMessage('❌ Unable to retrieve your location.');
+        }
+      );
+    } else {
+      setMessage('❌ Geolocation not supported by your browser.');
+    }
   };
 
   useEffect(() => {
@@ -106,32 +126,32 @@ function EditStoreById() {
     {isLoaded ? (
       <form onSubmit={handleUpdate}>
         <div>
-          <label>Store Name:</label><br />
+          <label>Store Name:</label>
           <input type="text" name="name" value={formData.name} onChange={handleChange} required />
         </div>
   
         <div>
-          <label>Address:</label><br />
+          <label>Address:</label>
           <input type="text" name="address" value={formData.address} onChange={handleChange} required />
         </div>
   
         <div>
-          <label>Phone:</label><br />
+          <label>Phone:</label>
           <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
         </div>
   
         <div>
-          <label>Latitude:</label><br />
+          <label>Latitude:</label>
           <input type="text" name="latitude" value={formData.latitude} onChange={handleChange} required />
         </div>
   
         <div>
-          <label>Longitude:</label><br />
+          <label>Longitude:</label>
           <input type="text" name="longitude" value={formData.longitude} onChange={handleChange} required />
         </div>
   
         <div>
-          <label>Tags (comma separated):</label><br />
+          <label>Tags (comma separated):</label>
           <input type="text" name="tags" value={formData.tags} onChange={handleChange} required />
         </div>
   
@@ -142,6 +162,15 @@ function EditStoreById() {
     )}
   
     {message && <p>{message}</p>}
+    <label className="flex items-center space-x-2" style={{ marginTop: '1rem', display: 'block' }}>
+        <span>📍 Use Current Location</span>
+        <input
+          type="checkbox"
+          onChange={(e) => {
+            if (e.target.checked) getCurrentLocation();
+          }}
+        />
+      </label>
   </div>
   );
 }
