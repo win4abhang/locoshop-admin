@@ -142,7 +142,6 @@ function EditStoreById() {
             onChange={handleChange}
             required
             style={{
-              padding: "8px",
               borderRadius: "4px",
               border: "1px solid #ccc",
               fontSize: "14px",
