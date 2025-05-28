@@ -1,21 +1,259 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Container,
+  Typography,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  CardMedia,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@mui/material';
 
 function LandingPage() {
   return (
-    <div className="landing-container">
-      <h1>Welcome to LocoShop Admin Portal</h1>
-      <p>Please choose an option:</p>
-      <div className="buttons">
-        <Link to="/register">
-          <button>New Registration</button>
+    <Container maxWidth="lg" sx={{ py: 6 }}>
+      {/* ===== HERO SECTION ===== */}
+      <Box textAlign="center" mb={5}>
+        <Typography variant="h3" fontWeight="bold" gutterBottom>
+          Grow Your Local Business with <span style={{ color: '#2e7d32' }}>Localz</span>
+        </Typography>
+        <Typography variant="h6" color="textSecondary" mb={2}>
+          Reach thousands of nearby customers — no commission, no middlemen. Just ₹365/year.
+        </Typography>
+        <Button variant="contained" color="success" size="large">
+          Start Now for ₹1/Day
+        </Button>
+      </Box>
+
+      {/* ===== WHY LOCALZ ===== */}
+      <Grid container spacing={4} alignItems="center">
+        <Grid item xs={12} md={6}>
+          <img src="/images/storefront.jpg" alt="Grow your store" style={{ width: '100%', borderRadius: '10px' }} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Typography variant="h5" gutterBottom>
+            The Simplest Way to Grow Your Local Business
+          </Typography>
+          <Typography variant="body1" color="textSecondary" paragraph>
+            Whether you own a shop or offer services like repairs, delivery, or tutoring — Localz helps customers find you instantly based on their location.
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+          • Be seen when people nearby search<br/>
+          • Customers contact you directly via call or WhatsApp<br/>
+          • We promote your store through local ads<br/>
+          • Just ₹365/year — no commissions, no surprises
+          </Typography>
+        </Grid>
+      </Grid>
+
+      {/* ===== FEATURES ===== */}
+      <Box mt={10} px={2}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          align="center"
+          fontWeight="bold"
+          color="primary"
+        >
+          Unlock All These Benefits for Just ₹365/Year
+        </Typography>
+
+        <Typography
+          variant="subtitle1"
+          align="center"
+          color="textSecondary"
+          mb={4}
+        >
+          One-time fee. No commissions. Your store, your customer, your growth.
+        </Typography>
+
+        <Grid container spacing={4}>
+          {features.map((item, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  p: 3,
+                  minHeight: 220, // ensures consistent height, but not forced
+                  borderRadius: 4,
+                  background: 'linear-gradient(135deg, #e3f2fd 0%, #fce4ec 100%)',
+                  boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-5px)',
+                    boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
+                  },
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  image={item.icon}
+                  alt={item.text}
+                  sx={{ width: 60, height: 60, mb: 2 }}
+                />
+                <Typography variant="body1" fontWeight={500}>
+                  {item.text}
+                </Typography>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+
+
+      {/* ===== COST COMPARISON ===== */}
+      <Box mt={8}>
+        <Typography variant="h4" gutterBottom>Why Localz is the Smartest Investment</Typography>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell><strong>Option</strong></TableCell>
+              <TableCell><strong>Cost</strong></TableCell>
+              <TableCell><strong>Customers</strong></TableCell>
+              <TableCell><strong>Direct Contact</strong></TableCell>
+              <TableCell><strong>Commission</strong></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {comparisons.map((row, i) => (
+              <TableRow key={i} sx={row.highlight ? { backgroundColor: '#e8f5e9' } : {}}>
+                <TableCell>{row.method}</TableCell>
+                <TableCell>{row.cost}</TableCell>
+                <TableCell>{row.reach}</TableCell>
+                <TableCell>{row.contact}</TableCell>
+                <TableCell>{row.commission}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+
+      {/* ===== WHO IS IT FOR ===== */}
+      <Box mt={8}>
+        <Typography variant="h4" gutterBottom>Localz Works for Every Local Business</Typography>
+        <Grid container spacing={4}>
+          {audiences.map((audience, index) => (
+            <Grid item xs={12} md={4} key={index}>
+              <Card>
+                <CardMedia component="img" height="180" image={audience.image} alt={audience.title} />
+                <CardContent>
+                  <Typography variant="h6">{audience.title}</Typography>
+                  <Typography variant="body2" color="textSecondary">{audience.description}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+      {/* ===== CALL TO ACTION ===== */}
+      <Box mt={6} textAlign="center">
+        <Typography variant="h5" mb={2}>
+          You’re One Step Away from Getting More Customers
+        </Typography>
+        <Button variant="contained" color="success" size="large">
+          Start Your 1-Year Subscription – ₹365 Only
+        </Button>
+        <Typography variant="body2" color="textSecondary" mt={1}>
+          (No hidden charges. Full access. Valid for 12 months.)
+        </Typography>
+      </Box>
+
+      {/* ===== ADMIN LOGIN / REGISTER ===== */}
+      <Box mt={6} textAlign="center">
+        <Link to="/register" style={{ textDecoration: 'none', marginRight: '10px' }}>
+          <Button variant="outlined" color="primary">List My Business</Button>
         </Link>
-        <Link to="/login">
-          <button>Admin Login</button>
+        <Link to="/login" style={{ textDecoration: 'none' }}>
+          <Button variant="outlined" color="secondary">Admin Login</Button>
         </Link>
-      </div>
-    </div>
+      </Box>
+    </Container>
   );
 }
+
+// ===== FEATURE LIST =====
+const features = [
+  {
+    icon: '/images/icons/visibility.png',
+    text: 'Visible to customers searching nearby',
+  },
+  {
+    icon: '/images/icons/call.png',
+    text: 'Customers call or WhatsApp you directly',
+  },
+  {
+    icon: '/images/icons/ads.png',
+    text: 'We run local ads on your behalf',
+  },
+  {
+    icon: '/images/icons/commission.png',
+    text: 'No commission — keep 100% of your earnings',
+  },
+  {
+    icon: '/images/icons/payment.png',
+    text: 'One-time ₹365/year — no monthly headache',
+  },
+  {
+    icon: '/images/icons/growth.png',
+    text: 'Start getting leads in 24 hours',
+  },
+];
+
+// ===== COMPARISON TABLE =====
+const comparisons = [
+  {
+    method: 'Offline Ads',
+    cost: '₹1000–2000/month',
+    reach: 'Local but slow',
+    contact: 'No',
+    commission: 'No',
+  },
+  {
+    method: 'Food/Service Apps',
+    cost: '₹0 upfront',
+    reach: 'High',
+    contact: 'Indirect',
+    commission: '20%–35%',
+  },
+  {
+    method: 'Localz (Best Value)',
+    cost: '₹365/year',
+    reach: 'Local & Digital',
+    contact: 'Yes (Direct)',
+    commission: '0%',
+    highlight: true,
+  },
+];
+
+// ===== AUDIENCE BLOCKS =====
+const audiences = [
+  {
+    title: 'Shops & Retailers',
+    description: 'List your products, services, location and contact. Ideal for grocery, garments, repair, hardware, and more.',
+    image: '/images/shopowner.jpg',
+  },
+  {
+    title: 'Service Providers',
+    description: 'Plumbers, electricians, tuition teachers, beauticians, delivery boys — get leads nearby every day.',
+    image: '/images/service.jpg',
+  },
+  {
+    title: 'Freelancers & Part-Timers',
+    description: 'Start a side hustle — and get discovered by locals instantly with a ₹1/day profile.',
+    image: '/images/consumer.jpg',
+  },
+];
 
 export default LandingPage;
