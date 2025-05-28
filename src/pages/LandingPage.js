@@ -22,13 +22,13 @@ function LandingPage() {
       {/* ===== HERO SECTION ===== */}
       <Box textAlign="center" mb={5}>
         <Typography variant="h3" fontWeight="bold" gutterBottom>
-          Grow Your Local Business with <span style={{ color: '#2e7d32' }}>Localz</span>
+          Grow Your Local Business with <span style={{ color: '#1A73E8' }}>Localz</span>
         </Typography>
         <Typography variant="h6" color="textSecondary" mb={2}>
           Reach thousands of nearby customers — no commission, no middlemen. Just ₹365/year.
         </Typography>
         <Button variant="contained" color="success" size="large">
-          Start Now for ₹1/Day
+          Start Now
         </Button>
       </Box>
 
@@ -50,10 +50,10 @@ function LandingPage() {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="h5" gutterBottom>
-              The Simplest Way to Grow Your Local Business
+            Get Discovered by Customers Near You — Instantly.
             </Typography>
             <Typography variant="body1" color="textSecondary" paragraph>
-              Whether you own a shop or offer services like repairs, delivery, or tutoring — Localz helps customers find you instantly based on their location.
+            Whether you sell products or offer services like repairs, delivery, or tutoring — Localz helps local people find and contact you, right when they need you.
             </Typography>
             <Typography variant="body1" color="textSecondary">
               • Be seen when people nearby search<br />
@@ -269,24 +269,31 @@ const features = [
 const comparisons = [
   {
     method: 'Offline Ads',
-    cost: '₹1000–2000/month',
+    cost: '₹1,000–₹2,000/month',
     reach: 'Local but slow',
     contact: 'No',
     commission: 'No',
   },
   {
-    method: 'Food/Service Apps',
+    method: 'Aggregator Apps',
     cost: '₹0 upfront',
-    reach: 'High',
+    reach: 'High, but not targeted',
     contact: 'Indirect',
     commission: '20%–35%',
+  },
+  {
+    method: 'Directory Platforms',
+    cost: '₹1,000–₹50,000/year',
+    reach: 'Mixed, low intent',
+    contact: 'Limited Access',
+    commission: 'Extra for leads',
   },
   {
     method: 'Localz (Best Value)',
     cost: '₹365/year',
     reach: 'Local & Digital',
-    contact: 'Yes (Direct)',
-    commission: '0%',
+    contact: 'Direct Calls/DMs',
+    commission: '0% Commission',
     highlight: true,
   },
 ];
