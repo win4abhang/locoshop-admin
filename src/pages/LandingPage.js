@@ -33,25 +33,38 @@ function LandingPage() {
       </Box>
 
       {/* ===== WHY LOCALZ ===== */}
-      <Grid container spacing={4} alignItems="center">
-        <Grid item xs={12} md={6}>
-          <img src="/images/storefront.jpg" alt="Grow your store" style={{ width: '100%', borderRadius: '10px' }} />
+      <Box sx={{ display: 'flex', justifyContent: 'center', px: 2 }}>
+        <Grid
+          container
+          spacing={4}
+          alignItems="center"
+          justifyContent="center" // center inner Grid items
+          sx={{ maxWidth: '1200px', mx: 'auto' }} // center the container
+        >
+          <Grid item xs={12} md={6}>
+            <img
+              src="/images/storefront.jpg"
+              alt="Grow your store"
+              style={{ width: '100%', borderRadius: '10px' }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="h5" gutterBottom>
+              The Simplest Way to Grow Your Local Business
+            </Typography>
+            <Typography variant="body1" color="textSecondary" paragraph>
+              Whether you own a shop or offer services like repairs, delivery, or tutoring — Localz helps customers find you instantly based on their location.
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              • Be seen when people nearby search<br />
+              • Customers contact you directly via call or WhatsApp<br />
+              • We promote your store through local ads<br />
+              • Just ₹365/year — no commissions, no surprises
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography variant="h5" gutterBottom>
-            The Simplest Way to Grow Your Local Business
-          </Typography>
-          <Typography variant="body1" color="textSecondary" paragraph>
-            Whether you own a shop or offer services like repairs, delivery, or tutoring — Localz helps customers find you instantly based on their location.
-          </Typography>
-          <Typography variant="body1" color="textSecondary">
-          • Be seen when people nearby search<br/>
-          • Customers contact you directly via call or WhatsApp<br/>
-          • We promote your store through local ads<br/>
-          • Just ₹365/year — no commissions, no surprises
-          </Typography>
-        </Grid>
-      </Grid>
+      </Box>
+
 
       {/* ===== FEATURES ===== */}
       <Box mt={10} px={2}>
@@ -84,25 +97,35 @@ function LandingPage() {
                   alignItems: 'center',
                   textAlign: 'center',
                   p: 3,
-                  minHeight: 220, // ensures consistent height, but not forced
+                  maxWidth: 300,
+                  minHeight: 300, // ensures consistent height, but not forced
                   borderRadius: 4,
                   background: 'linear-gradient(135deg, #e3f2fd 0%, #fce4ec 100%)',
                   boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
                   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-5px)',
-                    boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
-                  },
+                  // '&:hover': {
+                  //   transform: 'translateY(-5px)',
+                  //   boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
+                  // },
                 }}
               >
                 <CardMedia
                   component="img"
                   image={item.icon}
                   alt={item.text}
-                  sx={{ width: 60, height: 60, mb: 2 }}
+                  sx={{
+                    width: 60,
+                    height: 60,
+                    mb: 2,
+                    filter: 'brightness(0) saturate(100%) invert(32%) sepia(89%) saturate(752%) hue-rotate(202deg) brightness(95%) contrast(101%)',
+                  }}
                 />
                 <Typography variant="body1" fontWeight={500}>
                   {item.text}
+                </Typography>
+                <hr/>
+                <Typography variant="body1" fontWeight={300}>
+                  {item.text1}
                 </Typography>
               </Card>
             </Grid>
@@ -114,7 +137,14 @@ function LandingPage() {
 
       {/* ===== COST COMPARISON ===== */}
       <Box mt={8}>
-        <Typography variant="h4" gutterBottom>Why Localz is the Smartest Investment</Typography>
+      <Typography
+          variant="h4"
+          gutterBottom
+          align="center"
+          fontWeight="bold"
+          color="primary"
+        >   
+        Why Localz is the Smartest Investment</Typography>
         <Table>
           <TableHead>
             <TableRow>
@@ -141,15 +171,33 @@ function LandingPage() {
 
       {/* ===== WHO IS IT FOR ===== */}
       <Box mt={8}>
-        <Typography variant="h4" gutterBottom>Localz Works for Every Local Business</Typography>
-        <Grid container spacing={4}>
+      <Typography
+          variant="h4"
+          gutterBottom
+          align="center"
+          fontWeight="bold"
+          color="primary"
+        >  Localz Works for Every Local Business</Typography>
+        <Grid
+          container
+          spacing={4}
+          justifyContent="center" // centers items horizontally
+          alignItems="center"     // optional: centers items vertically
+        >
           {audiences.map((audience, index) => (
             <Grid item xs={12} md={4} key={index}>
-              <Card>
-                <CardMedia component="img" height="180" image={audience.image} alt={audience.title} />
+              <Card sx={{ textAlign: 'center' }}>
+                <CardMedia
+                  component="img"
+                  width="100%"
+                  image={audience.image}
+                  alt={audience.title}
+                />
                 <CardContent>
                   <Typography variant="h6">{audience.title}</Typography>
-                  <Typography variant="body2" color="textSecondary">{audience.description}</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {audience.description}
+                  </Typography>
                 </CardContent>
               </Card>
             </Grid>
@@ -176,7 +224,7 @@ function LandingPage() {
           <Button variant="outlined" color="primary">List My Business</Button>
         </Link>
         <Link to="/login" style={{ textDecoration: 'none' }}>
-          <Button variant="outlined" color="secondary">Admin Login</Button>
+          <Button variant="outlined" color="secondary">Login</Button>
         </Link>
       </Box>
     </Container>
@@ -188,26 +236,32 @@ const features = [
   {
     icon: '/images/icons/visibility.png',
     text: 'Visible to customers searching nearby',
+    text1: 'Be seen by people looking for your services in your area. Appear in top results when someone searches nearby.More visibility means more chances of getting calls. Your store will stand out when it matters most.',
   },
   {
     icon: '/images/icons/call.png',
     text: 'Customers call or WhatsApp you directly',
+    text1: 'No middlemen — customers reach out to you instantly. Get direct calls or messages from people who need your service. Handle your leads your way, with no interference. Stay in full control of your customer communication.',
   },
   {
     icon: '/images/icons/ads.png',
     text: 'We run local ads on your behalf',
+    text1: 'We promote your business in your area automatically. Reach nearby people without spending time or effort. Our local ads drive real attention to your store. You grow while we handle the marketing for you.',
   },
   {
     icon: '/images/icons/commission.png',
     text: 'No commission — keep 100% of your earnings',
+    text1: 'Every rupee you earn is yours to keep. No cuts, no fees — we don’t take a share. Unlike other platforms, we support your full profit. Grow your income without worrying about deductions.',
   },
   {
     icon: '/images/icons/payment.png',
     text: 'One-time ₹365/year — no monthly headache',
+    text1: 'Pay once a year, no surprise charges later. Just ₹1 per day for year-round visibility. Forget about monthly renewals or bills. Simple, affordable, and stress-free pricing.',
   },
   {
     icon: '/images/icons/growth.png',
     text: 'Start getting leads in 24 hours',
+    text1: 'Get listed and start receiving leads fast. We activate your visibility within a day. No waiting weeks — results come quickly. You’ll start hearing from customers in no time.',
   },
 ];
 
