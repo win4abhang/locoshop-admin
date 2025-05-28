@@ -121,57 +121,74 @@ function EditStoreById() {
   };
 
   return (
-    <div>
-    <h2>Edit Store</h2>
-    {isLoaded ? (
-      <form onSubmit={handleUpdate}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <label>Store Name:</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+    <div style={{ maxWidth: "600px", margin: "2rem auto", fontFamily: "Arial, sans-serif" }}>
+  <h2 style={{ marginBottom: "1rem" }}>Edit Store</h2>
+  {isLoaded ? (
+    <form onSubmit={handleUpdate} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      {[
+        { label: "Store Name:", name: "name" },
+        { label: "Address:", name: "address" },
+        { label: "Phone:", name: "phone" },
+        { label: "Latitude:", name: "latitude" },
+        { label: "Longitude:", name: "longitude" },
+        { label: "Tags (comma separated):", name: "tags" },
+      ].map((field) => (
+        <div key={field.name} style={{ display: "flex", flexDirection: "column" }}>
+          <label style={{ marginBottom: "0.25rem" }}>{field.label}</label>
+          <input
+            type="text"
+            name={field.name}
+            value={formData[field.name]}
+            onChange={handleChange}
+            required
+            style={{
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              fontSize: "14px",
+            }}
+          />
         </div>
-  
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <label>Address:</label>
-          <input type="text" name="address" value={formData.address} onChange={handleChange} required />
-        </div>
-  
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <label>Phone:</label>
-          <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
-        </div>
-  
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <label>Latitude:</label>
-          <input type="text" name="latitude" value={formData.latitude} onChange={handleChange} required />
-        </div>
-  
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <label>Longitude:</label>
-          <input type="text" name="longitude" value={formData.longitude} onChange={handleChange} required />
-        </div>
-  
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <label>Tags (comma separated):</label>
-          <input type="text" name="tags" value={formData.tags} onChange={handleChange} required />
-        </div>
-  
-        <button type="submit">Update Store</button>
-      </form>
-    ) : (
-      <p>Loading or waiting for ID...</p>
-    )}
-  
-    {message && <p>{message}</p>}
-    <label className="flex items-center space-x-2" style={{ marginTop: '1rem', display: 'block' }}>
-        <input
-          type="checkbox"
-          onChange={(e) => {
-            if (e.target.checked) getCurrentLocation();
-          }}
-        />
-        <span>📍 Use Current Location</span>
-      </label>
-  </div>
+      ))}
+
+      <button
+        type="submit"
+        style={{
+          backgroundColor: "#28a745",
+          color: "white",
+          padding: "10px 16px",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer",
+          fontWeight: "bold",
+        }}
+      >
+        Update Store
+      </button>
+    </form>
+  ) : (
+    <p>Loading or waiting for ID...</p>
+  )}
+
+  {message && <p style={{ marginTop: "1rem", color: "green" }}>{message}</p>}
+
+  <button
+    onClick={getCurrentLocation}
+    style={{
+      marginTop: "1rem",
+      backgroundColor: "#007bff",
+      color: "white",
+      padding: "8px 12px",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    Use Current Location
+  </button>
+</div>
+
   );
 }
 
