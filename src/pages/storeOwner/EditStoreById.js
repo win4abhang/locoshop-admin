@@ -121,7 +121,7 @@ function EditStoreById() {
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "2rem auto", fontFamily: "Arial, sans-serif" }}>
+<div style={{ maxWidth: "600px", margin: "2rem auto", fontFamily: "Arial, sans-serif" }}>
   <h2 style={{ marginBottom: "1rem" }}>Edit Store</h2>
   {isLoaded ? (
     <form onSubmit={handleUpdate} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -134,7 +134,7 @@ function EditStoreById() {
         { label: "Tags (comma separated):", name: "tags" },
       ].map((field) => (
         <div key={field.name} style={{ display: "flex", flexDirection: "column" }}>
-          <label style={{ marginBottom: "0.25rem" }}>{field.label}</label>
+          <label style={{ marginBottom: "0.25rem", fontWeight: "600" }}>{field.label}</label>
           <input
             type="text"
             name={field.name}
@@ -142,9 +142,12 @@ function EditStoreById() {
             onChange={handleChange}
             required
             style={{
+              padding: "8px",
               borderRadius: "4px",
               border: "1px solid #ccc",
               fontSize: "14px",
+              width: "100%",
+              boxSizing: "border-box",
             }}
           />
         </div>
@@ -187,6 +190,7 @@ function EditStoreById() {
     Use Current Location
   </button>
 </div>
+
 
   );
 }
