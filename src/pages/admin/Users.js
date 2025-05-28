@@ -152,7 +152,18 @@ const Users = () => {
                 >
                   Edit
                 </button>
-                <button onClick={() => handleDelete(_id)} style={{ color: 'red' }}>
+                <button
+                  onClick={() => handleDelete(_id)}
+                  style={{
+                    backgroundColor: 'red',
+                    color: 'white',
+                    padding: '8px 12px',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                  }}
+                >
                   Delete
                 </button>
               </td>

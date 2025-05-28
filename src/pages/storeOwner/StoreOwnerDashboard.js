@@ -15,7 +15,7 @@ const StoreOwnerDashboard = () => {
 
   return (
     <div style={{ padding: '1rem' }}>
-      <h1>Store Owner Dashboard</h1>
+      <p>Store Owner Dashboard</p>
 
       <nav style={{ marginBottom: '1rem' }}>
         <Link to={`/store_owner/edit-store?id=${storeId}`}>✏️ Edit Store</Link> |{' '}

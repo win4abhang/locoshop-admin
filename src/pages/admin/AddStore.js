@@ -7,6 +7,7 @@ const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 function AddStore() {
   const [formData, setFormData] = useState({
     name: '',
+    usp: '',
     address: '',
     phone: '',
     latitude: '',
@@ -29,6 +30,7 @@ function AddStore() {
 
     const storeData = {
       name: formData.name,
+      usp: formData.usp,
       address: formData.address,
       phone: formData.phone,
       tags: tagsArray,
@@ -79,6 +81,7 @@ function AddStore() {
       complete: async (results) => {
         const stores = results.data.map(row => ({
           name: row.name,
+          usp: row.usp,
           address: row.address,
           phone: row.phone,
           tags: row.tags.split(',').map(tag => tag.trim()),
@@ -107,7 +110,7 @@ function AddStore() {
     <div className="App" style={{ padding: '1rem' }}>
       <h2>Add Store</h2>
       <form onSubmit={handleSubmit}>
-        <input
+      <input
           type="text"
           name="name"
           placeholder="Store Name"
@@ -115,6 +118,14 @@ function AddStore() {
           onChange={handleChange}
           required
         />
+        <input
+        type="text"
+        name="usp"
+        placeholder="What's New"
+        value={formData.usp}
+        onChange={handleChange}
+        required
+      />
         <input
           type="text"
           name="address"

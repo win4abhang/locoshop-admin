@@ -33,6 +33,7 @@ function EditStore() {
   
         setFormData({
           name: store.name || '',
+          usp: store.usp || '',
           address: store.address || '',
           phone: store.phone || '',
           latitude: store.location?.coordinates?.[1]?.toString() || '',
@@ -117,6 +118,7 @@ function EditStore() {
                 <button onClick={() => {
                   setFormData({
                     name: store.name || '',
+                    usp: store.usp || '',
                     address: store.address || '',
                     phone: store.phone || '',
                     latitude: store.location?.coordinates?.[1] || '',
@@ -139,6 +141,7 @@ function EditStore() {
       {isLoaded && (
         <form onSubmit={handleUpdate}>
           <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+          <input type="text" name="usp" value={formData.usp} onChange={handleChange} required />
           <input type="text" name="address" value={formData.address} onChange={handleChange} required />
           <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
           <input type="text" name="latitude" value={formData.latitude} onChange={handleChange} required />

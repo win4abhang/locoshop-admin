@@ -14,7 +14,7 @@ const StaffDashboard = () => {
 
   return (
     <div style={{ padding: '1rem' }}>
-      <h1>staff Dashboard</h1>
+      <p>Staff Dashboard</p>
 
       {/* ✅ Navigation Links */}
       <nav style={{ marginBottom: '1rem' }}>

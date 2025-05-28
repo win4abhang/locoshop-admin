@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Papa from 'papaparse';
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 
 function AddStore() {
   const [formData, setFormData] = useState({
     name: '',
+    usp: '',
     address: '',
     phone: '',
     latitude: '',
@@ -14,8 +14,6 @@ function AddStore() {
     tags: '',
   });
   const [message, setMessage] = useState('');
-  const [bulkMessage, setBulkMessage] = useState('');
-  const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,6 +27,7 @@ function AddStore() {
 
     const storeData = {
       name: formData.name,
+      usp: formData.usp,
       address: formData.address,
       phone: formData.phone,
       tags: tagsArray,
@@ -44,7 +43,7 @@ function AddStore() {
     try {
       await axios.post(`${BACKEND_URL}/add`, storeData);
       setMessage('✅ Store added successfully!');
-      setFormData({ name: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
+      setFormData({ name: '', usp: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
     } catch (error) {
       setMessage('❌ ' + (error.response?.data?.message || 'Error adding store.'));
     }
@@ -74,6 +73,7 @@ function AddStore() {
       <h2>Add Store</h2>
       <form onSubmit={handleSubmit}>
         <input type="text" name="name" placeholder="Store Name" value={formData.name} onChange={handleChange} required />
+        <input type="text" name="usp" placeholder="What's New" value={formData.usp} onChange={handleChange} required />
         <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} required />
         <input type="text" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} required />
         <input type="text" name="latitude" placeholder="Latitude" value={formData.latitude} onChange={handleChange} required />

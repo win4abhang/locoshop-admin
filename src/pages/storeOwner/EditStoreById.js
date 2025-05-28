@@ -5,7 +5,7 @@ const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
 
 function EditStoreById() {
   const [formData, setFormData] = useState({
-    name: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
+    name: '', usp: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
   });
   const [message, setMessage] = useState('');
   const [storeId, setStoreId] = useState(null);
@@ -64,6 +64,7 @@ function EditStoreById() {
       } else {
         setFormData({
           name: store.name || '',
+          usp: store.usp || '',
           address: store.address || '',
           phone: store.phone || '',
           latitude: store.location?.coordinates?.[1]?.toString() || '',
@@ -127,6 +128,7 @@ function EditStoreById() {
             <form onSubmit={handleUpdate} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               {[
                 { label: "Store Name:", name: "name" },
+                { label: "What's New:", name: "usp" },
                 { label: "Address:", name: "address" },
                 { label: "Phone:", name: "phone" },
                 { label: "Latitude:", name: "latitude" },

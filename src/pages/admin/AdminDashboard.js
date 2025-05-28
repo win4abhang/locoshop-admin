@@ -15,7 +15,7 @@ const AdminDashboard = () => {
 
   return (
     <div style={{ padding: '1rem' }}>
-      <h1>Admin Dashboard</h1>
+      <p>Admin Dashboard</p>
 
       {/* ✅ Navigation Links */}
       <nav style={{ marginBottom: '1rem' }}>
