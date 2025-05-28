@@ -102,23 +102,47 @@ function EditStoreById() {
 
   return (
     <div>
-      <h2>Edit Store By ID</h2>
-      {isLoaded ? (
-        <form onSubmit={handleUpdate}>
+    <h2>Edit Store</h2>
+    {isLoaded ? (
+      <form onSubmit={handleUpdate}>
+        <div>
+          <label>Store Name:</label><br />
           <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+        </div>
+  
+        <div>
+          <label>Address:</label><br />
           <input type="text" name="address" value={formData.address} onChange={handleChange} required />
+        </div>
+  
+        <div>
+          <label>Phone:</label><br />
           <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
+        </div>
+  
+        <div>
+          <label>Latitude:</label><br />
           <input type="text" name="latitude" value={formData.latitude} onChange={handleChange} required />
+        </div>
+  
+        <div>
+          <label>Longitude:</label><br />
           <input type="text" name="longitude" value={formData.longitude} onChange={handleChange} required />
+        </div>
+  
+        <div>
+          <label>Tags (comma separated):</label><br />
           <input type="text" name="tags" value={formData.tags} onChange={handleChange} required />
-          <button type="submit">Update Store</button>
-        </form>
-      ) : (
-        <p>Loading or waiting for ID...</p>
-      )}
-
-      {message && <p>{message}</p>}
-    </div>
+        </div>
+  
+        <button type="submit">Update Store</button>
+      </form>
+    ) : (
+      <p>Loading or waiting for ID...</p>
+    )}
+  
+    {message && <p>{message}</p>}
+  </div>
   );
 }
 
