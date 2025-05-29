@@ -65,9 +65,20 @@ const RegisterPage = () => {
     e.preventDefault();
     setMessage('');
 
-    if (!formData.name || !formData.phone  || !formData.address || !formData.tags) {
+    if (!formData.name || !formData.phone || !formData.address || !formData.tags) {
       setAlertType('error');
       setMessage('Please fill all required fields.');
+      return;
+    }
+
+    if (
+      !formData.longitude ||
+      !formData.latitude ||
+      isNaN(parseFloat(formData.longitude)) ||
+      isNaN(parseFloat(formData.latitude))
+    ) {
+      setAlertType('error');
+      setMessage('Please provide valid latitude and longitude or use current location.');
       return;
     }
 
@@ -79,6 +90,7 @@ const RegisterPage = () => {
     }
 
     try {
+      // Step 1: Create order on backend
       const orderResponse = await axios.post(`${BACKEND_URL}/order/add`, {
         amount: 365,
         currency: 'INR',
@@ -86,6 +98,7 @@ const RegisterPage = () => {
 
       const { id: order_id, currency, amount } = orderResponse.data;
 
+      // Step 2: Open Razorpay payment window
       const options = {
         key: 'rzp_test_QuqPsqO3PrQgys', // Replace with your real key
         amount: amount.toString(),
@@ -99,14 +112,8 @@ const RegisterPage = () => {
         },
         handler: async function (response) {
           try {
+            // After successful payment, save registration info in your own collection
             const tagsArray = formData.tags.split(',').map((t) => t.trim());
-            if (
-              !formData.longitude || !formData.latitude ||
-              isNaN(parseFloat(formData.longitude)) || isNaN(parseFloat(formData.latitude))
-            ) {
-              alert("Location not available. Please allow location access.");
-              return;
-            }
 
             const saveData = {
               name: formData.name,
@@ -125,9 +132,11 @@ const RegisterPage = () => {
                 ],
               },
             };
-            console.log("Sending data to backend :", saveData);
 
-            await axios.post(`${BACKEND_URL}/order/add`, saveData);
+            console.log("Sending registration data to backend:", saveData);
+
+            // IMPORTANT: This endpoint should save registration data in a separate collection (e.g. /register)
+            await axios.post(`${BACKEND_URL}/register`, saveData);
 
             setAlertType('success');
             setMessage('✅ Registration & payment successful!');
@@ -141,6 +150,7 @@ const RegisterPage = () => {
               longitude: '',
             });
           } catch (err) {
+            console.error(err);
             setAlertType('error');
             setMessage('❌ Payment success but failed to save registration.');
           }
