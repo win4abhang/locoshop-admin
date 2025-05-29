@@ -105,7 +105,7 @@ const RegisterPage = () => {
       await axios.post(`${BACKEND_URL}/tempuser/add`, tempUserData);
   
       // Redirect to Razorpay hosted payment link
-      window.location.href = 'https://rzp.io/r/s6cQP2d'; // Replace with your real hosted link
+      window.location.href = 'https://rzp.io/rzp/s6cQP2d'; // Replace with your real hosted link
     } catch (err) {
       console.error(err);
       setAlertType('error');
