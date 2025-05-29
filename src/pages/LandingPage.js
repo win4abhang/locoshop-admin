@@ -16,6 +16,8 @@ import {
   TableRow,
 } from '@mui/material';
 
+
+
 function LandingPage() {
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
@@ -27,7 +29,7 @@ function LandingPage() {
         <Typography variant="h6" color="textSecondary" mb={2}>
           Reach thousands of nearby customers — no commission, no middlemen. Just ₹365/year.
         </Typography>
-        <Button variant="contained" color="success" size="large">
+        <Button variant="contained" color="success" size="large" onClick={handleClick}>
           Start Now
         </Button>
       </Box>
@@ -210,7 +212,7 @@ function LandingPage() {
         <Typography variant="h5" mb={2}>
           You’re One Step Away from Getting More Customers
         </Typography>
-        <Button variant="contained" color="success" size="large">
+        <Button variant="contained" color="success" size="large" onClick={handleClick}>
           Start Your 1-Year Subscription – ₹365 Only
         </Button>
         <Typography variant="body2" color="textSecondary" mt={1}>
@@ -316,5 +318,7 @@ const audiences = [
     image: '/images/consumer.jpg',
   },
 ];
+
+
 
 export default LandingPage;
