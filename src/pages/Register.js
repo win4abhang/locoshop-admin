@@ -79,7 +79,7 @@ const RegisterPage = () => {
     }
 
     try {
-      const orderResponse = await axios.post(`${BACKEND_URL}/stores/create-order`, {
+      const orderResponse = await axios.post(`${BACKEND_URL}/order/add`, {
         amount: 365,
         currency: 'INR',
       });
