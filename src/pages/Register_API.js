@@ -51,27 +51,16 @@ const RegisterPage = () => {
     }
   };
 
-  const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-  
-    // Validate fields
+
     if (!formData.name || !formData.phone || !formData.address || !formData.tags) {
       setAlertType('error');
       setMessage('Please fill all required fields.');
       return;
     }
-  
+
     if (
       !formData.longitude ||
       !formData.latitude ||
@@ -82,37 +71,19 @@ const RegisterPage = () => {
       setMessage('Please provide valid latitude and longitude or use current location.');
       return;
     }
-  
+
     try {
-      // Prepare data for TempUser collection
-      const tagsArray = formData.tags.split(',').map((t) => t.trim());
-      const tempUserData = {
-        name: formData.name,
-        phone: formData.phone,
-        usp: formData.usp || 'Premium user',
-        address: formData.address,
-        tags: tagsArray,
-        location: {
-          type: 'Point',
-          coordinates: [
-            parseFloat(formData.longitude),
-            parseFloat(formData.latitude),
-          ],
-        },
-      };
-  
-      // Save to temp collection
-      await axios.post(`${BACKEND_URL}/tempuser/add`, tempUserData);
-  
-      // Redirect to Razorpay hosted payment link
-      window.location.href = 'https://rzp.io/r/s6cQP2d'; // Replace with your real hosted link
+      // Save registration data temporarily before payment
+      await axios.post(`${BACKEND_URL}/register/temp`, formData);
+
+      // Redirect to Razorpay Payment Page
+      window.location.href = 'https://rzp.io/rzp/s6cQP2d';
     } catch (err) {
       console.error(err);
       setAlertType('error');
-      setMessage('❌ Failed to register. Try again.');
+      setMessage('❌ Error during registration process.');
     }
   };
-  
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
