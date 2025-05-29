@@ -7,22 +7,49 @@ import {
   TextField,
   Box,
   Alert,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com'; // Replace if needed
+const BACKEND_URL = 'https://locoshop-backend.onrender.com';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
+    address: '',
+    usp: '',
+    tags: '',
+    latitude: '',
+    longitude: '',
   });
+
   const [message, setMessage] = useState('');
   const [alertType, setAlertType] = useState('success');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setFormData({
+            ...formData,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        () => {
+          setMessage('❌ Unable to retrieve your location.');
+        }
+      );
+    } else {
+      setMessage('❌ Geolocation not supported by your browser.');
+    }
   };
 
   const loadRazorpayScript = () => {
@@ -38,9 +65,10 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-    if (!formData.name || !formData.phone || !formData.email) {
+
+    if (!formData.name || !formData.phone || !formData.email || !formData.address || !formData.tags) {
       setAlertType('error');
-      setMessage('All fields are required.');
+      setMessage('Please fill all required fields.');
       return;
     }
 
@@ -52,21 +80,19 @@ const RegisterPage = () => {
     }
 
     try {
-      // Step 1: Create order on backend
       const orderResponse = await axios.post(`${BACKEND_URL}/create-order`, {
-        amount: 49900, // ₹499
+        amount: 49900,
         currency: 'INR',
       });
 
       const { id: order_id, currency, amount } = orderResponse.data;
 
-      // Step 2: Open Razorpay checkout
       const options = {
-        key: 'rzp_test_1234567890abcdef', // Replace with your key
+        key: 'rzp_test_1234567890abcdef', // Replace with your real key
         amount: amount.toString(),
         currency,
-        name: 'LocoShop Registration',
-        description: 'Premium Registration Fee',
+        name: 'LocoShop Premium Registration',
+        description: 'Registration Fee',
         order_id,
         prefill: {
           name: formData.name,
@@ -74,17 +100,42 @@ const RegisterPage = () => {
           contact: formData.phone,
         },
         handler: async function (response) {
-          // Step 3: On payment success, send data to backend
           try {
-            await axios.post(`${BACKEND_URL}/register`, {
-              ...formData,
+            const tagsArray = formData.tags.split(',').map((t) => t.trim());
+
+            const saveData = {
+              name: formData.name,
+              email: formData.email,
+              phone: formData.phone,
+              usp: formData.usp || 'Premium user',
+              address: formData.address,
+              tags: tagsArray,
               payment_id: response.razorpay_payment_id,
               order_id: response.razorpay_order_id,
               signature: response.razorpay_signature,
-            });
+              location: {
+                type: 'Point',
+                coordinates: [
+                  parseFloat(formData.longitude),
+                  parseFloat(formData.latitude),
+                ],
+              },
+            };
+
+            await axios.post(`${BACKEND_URL}/register`, saveData);
+
             setAlertType('success');
-            setMessage('✅ Registration and payment successful!');
-            setFormData({ name: '', phone: '', email: '' });
+            setMessage('✅ Registration & payment successful!');
+            setFormData({
+              name: '',
+              phone: '',
+              email: '',
+              address: '',
+              usp: '',
+              tags: '',
+              latitude: '',
+              longitude: '',
+            });
           } catch (err) {
             setAlertType('error');
             setMessage('❌ Payment success but failed to save registration.');
@@ -119,44 +170,38 @@ const RegisterPage = () => {
       <Box component="form" onSubmit={handleSubmit} noValidate>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
-              label="Full Name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
+            <TextField label="Full Name" name="name" value={formData.name} onChange={handleChange} fullWidth required />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="Email Address"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
+            <TextField label="Email Address" name="email" value={formData.email} onChange={handleChange} fullWidth required />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="Phone Number"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              fullWidth
+            <TextField label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} fullWidth required />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label="Address" name="address" value={formData.address} onChange={handleChange} fullWidth required />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label="USP (optional)" name="usp" value={formData.usp} onChange={handleChange} fullWidth />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label="Tags (e.g. bike, repair)" name="tags" value={formData.tags} onChange={handleChange} fullWidth required />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField label="Latitude" name="latitude" value={formData.latitude} onChange={handleChange} fullWidth required />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField label="Longitude" name="longitude" value={formData.longitude} onChange={handleChange} fullWidth required />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={<Checkbox onChange={(e) => e.target.checked && getCurrentLocation()} />}
+              label="📍 Use Current Location"
             />
           </Grid>
         </Grid>
 
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          sx={{ mt: 3 }}
-        >
+        <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
           Pay ₹499 & Register
         </Button>
       </Box>
