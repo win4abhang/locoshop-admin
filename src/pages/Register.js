@@ -12,13 +12,12 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com';
+const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    email: '',
     address: '',
     usp: '',
     tags: '',
@@ -66,7 +65,7 @@ const RegisterPage = () => {
     e.preventDefault();
     setMessage('');
 
-    if (!formData.name || !formData.phone || !formData.email || !formData.address || !formData.tags) {
+    if (!formData.name || !formData.phone  || !formData.address || !formData.tags) {
       setAlertType('error');
       setMessage('Please fill all required fields.');
       return;
@@ -80,23 +79,22 @@ const RegisterPage = () => {
     }
 
     try {
-      const orderResponse = await axios.post(`${BACKEND_URL}/create-order`, {
-        amount: 49900,
+      const orderResponse = await axios.post(`${BACKEND_URL}/stores/create-order`, {
+        amount: 365,
         currency: 'INR',
       });
 
       const { id: order_id, currency, amount } = orderResponse.data;
 
       const options = {
-        key: 'rzp_test_1234567890abcdef', // Replace with your real key
+        key: 'rzp_test_QuqPsqO3PrQgys', // Replace with your real key
         amount: amount.toString(),
         currency,
-        name: 'LocoShop Premium Registration',
+        name: 'Localz.online',
         description: 'Registration Fee',
         order_id,
         prefill: {
           name: formData.name,
-          email: formData.email,
           contact: formData.phone,
         },
         handler: async function (response) {
@@ -105,7 +103,6 @@ const RegisterPage = () => {
 
             const saveData = {
               name: formData.name,
-              email: formData.email,
               phone: formData.phone,
               usp: formData.usp || 'Premium user',
               address: formData.address,
@@ -122,14 +119,13 @@ const RegisterPage = () => {
               },
             };
 
-            await axios.post(`${BACKEND_URL}/register`, saveData);
+            await axios.post(`${BACKEND_URL}/order/add`, saveData);
 
             setAlertType('success');
             setMessage('✅ Registration & payment successful!');
             setFormData({
               name: '',
               phone: '',
-              email: '',
               address: '',
               usp: '',
               tags: '',
@@ -158,7 +154,7 @@ const RegisterPage = () => {
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Register for Premium Access
+        Register on Localz.online
       </Typography>
 
       {message && (
@@ -171,9 +167,6 @@ const RegisterPage = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField label="Full Name" name="name" value={formData.name} onChange={handleChange} fullWidth required />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField label="Email Address" name="email" value={formData.email} onChange={handleChange} fullWidth required />
           </Grid>
           <Grid item xs={12}>
             <TextField label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} fullWidth required />
@@ -202,7 +195,7 @@ const RegisterPage = () => {
         </Grid>
 
         <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
-          Pay ₹499 & Register
+          Pay ₹365 & Register
         </Button>
       </Box>
     </Container>
