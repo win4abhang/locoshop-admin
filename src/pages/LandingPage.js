@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {
   Container,
@@ -19,6 +20,11 @@ import {
 
 
 function LandingPage() {
+  const navigate = useNavigate(); // ⬅ Hook from react-router-dom
+
+  const handleClick = () => {
+    navigate('/register'); // or wherever you want the button to go
+  };
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
       {/* ===== HERO SECTION ===== */}
@@ -318,7 +324,5 @@ const audiences = [
     image: '/images/consumer.jpg',
   },
 ];
-
-
 
 export default LandingPage;
