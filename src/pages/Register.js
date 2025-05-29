@@ -100,6 +100,13 @@ const RegisterPage = () => {
         handler: async function (response) {
           try {
             const tagsArray = formData.tags.split(',').map((t) => t.trim());
+            if (
+              !formData.longitude || !formData.latitude ||
+              isNaN(parseFloat(formData.longitude)) || isNaN(parseFloat(formData.latitude))
+            ) {
+              alert("Location not available. Please allow location access.");
+              return;
+            }
 
             const saveData = {
               name: formData.name,
@@ -118,6 +125,7 @@ const RegisterPage = () => {
                 ],
               },
             };
+            console.log("Saving order:", saveData);
 
             await axios.post(`${BACKEND_URL}/order/add`, saveData);
 
