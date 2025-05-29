@@ -125,7 +125,7 @@ const RegisterPage = () => {
                 ],
               },
             };
-            console.log("Saving order:", saveData);
+            console.log("Sending data to backend :", saveData);
 
             await axios.post(`${BACKEND_URL}/order/add`, saveData);
 
