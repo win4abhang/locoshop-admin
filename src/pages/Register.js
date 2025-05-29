@@ -136,7 +136,7 @@ const RegisterPage = () => {
             console.log("Sending registration data to backend:", saveData);
 
             // IMPORTANT: This endpoint should save registration data in a separate collection (e.g. /register)
-            await axios.post(`${BACKEND_URL}/register`, saveData);
+            await axios.post(`${BACKEND_URL}/register/add`, saveData);
 
             setAlertType('success');
             setMessage('✅ Registration & payment successful!');
