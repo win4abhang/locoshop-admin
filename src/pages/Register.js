@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://locoshop-backend.onrender.com/api';
+const BACKEND_URL='https://locoshop-backend.onrender.com/api';
 
 const Register = () => {
   const [formData, setFormData] = useState({
