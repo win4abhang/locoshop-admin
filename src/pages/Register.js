@@ -205,7 +205,7 @@ const Register = () => {
             ))}
 
             <Button variant="outlined" onClick={handleLocation}>
-              📍 Use Current Location
+              Use Current Location
             </Button>
 
             <Button variant="contained" type="submit" fullWidth>

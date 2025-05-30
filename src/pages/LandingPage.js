@@ -27,6 +27,7 @@ function LandingPage() {
   };
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
+      
       {/* ===== HERO SECTION ===== */}
       <Box textAlign="center" mb={5}>
         <Typography variant="h3" fontWeight="bold" gutterBottom>
