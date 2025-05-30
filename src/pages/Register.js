@@ -188,7 +188,7 @@ const Register = () => {
             {[ 
               { label: 'Store Name', name: 'name', required: true },
               { label: 'Phone', name: 'phone', required: true },
-              { label: 'USP (optional)', name: 'usp' },
+              { label: 'Offer / Announcement (optional)', name: 'usp' },
               { label: 'Address', name: 'address', required: true },
               { label: 'Tags (comma separated)', name: 'tags', required: true },
               { label: 'Longitude', name: 'longitude' },
