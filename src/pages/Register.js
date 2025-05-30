@@ -7,7 +7,8 @@ import {
   Typography,
   Alert,
   Stack,
-  Paper
+  Paper,
+  Divider
 } from '@mui/material';
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
@@ -25,6 +26,7 @@ const Register = () => {
 
   const [message, setMessage] = useState('');
   const [alertType, setAlertType] = useState('');
+  const [userCredentials, setUserCredentials] = useState(null);
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -63,6 +65,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
+    setUserCredentials(null);
 
     if (!formData.name || !formData.phone || !formData.address || !formData.tags) {
       setAlertType('error');
@@ -132,6 +135,8 @@ const Register = () => {
             if (res.data.success) {
               setAlertType('success');
               setMessage('🎉 Registration complete! Thank you for your payment.');
+              setUserCredentials(res.data.userCredentials); // Show login details
+
               setFormData({
                 name: '',
                 phone: '',
@@ -213,6 +218,20 @@ const Register = () => {
             </Button>
           </Stack>
         </form>
+
+        {userCredentials && (
+          <>
+            <Divider sx={{ my: 3 }} />
+            <Alert severity="info" sx={{ mt: 2 }}>
+              <Typography variant="subtitle1" fontWeight="bold">Your Login Credentials</Typography>
+              <Typography variant="body2"><strong>Username:</strong> {userCredentials.username}</Typography>
+              <Typography variant="body2"><strong>Password:</strong> {userCredentials.password}</Typography>
+              <Typography variant="caption" color="text.secondary">
+                Please save these credentials to log into your store dashboard.
+              </Typography>
+            </Alert>
+          </>
+        )}
       </Paper>
     </Box>
   );
