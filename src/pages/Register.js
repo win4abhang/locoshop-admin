@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Alert,
+  Stack,
+  Paper
+} from '@mui/material';
 
-const BACKEND_URL='https://locoshop-backend.onrender.com/api';
+const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -55,7 +64,6 @@ const Register = () => {
     e.preventDefault();
     setMessage('');
 
-    // Validation
     if (!formData.name || !formData.phone || !formData.address || !formData.tags) {
       setAlertType('error');
       setMessage('Please fill all required fields.');
@@ -73,7 +81,6 @@ const Register = () => {
       return;
     }
 
-    // Load Razorpay script
     const razorpayLoaded = await loadRazorpayScript();
     if (!razorpayLoaded) {
       setAlertType('error');
@@ -82,16 +89,14 @@ const Register = () => {
     }
 
     try {
-      // Step 1: Create order on backend
       const orderRes = await axios.post(`${BACKEND_URL}/payment/create-order`, {
-        amount: 36500, // ₹365 in paise
+        amount: 36500,
         currency: 'INR',
         receipt: `receipt_${Date.now()}`,
       });
 
       const { order_id, razorpayKey } = orderRes.data;
 
-      // Step 2: Open Razorpay checkout
       const options = {
         key: razorpayKey,
         amount: 36500,
@@ -122,7 +127,6 @@ const Register = () => {
             razorpay_signature,
           };
 
-          // Step 3: Verify payment and save user
           try {
             const res = await axios.post(`${BACKEND_URL}/payment/verify-and-register`, userData);
             if (res.data.success) {
@@ -152,7 +156,7 @@ const Register = () => {
           contact: formData.phone,
         },
         theme: {
-          color: '#3399cc',
+          color: '#1976d2',
         },
       };
 
@@ -167,38 +171,50 @@ const Register = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">Premium Store Registration</h2>
+    <Box maxWidth="sm" mx="auto" mt={5}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography variant="h5" fontWeight="bold" gutterBottom align="center">
+          Premium Store Registration
+        </Typography>
 
-      {message && (
-        <div className={`mb-4 p-3 rounded ${alertType === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-          {message}
-        </div>
-      )}
+        {message && (
+          <Alert severity={alertType} sx={{ mb: 2 }}>
+            {message}
+          </Alert>
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {['name', 'phone', 'usp', 'address', 'tags', 'longitude', 'latitude'].map((field) => (
-          <input
-            key={field}
-            type="text"
-            name={field}
-            placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-            value={formData[field]}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            required={['name', 'phone', 'address', 'tags'].includes(field)}
-          />
-        ))}
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={2}>
+            {[
+              { label: 'Store Name', name: 'name', required: true },
+              { label: 'Phone', name: 'phone', required: true },
+              { label: 'USP (optional)', name: 'usp' },
+              { label: 'Address', name: 'address', required: true },
+              { label: 'Tags (comma separated)', name: 'tags', required: true },
+              { label: 'Longitude', name: 'longitude' },
+              { label: 'Latitude', name: 'latitude' },
+            ].map((field) => (
+              <TextField
+                key={field.name}
+                label={field.label}
+                name={field.name}
+                value={formData[field.name]}
+                onChange={handleChange}
+                required={field.required}
+              />
+            ))}
 
-        <button type="button" onClick={handleLocation} className="bg-blue-100 px-3 py-2 rounded text-sm">
-          📍 Use Current Location
-        </button>
+            <Button variant="outlined" onClick={handleLocation}>
+              📍 Use Current Location
+            </Button>
 
-        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
-          Pay ₹365 & Register
-        </button>
-      </form>
-    </div>
+            <Button variant="contained" type="submit" fullWidth>
+              Pay ₹365 & Register
+            </Button>
+          </Stack>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 
