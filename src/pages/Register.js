@@ -1,59 +1,30 @@
 import React, { useState } from 'react';
-import {
-  Container,
-  Typography,
-  Button,
-  Grid,
-  TextField,
-  Box,
-  Alert,
-  Checkbox,
-  FormControlLabel,
-} from '@mui/material';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://locoshop-backend.onrender.com/api';
 
-const RegisterPage = () => {
+const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    address: '',
     usp: '',
+    address: '',
     tags: '',
-    latitude: '',
     longitude: '',
+    latitude: '',
   });
 
   const [message, setMessage] = useState('');
-  const [alertType, setAlertType] = useState('success');
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setFormData({
-            ...formData,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        () => {
-          setMessage('❌ Unable to retrieve your location.');
-        }
-      );
-    } else {
-      setMessage('❌ Geolocation not supported by your browser.');
-    }
-  };
+  const [alertType, setAlertType] = useState('');
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
+      if (document.getElementById('razorpay-script')) {
+        resolve(true);
+        return;
+      }
       const script = document.createElement('script');
+      script.id = 'razorpay-script';
       script.src = 'https://checkout.razorpay.com/v1/checkout.js';
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
@@ -61,17 +32,36 @@ const RegisterPage = () => {
     });
   };
 
+  const handleLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setFormData({
+          ...formData,
+          latitude: position.coords.latitude.toString(),
+          longitude: position.coords.longitude.toString(),
+        });
+      });
+    } else {
+      alert('Geolocation is not supported by this browser.');
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-  
-    // Validate fields
+
+    // Validation
     if (!formData.name || !formData.phone || !formData.address || !formData.tags) {
       setAlertType('error');
       setMessage('Please fill all required fields.');
       return;
     }
-  
+
     if (
       !formData.longitude ||
       !formData.latitude ||
@@ -82,87 +72,134 @@ const RegisterPage = () => {
       setMessage('Please provide valid latitude and longitude or use current location.');
       return;
     }
-  
+
+    // Load Razorpay script
+    const razorpayLoaded = await loadRazorpayScript();
+    if (!razorpayLoaded) {
+      setAlertType('error');
+      setMessage('Razorpay SDK failed to load. Check your internet connection.');
+      return;
+    }
+
     try {
-      // Prepare data for TempUser collection
-      const tagsArray = formData.tags.split(',').map((t) => t.trim());
-      const tempUserData = {
-        name: formData.name,
-        phone: formData.phone,
-        usp: formData.usp || 'Premium user',
-        address: formData.address,
-        tags: tagsArray,
-        location: {
-          type: 'Point',
-          coordinates: [
-            parseFloat(formData.longitude),
-            parseFloat(formData.latitude),
-          ],
+      // Step 1: Create order on backend
+      const orderRes = await axios.post(`${BACKEND_URL}/payment/create-order`, {
+        amount: 36500, // ₹365 in paise
+        currency: 'INR',
+        receipt: `receipt_${Date.now()}`,
+      });
+
+      const { order_id, razorpayKey } = orderRes.data;
+
+      // Step 2: Open Razorpay checkout
+      const options = {
+        key: razorpayKey,
+        amount: 36500,
+        currency: 'INR',
+        name: 'Localz.online',
+        description: 'Store Registration',
+        order_id,
+        handler: async function (response) {
+          const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
+
+          const tagsArray = formData.tags.split(',').map((t) => t.trim());
+
+          const userData = {
+            name: formData.name,
+            phone: formData.phone,
+            usp: formData.usp || 'Premium user',
+            address: formData.address,
+            tags: tagsArray,
+            location: {
+              type: 'Point',
+              coordinates: [
+                parseFloat(formData.longitude),
+                parseFloat(formData.latitude),
+              ],
+            },
+            razorpay_payment_id,
+            razorpay_order_id,
+            razorpay_signature,
+          };
+
+          // Step 3: Verify payment and save user
+          try {
+            const res = await axios.post(`${BACKEND_URL}/payment/verify-and-register`, userData);
+            if (res.data.success) {
+              setAlertType('success');
+              setMessage('🎉 Registration complete! Thank you for your payment.');
+              setFormData({
+                name: '',
+                phone: '',
+                usp: '',
+                address: '',
+                tags: '',
+                longitude: '',
+                latitude: '',
+              });
+            } else {
+              setAlertType('error');
+              setMessage('❌ Payment verification failed.');
+            }
+          } catch (err) {
+            console.error(err);
+            setAlertType('error');
+            setMessage('❌ Payment verification failed.');
+          }
+        },
+        prefill: {
+          name: formData.name,
+          contact: formData.phone,
+        },
+        theme: {
+          color: '#3399cc',
         },
       };
-  
-      // Save to temp collection
-      await axios.post(`${BACKEND_URL}/tempuser/add`, tempUserData);
-  
-      // Redirect to Razorpay hosted payment link
-      window.location.href = 'https://rzp.io/rzp/s6cQP2d'; // Replace with your real hosted link
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+
     } catch (err) {
       console.error(err);
       setAlertType('error');
-      setMessage('❌ Failed to register. Try again.');
+      setMessage('❌ Payment initiation failed.');
     }
   };
-  
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Register on Localz.online
-      </Typography>
+    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-center">Premium Store Registration</h2>
 
       {message && (
-        <Alert severity={alertType} sx={{ mb: 2 }}>
+        <div className={`mb-4 p-3 rounded ${alertType === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
           {message}
-        </Alert>
+        </div>
       )}
 
-      <Box component="form" onSubmit={handleSubmit} noValidate>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField label="Full Name" name="name" value={formData.name} onChange={handleChange} fullWidth required />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} fullWidth required />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField label="Address" name="address" value={formData.address} onChange={handleChange} fullWidth required />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField label="USP (optional)" name="usp" value={formData.usp} onChange={handleChange} fullWidth />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField label="Tags (e.g. bike, repair)" name="tags" value={formData.tags} onChange={handleChange} fullWidth required />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField label="Latitude" name="latitude" value={formData.latitude} onChange={handleChange} fullWidth required />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField label="Longitude" name="longitude" value={formData.longitude} onChange={handleChange} fullWidth required />
-          </Grid>
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={<Checkbox onChange={(e) => e.target.checked && getCurrentLocation()} />}
-              label="📍 Use Current Location"
-            />
-          </Grid>
-        </Grid>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {['name', 'phone', 'usp', 'address', 'tags', 'longitude', 'latitude'].map((field) => (
+          <input
+            key={field}
+            type="text"
+            name={field}
+            placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+            value={formData[field]}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+            required={['name', 'phone', 'address', 'tags'].includes(field)}
+          />
+        ))}
 
-        <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
+        <button type="button" onClick={handleLocation} className="bg-blue-100 px-3 py-2 rounded text-sm">
+          📍 Use Current Location
+        </button>
+
+        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
           Pay ₹365 & Register
-        </Button>
-      </Box>
-    </Container>
+        </button>
+      </form>
+    </div>
   );
 };
 
-export default RegisterPage;
+export default Register;
