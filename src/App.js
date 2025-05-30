@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import StaffDashboard from './pages/staff/StaffDashboard';
 import StoreOwnerDashboard from './pages/storeOwner/StoreOwnerDashboard';
+import SuccessPage from './pages/SuccessPage';
 
 import './App.css';
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/success" element={<SuccessPage  />} />
 
         {/* Dashboard Routes */}
         <Route path="/admin/*" element={<AdminDashboard />} />
