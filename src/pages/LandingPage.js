@@ -229,7 +229,7 @@ function LandingPage() {
 
       {/* ===== ADMIN LOGIN / REGISTER ===== */}
       <Box mt={6} textAlign="center">
-      <Link to="/https://localz.online" style={{ textDecoration: 'none', marginRight: '10px' }}>
+      <Link to="https://localz.online" style={{ textDecoration: 'none', marginRight: '10px' }}>
           <Button variant="outlined" color="primary">Search nearby stores and services</Button>
         </Link>
         <Link to="/register" style={{ textDecoration: 'none', marginRight: '10px' }}>
