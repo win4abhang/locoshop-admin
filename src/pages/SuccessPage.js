@@ -1,17 +1,52 @@
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Typography, Paper, Button, Alert, Divider } from '@mui/material';
+import { Box, Typography, Paper, Button, Alert, Divider, CircularProgress } from '@mui/material';
+import axios from 'axios';
 
 const SuccessPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { username, password } = location.state || {};
+  const query = new URLSearchParams(location.search);
+  const orderId = query.get('order_id');
 
-  if (!username || !password) {
+  const [loading, setLoading] = useState(true);
+  const [credentials, setCredentials] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const verifyOrder = async () => {
+      try {
+        const res = await axios.post('https://locoshop-backend.onrender.com/api/payment/verify-and-register', {
+          order_id: orderId,
+        });
+        setCredentials(res.data.userCredentials);
+      } catch (err) {
+        setError('Payment verification failed or store not registered.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (orderId) verifyOrder();
+    else {
+      setError('Invalid access. Missing order ID.');
+      setLoading(false);
+    }
+  }, [orderId]);
+
+  if (loading) {
     return (
       <Box mt={5} textAlign="center">
-        <Typography variant="h6" color="error">
-          Invalid access. Please complete registration.
-        </Typography>
+        <CircularProgress />
+        <Typography mt={2}>Verifying payment...</Typography>
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box mt={5} textAlign="center">
+        <Typography variant="h6" color="error">{error}</Typography>
       </Box>
     );
   }
@@ -33,10 +68,10 @@ const SuccessPage = () => {
           </Typography>
           <Divider sx={{ my: 1 }} />
           <Typography variant="body2">
-            <strong>Username (Store ID):</strong> {username}
+            <strong>Username (Store ID):</strong> {credentials?.username}
           </Typography>
           <Typography variant="body2">
-            <strong>Password (Phone No):</strong> {password}
+            <strong>Password (Phone No):</strong> {credentials?.password}
           </Typography>
           <Typography variant="caption" color="error" display="block" sx={{ mt: 1 }}>
             Please save these credentials. You’ll need them to log in.
@@ -54,4 +89,3 @@ const SuccessPage = () => {
 };
 
 export default SuccessPage;
-  
