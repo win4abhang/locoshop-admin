@@ -10,6 +10,7 @@ import {
   Alert,
   Paper
 } from '@mui/material';
+import Menu from '../components/Menu'; // Adjust path if needed
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com';
 
@@ -43,6 +44,7 @@ function Login() {
 
   return (
     <Container maxWidth="sm">
+      <Menu />
       <Paper elevation={3} sx={{ padding: 4, marginTop: 8 }}>
         <Typography variant="h5" align="center" gutterBottom>
           Admin Login

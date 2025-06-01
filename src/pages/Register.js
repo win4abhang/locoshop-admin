@@ -8,9 +8,11 @@ import {
   Alert,
   Stack,
   Paper,
-  Divider
+  Divider,
+  Container
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Menu from '../components/Menu'; // Adjust path if needed
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
 
@@ -171,10 +173,13 @@ const Register = () => {
   };
 
   return (
+    
+    <Container maxWidth="lg" sx={{ py: 6 }}>
+      <Menu />
     <Box maxWidth="sm" mx="auto" mt={5}>
       <Paper elevation={3} sx={{ p: 4 }}>
         <Typography variant="h5" fontWeight="bold" gutterBottom align="center">
-          Premium Store Registration
+          Store Registration
         </Typography>
 
         {message && (
@@ -215,6 +220,7 @@ const Register = () => {
         </form>
       </Paper>
     </Box>
+    </Container>
   );
 };
 

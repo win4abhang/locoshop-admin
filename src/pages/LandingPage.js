@@ -16,6 +16,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import Menu from '../components/Menu'; // Adjust path if needed
 
 
 
@@ -27,19 +28,27 @@ function LandingPage() {
   };
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      
+      <Menu />
       {/* ===== HERO SECTION ===== */}
       <Box textAlign="center" mb={5}>
-        <Typography variant="h3" fontWeight="bold" gutterBottom>
-          Grow Your Local Business with <span style={{ color: '#1A73E8' }}>Localz</span>
-        </Typography>
+        <Typography 
+        variant="h3" 
+        fontWeight="bold" 
+        gutterBottom 
+        sx={{ mt: 4 }} // Adjust the number as needed (e.g., 2, 4, 6)
+      >
+        Grow Your Local Business with Localz
+      </Typography>
+
         <Typography variant="h6" color="textSecondary" mb={2}>
           Reach thousands of nearby customers — no commission, no middlemen. Just ₹365/year.
         </Typography>
+
         <Button variant="contained" color="success" size="large" onClick={handleClick}>
           Start Now
         </Button>
       </Box>
+
 
       {/* ===== WHY LOCALZ ===== */}
       <Box sx={{ display: 'flex', justifyContent: 'center', px: 2 }}>
