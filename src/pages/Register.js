@@ -70,43 +70,62 @@ const Register = () => {
 
     try {
       const tagsArray = tags.split(',').map((t) => t.trim());
-      const orderId = 'order_' + Date.now();
-      const customerid = 'customerid' + Date.now();
-
+      
       const userData = {
-
-        order_amount: 365,        // <-- required field!
-        order_currency: 'INR',    // currency code
-        customer_details: {
-          customer_id: customerid,  // optional but recommended
-          customer_name: name,
-          customer_phone: phone,
-        },
-        order_id: orderId,  // your internal order id
-        // other fields...
-
-        name,
-        phone,
-        usp: formData.usp || 'Premium user',
-        address,
-        tags: tagsArray,
-        location: {
-          type: 'Point',
-          coordinates: [parseFloat(longitude), parseFloat(latitude)],
-        },
+        order_amount: 365,
+        order_currency: 'INR',
+        customerPhone: phone,
+        customerName: name,
       };
-
-      // Step 1: Request Cashfree payment link
+      
       const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
 
 
-      if (res.data.success && res.data.paymentLink) {
-        // Step 2: Open Cashfree payment link in new tab
-        window.open(res.data.paymentLink, '_blank');
-
+      if (res.data.order_id && res.data.payment_session_id) {
+        const { order_id, payment_session_id } = res.data;
+      
+        // Open Cashfree checkout page
+        window.open(`https://sandbox.cashfree.com/pg/checkout?payment_session_id=${payment_session_id}`, '_blank');
+      
         setAlertType('info');
-        setMessage('Redirecting to Cashfree. Please complete payment to register.');
-      } else {
+        setMessage('Please complete payment. Waiting for confirmation...');
+      
+        // Wait 10 seconds then verify payment (or use a loop/interval if needed)
+        setTimeout(async () => {
+          try {
+            const verifyRes = await axios.post(`${BACKEND_URL}/payment/verify`, {
+              order_id,
+              name: formData.name,
+              phone: formData.phone,
+              usp: formData.usp,
+              address: formData.address,
+              tags: formData.tags.split(',').map(t => t.trim()),
+              location: {
+                type: "Point",
+                coordinates: [
+                  parseFloat(formData.longitude),
+                  parseFloat(formData.latitude)
+                ]
+              }
+
+
+            });
+      
+            if (verifyRes.data.success) {
+              setAlertType('success');
+              setMessage(`✅ Store registered! Username: ${verifyRes.data.userCredentials.username}, Password: ${verifyRes.data.userCredentials.password}`);
+            } else {
+              setAlertType('error');
+              setMessage('❌ Payment not completed. Please try again.');
+            }
+      
+          } catch (err) {
+            console.error(err);
+            setAlertType('error');
+            setMessage('❌ Error verifying payment.');
+          }
+        }, 10000); // waits 10 seconds
+      }else {
         setAlertType('error');
         setMessage('❌ Failed to create Cashfree payment link.');
       }
