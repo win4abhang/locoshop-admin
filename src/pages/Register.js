@@ -70,8 +70,21 @@ const Register = () => {
 
     try {
       const tagsArray = tags.split(',').map((t) => t.trim());
+      const orderId = 'order_' + Date.now();
+      const customerid = 'customerid' + Date.now();
 
       const userData = {
+
+        order_amount: 365,        // <-- required field!
+        order_currency: 'INR',    // currency code
+        customer_details: {
+          customer_id: customerid,  // optional but recommended
+          customer_name: name,
+          customer_phone: phone,
+        },
+        order_id: orderId,  // your internal order id
+        // other fields...
+
         name,
         phone,
         usp: formData.usp || 'Premium user',
