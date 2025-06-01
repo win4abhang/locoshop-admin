@@ -84,7 +84,8 @@ const Register = () => {
       };
 
       // Step 1: Request Cashfree payment link
-      const res = await axios.post(`${BACKEND_URL}/payment/cashfree-pay`, userData);
+      const res = await axios.post(`${BACKEND_URL}/api/payment/create-order`, userData);
+
 
       if (res.data.success && res.data.paymentLink) {
         // Step 2: Open Cashfree payment link in new tab
