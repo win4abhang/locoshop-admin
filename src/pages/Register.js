@@ -109,8 +109,6 @@ const Register = () => {
 
   const handleContinueAfterPayment = async () => {
     if (!orderDetails) return;
-  
-    setShowOverlay(false);
     try {
       const verifyRes = await axios.post(`${BACKEND_URL}/payment/verify`, {
         order_id: orderDetails.order_id,
