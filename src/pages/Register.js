@@ -82,9 +82,6 @@ const Register = () => {
       return;
     }
 
-
-    setShowOverlay(true);
-  
     try {
       const userData = {
         order_amount: 365,
@@ -105,7 +102,7 @@ const Register = () => {
         });
         
         // Show overlay with Continue button
-        
+        setShowOverlay(true);
         setOrderDetails({ order_id, payment_session_id });
                  
       } else {
