@@ -57,31 +57,33 @@ const Register = () => {
     e.preventDefault();
     setMessage('');
     setAlertType('');
+  
     const { name, phone, address, tags, longitude, latitude } = formData;
   
-    if (!name.trim() ||
-    !phone.trim() ||
-    !address.trim() ||
-    !tags.trim()
-  ) {
+    if (!name.trim() || !phone.trim() || !address.trim() || !tags.trim()) {
       setAlertType('error');
       setMessage('Please fill all required fields.');
       return;
     }
   
-    if (!longitude || !latitude || isNaN(parseFloat(longitude)) || isNaN(parseFloat(latitude))) {
+    if (
+      !longitude ||
+      !latitude ||
+      isNaN(parseFloat(longitude)) ||
+      isNaN(parseFloat(latitude))
+    ) {
       setAlertType('error');
       setMessage('Please provide valid latitude and longitude or use current location.');
       return;
     }
-
+  
     const phoneRegex = /^[6-9]\d{9}$/;
     if (!phoneRegex.test(phone.trim())) {
       setAlertType('error');
       setMessage('Please enter a valid 10-digit phone number.');
       return;
     }
-
+  
     try {
       const userData = {
         order_amount: 365,
@@ -91,20 +93,33 @@ const Register = () => {
       };
   
       const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
+      setMessage('Back from backend.');
+  
       if (res.data.order_id && res.data.payment_session_id) {
         const { order_id, payment_session_id } = res.data;
-
-        // Initialize Cashfree SDK
-        const cashfree = window.Cashfree({ mode: 'PROD' }); // Use uppercase 'PROD'
+  
+        setMessage('Call PG');
+  
+        // ✅ Initialize Cashfree **only here**, after SDK is loaded
+        const cashfree = window.Cashfree({ mode: 'PROD' }); // Use 'TEST' if you're testing
+  
+        if (!cashfree || typeof cashfree.checkout !== 'function') {
+          console.error('Cashfree SDK not loaded properly');
+          setAlertType('error');
+          setMessage('Cashfree SDK not loaded. Please check your internet or browser settings.');
+          return;
+        }
+  
+        // ✅ Call checkout
         cashfree.checkout({
           paymentSessionId: payment_session_id,
-          redirectTarget: '_blank', // Opens in a new tab
+          redirectTarget: '_blank',
         });
-                
-        // Show overlay with Continue button
+  
+        setMessage('open PG');
+  
         setShowOverlay(true);
         setOrderDetails({ order_id, payment_session_id });
-                 
       } else {
         setAlertType('error');
         setMessage('❌ Failed to create Cashfree payment link.');
@@ -116,6 +131,7 @@ const Register = () => {
       setMessage('❌ Something went wrong while initiating payment.');
     }
   };
+  
 
   const handleContinueAfterPayment = async () => {
     if (!orderDetails) return;
