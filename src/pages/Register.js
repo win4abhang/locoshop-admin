@@ -13,7 +13,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Menu from '../components/Menu';
 
-const cashfree = window.Cashfree({ mode: 'PROD' });
+const cashfree = window.Cashfree({ mode: 'prod' });
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
 
