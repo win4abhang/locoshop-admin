@@ -59,7 +59,11 @@ const Register = () => {
     setAlertType('');
     const { name, phone, address, tags, longitude, latitude } = formData;
   
-    if (!name || !phone || !address || !tags) {
+    if (!name.trim() ||
+    !phone.trim() ||
+    !address.trim() ||
+    !tags.trim()
+  ) {
       setAlertType('error');
       setMessage('Please fill all required fields.');
       return;
