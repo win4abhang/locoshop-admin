@@ -31,6 +31,8 @@ const Register = () => {
   const [message, setMessage] = useState('');
   const [alertType, setAlertType] = useState('');
   const navigate = useNavigate();
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [orderDetails, setOrderDetails] = useState(null);
 
   const handleLocation = () => {
     if (navigator.geolocation) {
@@ -84,73 +86,15 @@ const Register = () => {
         const { order_id, payment_session_id } = res.data;
   
         // Initialize Cashfree SDK
-        const cashfree = window.Cashfree({
-          mode: 'sandbox', // Use 'production' for live environment
-        });
-  
-        // Initiate checkout
         cashfree.checkout({
           paymentSessionId: payment_session_id,
           redirectTarget: '_blank', // Opens in a new tab
         });
-  
-        setAlertType('info');
-        setMessage('Please complete payment. Waiting for confirmation...');
-  
-        // Wait 10 seconds then verify payment
-        setTimeout(async () => {
-          try {
-
-            console.log("➡️ Sending verification request with data:", {
-              order_id,
-              name: formData.name,
-              phone: formData.phone,
-              usp: formData.usp,
-              address: formData.address,
-              tags: formData.tags.split(',').map(t => t.trim()),
-              location: {
-                type: "Point",
-                coordinates: [
-                  parseFloat(formData.longitude),
-                  parseFloat(formData.latitude)
-                ]
-              }
-            });
-
-
-
-
-
-            const verifyRes = await axios.post(`${BACKEND_URL}/payment/verify`, {
-              order_id,
-              name: formData.name,
-              phone: formData.phone,
-              usp: formData.usp,
-              address: formData.address,
-              tags: formData.tags.split(',').map(t => t.trim()),
-              location: {
-                type: "Point",
-                coordinates: [
-                  parseFloat(formData.longitude),
-                  parseFloat(formData.latitude)
-                ]
-              }
-            });
-  
-            if (verifyRes.data.success) {
-              setAlertType('success');
-              setMessage(`✅ Store registered! Username: ${verifyRes.data.userCredentials.username}, Password: ${verifyRes.data.userCredentials.password}`);
-            } else {
-              setAlertType('error');
-              setMessage('❌ Payment not completed. Please try again.');
-            }
-  
-          } catch (err) {
-            console.error(err);
-            setAlertType('error');
-            setMessage('❌ Error verifying payment.');
-          }
-        }, 10000); // waits 10 seconds
+        
+        // Show overlay with Continue button
+        setShowOverlay(true);
+        setOrderDetails({ order_id, payment_session_id });
+                 
       } else {
         setAlertType('error');
         setMessage('❌ Failed to create Cashfree payment link.');
@@ -161,6 +105,41 @@ const Register = () => {
       setMessage('❌ Something went wrong while initiating payment.');
     }
   };
+
+  const handleContinueAfterPayment = async () => {
+      if (!orderDetails) return;
+    
+      setShowOverlay(false);
+      try {
+        const verifyRes = await axios.post(`${BACKEND_URL}/payment/verify`, {
+          order_id: orderDetails.order_id,
+          name: formData.name,
+          phone: formData.phone,
+          usp: formData.usp,
+          address: formData.address,
+          tags: formData.tags.split(',').map(t => t.trim()),
+          location: {
+            type: "Point",
+            coordinates: [
+              parseFloat(formData.longitude),
+              parseFloat(formData.latitude)
+            ]
+          }
+        });
+    
+        if (verifyRes.data.success) {
+          setAlertType('success');
+          setMessage(`✅ Store registered! Username: ${verifyRes.data.userCredentials.username}, Password: ${verifyRes.data.userCredentials.password}`);
+        } else {
+          setAlertType('error');
+          setMessage('❌ Payment not completed. Please try again.');
+        }
+      } catch (err) {
+        console.error(err);
+        setAlertType('error');
+        setMessage('❌ Error verifying payment.');
+      }
+    };
   
 
   return (
@@ -210,6 +189,40 @@ const Register = () => {
           </form>
         </Paper>
       </Box>
+      {showOverlay && (
+          <Box
+            sx={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              bgcolor: 'rgba(0, 0, 0, 0.8)',
+              color: '#fff',
+              zIndex: 2000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              p: 4,
+            }}
+          >
+            <Typography variant="h6" align="center" gutterBottom>
+              Click "Continue" after completing the payment.
+            </Typography>
+            <Typography variant="body2" align="center" gutterBottom>
+              Make sure popup is allowed in your browser.
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={handleContinueAfterPayment}
+              sx={{ mt: 2 }}
+            >
+              Continue
+            </Button>
+          </Box>
+        )}
+
     </Container>
   );
 };
