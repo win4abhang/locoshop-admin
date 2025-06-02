@@ -101,7 +101,7 @@ const Register = () => {
         setMessage('Call PG');
   
         // ✅ Initialize Cashfree **only here**, after SDK is loaded
-        const cashfree = window.Cashfree({ mode: 'PROD' }); // Use 'TEST' if you're testing
+        const cashfree = new window.Cashfree({ mode: 'PROD' }); // Use 'TEST' if you're testing
   
         if (!cashfree || typeof cashfree.checkout !== 'function') {
           console.error('Cashfree SDK not loaded properly');
