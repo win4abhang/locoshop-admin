@@ -57,8 +57,6 @@ const Register = () => {
     e.preventDefault();
     setMessage('');
     setAlertType('');
-    setShowOverlay(true);
-  
     const { name, phone, address, tags, longitude, latitude } = formData;
   
     if (!name || !phone || !address || !tags) {
@@ -72,6 +70,16 @@ const Register = () => {
       setMessage('Please provide valid latitude and longitude or use current location.');
       return;
     }
+
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(phone.trim())) {
+      setAlertType('error');
+      setMessage('Please enter a valid 10-digit phone number.');
+      return;
+    }
+
+
+    setShowOverlay(true);
   
     try {
       const userData = {
