@@ -13,6 +13,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Menu from '../components/Menu';
 
+const cashfree = window.Cashfree({ mode: 'sandbox' });
+
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
 
 const Register = () => {
@@ -53,21 +55,21 @@ const Register = () => {
     e.preventDefault();
     setMessage('');
     setAlertType('');
-
+  
     const { name, phone, address, tags, longitude, latitude } = formData;
-
+  
     if (!name || !phone || !address || !tags) {
       setAlertType('error');
       setMessage('Please fill all required fields.');
       return;
     }
-
+  
     if (!longitude || !latitude || isNaN(parseFloat(longitude)) || isNaN(parseFloat(latitude))) {
       setAlertType('error');
       setMessage('Please provide valid latitude and longitude or use current location.');
       return;
     }
-
+  
     try {
       const userData = {
         order_amount: 365,
@@ -75,23 +77,28 @@ const Register = () => {
         customerPhone: phone,
         customerName: name,
       };
-
+  
       const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
-
+  
       if (res.data.order_id && res.data.payment_session_id) {
         const { order_id, payment_session_id } = res.data;
-
-        window.open(`https://sandbox.cashfree.com/pg/checkout?payment_session_id=${payment_session_id}`, '_blank');
-
+  
+        // Initialize Cashfree SDK
+        const cashfree = window.Cashfree({
+          mode: 'sandbox', // Use 'production' for live environment
+        });
+  
+        // Initiate checkout
+        cashfree.checkout({
+          paymentSessionId: payment_session_id,
+          redirectTarget: '_blank', // Opens in a new tab
+        });
+  
         setAlertType('info');
         setMessage('Please complete payment. Waiting for confirmation...');
-
-        // Polling for verification every 5s, max 3 times
-        let attempts = 0;
-        const maxAttempts = 3;
-        const interval = setInterval(async () => {
-          attempts++;
-
+  
+        // Wait 10 seconds then verify payment
+        setTimeout(async () => {
           try {
             const verifyRes = await axios.post(`${BACKEND_URL}/payment/verify`, {
               order_id,
@@ -108,24 +115,21 @@ const Register = () => {
                 ]
               }
             });
-
+  
             if (verifyRes.data.success) {
-              clearInterval(interval);
               setAlertType('success');
               setMessage(`✅ Store registered! Username: ${verifyRes.data.userCredentials.username}, Password: ${verifyRes.data.userCredentials.password}`);
-            } else if (attempts >= maxAttempts) {
-              clearInterval(interval);
+            } else {
               setAlertType('error');
-              setMessage('❌ Payment not confirmed. Please try again.');
+              setMessage('❌ Payment not completed. Please try again.');
             }
+  
           } catch (err) {
             console.error(err);
-            clearInterval(interval);
             setAlertType('error');
             setMessage('❌ Error verifying payment.');
           }
-        }, 5000);
-
+        }, 10000); // waits 10 seconds
       } else {
         setAlertType('error');
         setMessage('❌ Failed to create Cashfree payment link.');
@@ -136,6 +140,7 @@ const Register = () => {
       setMessage('❌ Something went wrong while initiating payment.');
     }
   };
+  
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
