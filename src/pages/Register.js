@@ -107,40 +107,52 @@ const Register = () => {
   };
 
   const handleContinueAfterPayment = async () => {
-      if (!orderDetails) return;
-    
-      setShowOverlay(false);
-      try {
-        const verifyRes = await axios.post(`${BACKEND_URL}/payment/verify`, {
-          order_id: orderDetails.order_id,
-          name: formData.name,
-          phone: formData.phone,
-          usp: formData.usp,
-          address: formData.address,
-          tags: formData.tags.split(',').map(t => t.trim()),
-          location: {
-            type: "Point",
-            coordinates: [
-              parseFloat(formData.longitude),
-              parseFloat(formData.latitude)
-            ]
+    if (!orderDetails) return;
+  
+    setShowOverlay(false);
+    try {
+      const verifyRes = await axios.post(`${BACKEND_URL}/payment/verify`, {
+        order_id: orderDetails.order_id,
+        name: formData.name,
+        phone: formData.phone,
+        usp: formData.usp,
+        address: formData.address,
+        tags: formData.tags.split(',').map(t => t.trim()),
+        location: {
+          type: "Point",
+          coordinates: [
+            parseFloat(formData.longitude),
+            parseFloat(formData.latitude)
+          ]
+        }
+      });
+  
+      if (verifyRes.data.success) {
+        navigate('/result', {
+          state: {
+            success: true,
+            username: verifyRes.data.userCredentials.username,
+            password: verifyRes.data.userCredentials.password,
           }
         });
-    
-        if (verifyRes.data.success) {
-          setAlertType('success');
-          setMessage(`✅ Store registered! Username: ${verifyRes.data.userCredentials.username}, Password: ${verifyRes.data.userCredentials.password}`);
-        } else {
-          setAlertType('error');
-          setMessage('❌ Payment not completed. Please try again.');
-        }
-      } catch (err) {
-        console.error(err);
-        setAlertType('error');
-        setMessage('❌ Error verifying payment.');
+      } else {
+        navigate('/result', {
+          state: {
+            success: false,
+            message: '❌ Payment not completed. Please try again.',
+          }
+        });
       }
-    };
-  
+    } catch (err) {
+      console.error(err);
+      navigate('/result', {
+        state: {
+          success: false,
+          message: '❌ Error verifying payment.',
+        }
+      });
+    }
+  };
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>

@@ -6,13 +6,13 @@ import Login from './pages/Login';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import StaffDashboard from './pages/staff/StaffDashboard';
 import StoreOwnerDashboard from './pages/storeOwner/StoreOwnerDashboard';
-import SuccessPage from './pages/SuccessPage';
 import About from './pages/About'; // adjust path if different
 import Contact from './pages/Contact'; // adjust path if different
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsConditions from './pages/TermsConditions';
 import ReturnRefundPolicy from './pages/ReturnRefundPolicy';
 import ShippingDeliveryPolicy from './pages/ShippingDeliveryPolicy';
+import Result from './pages/Result';
 
 import './App.css';
 
@@ -44,13 +44,14 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/payment-success" element={<SuccessPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsConditions />} />
           <Route path="/return" element={<ReturnRefundPolicy />} />
           <Route path="/shipping" element={<ShippingDeliveryPolicy />} />
+          <Route path="/result" element={<Result />} />
+          
 
 
 
