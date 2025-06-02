@@ -13,7 +13,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Menu from '../components/Menu';
 
-const cashfree = window.Cashfree({ mode: 'prod' });
+
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
 
@@ -91,21 +91,15 @@ const Register = () => {
       };
   
       const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
-      setMessage('Back from backend.');
-  
       if (res.data.order_id && res.data.payment_session_id) {
         const { order_id, payment_session_id } = res.data;
 
-        setMessage('Call PG');
-  
         // Initialize Cashfree SDK
+        const cashfree = window.Cashfree({ mode: 'PROD' }); // Use uppercase 'PROD'
         cashfree.checkout({
           paymentSessionId: payment_session_id,
           redirectTarget: '_blank', // Opens in a new tab
         });
-
-        setMessage('open PG');
-
                 
         // Show overlay with Continue button
         setShowOverlay(true);
