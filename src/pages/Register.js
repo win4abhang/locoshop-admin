@@ -69,29 +69,29 @@ const Register = () => {
     }
 
     try {
-      const tagsArray = tags.split(',').map((t) => t.trim());
-      
       const userData = {
         order_amount: 365,
         order_currency: 'INR',
         customerPhone: phone,
         customerName: name,
       };
-      
-      const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
 
+      const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
 
       if (res.data.order_id && res.data.payment_session_id) {
         const { order_id, payment_session_id } = res.data;
-      
-        // Open Cashfree checkout page
+
         window.open(`https://sandbox.cashfree.com/pg/checkout?payment_session_id=${payment_session_id}`, '_blank');
-      
+
         setAlertType('info');
         setMessage('Please complete payment. Waiting for confirmation...');
-      
-        // Wait 10 seconds then verify payment (or use a loop/interval if needed)
-        setTimeout(async () => {
+
+        // Polling for verification every 5s, max 3 times
+        let attempts = 0;
+        const maxAttempts = 3;
+        const interval = setInterval(async () => {
+          attempts++;
+
           try {
             const verifyRes = await axios.post(`${BACKEND_URL}/payment/verify`, {
               order_id,
@@ -107,25 +107,26 @@ const Register = () => {
                   parseFloat(formData.latitude)
                 ]
               }
-
-
             });
-      
+
             if (verifyRes.data.success) {
+              clearInterval(interval);
               setAlertType('success');
               setMessage(`✅ Store registered! Username: ${verifyRes.data.userCredentials.username}, Password: ${verifyRes.data.userCredentials.password}`);
-            } else {
+            } else if (attempts >= maxAttempts) {
+              clearInterval(interval);
               setAlertType('error');
-              setMessage('❌ Payment not completed. Please try again.');
+              setMessage('❌ Payment not confirmed. Please try again.');
             }
-      
           } catch (err) {
             console.error(err);
+            clearInterval(interval);
             setAlertType('error');
             setMessage('❌ Error verifying payment.');
           }
-        }, 10000); // waits 10 seconds
-      }else {
+        }, 5000);
+
+      } else {
         setAlertType('error');
         setMessage('❌ Failed to create Cashfree payment link.');
       }
