@@ -100,6 +100,27 @@ const Register = () => {
         // Wait 10 seconds then verify payment
         setTimeout(async () => {
           try {
+
+            console.log("➡️ Sending verification request with data:", {
+              order_id: paymentSession.order_id,
+              name: storeName,
+              phone: phoneNumber,
+              usp: uspText,
+              address: storeAddress,
+              tags: selectedTags,
+              location: {
+                type: "Point",
+                coordinates: [
+                  parseFloat(formData.longitude),
+                  parseFloat(formData.latitude)
+                ]
+              }
+            });
+
+
+
+
+
             const verifyRes = await axios.post(`${BACKEND_URL}/payment/verify`, {
               order_id,
               name: formData.name,
