@@ -102,12 +102,12 @@ const Register = () => {
           try {
 
             console.log("➡️ Sending verification request with data:", {
-              order_id: paymentSession.order_id,
-              name: storeName,
-              phone: phoneNumber,
-              usp: uspText,
-              address: storeAddress,
-              tags: selectedTags,
+              order_id,
+              name: formData.name,
+              phone: formData.phone,
+              usp: formData.usp,
+              address: formData.address,
+              tags: formData.tags.split(',').map(t => t.trim()),
               location: {
                 type: "Point",
                 coordinates: [
