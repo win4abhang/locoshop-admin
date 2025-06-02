@@ -23,6 +23,7 @@ const Result = () => {
             </Typography>
             <Typography variant="body2" sx={{ mt: 2 }}>
               Please save these credentials safely.
+              You can't change your Username and Password, So Save it safely.
             </Typography>
             <Button variant="contained" sx={{ mt: 4 }} onClick={() => navigate('/login')}>
                 LOGIN

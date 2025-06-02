@@ -47,7 +47,7 @@ function Login() {
       <Menu />
       <Paper elevation={3} sx={{ padding: 4, marginTop: 8 }}>
         <Typography variant="h5" align="center" gutterBottom>
-          Admin Login
+          Login
         </Typography>
 
         <form onSubmit={handleLogin}>
@@ -57,7 +57,7 @@ function Login() {
             fullWidth
             margin="normal"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value.trimEnd())}
             required
           />
           <TextField

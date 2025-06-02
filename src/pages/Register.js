@@ -57,6 +57,7 @@ const Register = () => {
     e.preventDefault();
     setMessage('');
     setAlertType('');
+    setShowOverlay(true);
   
     const { name, phone, address, tags, longitude, latitude } = formData;
   
@@ -92,7 +93,7 @@ const Register = () => {
         });
         
         // Show overlay with Continue button
-        setShowOverlay(true);
+        
         setOrderDetails({ order_id, payment_session_id });
                  
       } else {
@@ -220,7 +221,7 @@ const Register = () => {
             }}
           >
             <Typography variant="h6" align="center" gutterBottom>
-              Click "Continue" after completing the payment.
+              Do not Close this tab. Click "Continue" after completing the payment.
             </Typography>
             <Typography variant="body2" align="center" gutterBottom>
               Make sure popup is allowed in your browser.
