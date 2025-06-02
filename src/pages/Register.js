@@ -113,6 +113,7 @@ const Register = () => {
         setMessage('❌ Failed to create Cashfree payment link.');
       }
     } catch (error) {
+      setShowOverlay(false);
       console.error(error);
       setAlertType('error');
       setMessage('❌ Something went wrong while initiating payment.');
