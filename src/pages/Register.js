@@ -94,8 +94,8 @@ const Register = () => {
       if (res.data.order_id && res.data.payment_session_id && res.data.hosted_checkout_url) {
         
         
-        const { order_id, payment_session_id, url } = res.data;
-        window.open(url, "_blank");      
+        const { order_id, payment_session_id, hosted_checkout_url } = res.data;
+        window.open(hosted_checkout_url, "_blank");      
         //setShowOverlay(true);
         setOrderDetails({ order_id, payment_session_id });
         
