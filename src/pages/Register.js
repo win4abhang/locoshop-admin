@@ -13,9 +13,24 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Menu from '../components/Menu';
 
-
-
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
+
+// ✅ Utility to load Cashfree SDK
+const loadCashfreeSDK = () => {
+  return new Promise((resolve, reject) => {
+    if (window.Cashfree) {
+      resolve();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://sdk.cashfree.com/js/ui/2.0.0/cashfree.prod.js';
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Cashfree SDK failed to load'));
+    document.body.appendChild(script);
+  });
+};
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -57,15 +72,15 @@ const Register = () => {
     e.preventDefault();
     setMessage('');
     setAlertType('');
-  
+
     const { name, phone, address, tags, longitude, latitude } = formData;
-  
+
     if (!name.trim() || !phone.trim() || !address.trim() || !tags.trim()) {
       setAlertType('error');
       setMessage('Please fill all required fields.');
       return;
     }
-  
+
     if (
       !longitude ||
       !latitude ||
@@ -76,14 +91,14 @@ const Register = () => {
       setMessage('Please provide valid latitude and longitude or use current location.');
       return;
     }
-  
+
     const phoneRegex = /^[6-9]\d{9}$/;
     if (!phoneRegex.test(phone.trim())) {
       setAlertType('error');
       setMessage('Please enter a valid 10-digit phone number.');
       return;
     }
-  
+
     try {
       const userData = {
         order_amount: 365,
@@ -91,29 +106,28 @@ const Register = () => {
         customerPhone: phone,
         customerName: name,
       };
-  
+
       const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
       setMessage('Back from backend.');
-  
+
       if (res.data.order_id && res.data.payment_session_id) {
         const { order_id, payment_session_id } = res.data;
-    
-        // ✅ Initialize Cashfree **only here**, after SDK is loaded
-        const cashfree = new window.Cashfree({ mode: "PROD" }); // Use 'TEST' if you're testing
-  
-        if (!cashfree || typeof cashfree.checkout !== 'function') {
-          console.error('Cashfree SDK not loaded properly');
+
+        // ✅ Load Cashfree SDK dynamically
+        try {
+          await loadCashfreeSDK();
+        } catch (sdkErr) {
+          console.error('Cashfree SDK load error:', sdkErr);
           setAlertType('error');
-          setMessage('Cashfree SDK not loaded. Please check your internet or browser settings.');
+          setMessage('❌ Could not load payment SDK. Please try again later.');
           return;
         }
-  
-        // ✅ Call checkout
-        cashfree.checkout({
+
+        window.Cashfree.checkout({
           paymentSessionId: payment_session_id,
           redirectTarget: '_blank',
         });
-  
+
         setShowOverlay(true);
         setOrderDetails({ order_id, payment_session_id });
       } else {
@@ -127,7 +141,6 @@ const Register = () => {
       setMessage('❌ Something went wrong while initiating payment.');
     }
   };
-  
 
   const handleContinueAfterPayment = async () => {
     if (!orderDetails) return;
@@ -147,7 +160,7 @@ const Register = () => {
           ]
         }
       });
-  
+
       if (verifyRes.data.success) {
         navigate('/result', {
           state: {
@@ -223,39 +236,38 @@ const Register = () => {
         </Paper>
       </Box>
       {showOverlay && (
-          <Box
-            sx={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              bgcolor: 'rgba(0, 0, 0, 0.8)',
-              color: '#fff',
-              zIndex: 2000,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              p: 4,
-            }}
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            bgcolor: 'rgba(0, 0, 0, 0.8)',
+            color: '#fff',
+            zIndex: 2000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            p: 4,
+          }}
+        >
+          <Typography variant="h6" align="center" gutterBottom>
+            Do not close this tab. Click "Continue" after completing the payment.
+          </Typography>
+          <Typography variant="body2" align="center" gutterBottom>
+            Make sure popup is allowed in your browser.
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={handleContinueAfterPayment}
+            sx={{ mt: 2 }}
           >
-            <Typography variant="h6" align="center" gutterBottom>
-              Do not Close this tab. Click "Continue" after completing the payment.
-            </Typography>
-            <Typography variant="body2" align="center" gutterBottom>
-              Make sure popup is allowed in your browser.
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={handleContinueAfterPayment}
-              sx={{ mt: 2 }}
-            >
-              Continue
-            </Button>
-          </Box>
-        )}
-
+            Continue
+          </Button>
+        </Box>
+      )}
     </Container>
   );
 };
