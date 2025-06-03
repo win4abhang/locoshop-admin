@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Menu from '../components/Menu';
-import { useEffect, useState } from "react";
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
 
