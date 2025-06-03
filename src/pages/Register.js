@@ -12,34 +12,9 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Menu from '../components/Menu';
+import { useEffect, useState } from "react";
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
-
-// Helper function to dynamically load Cashfree SDK script
-const loadCashfreeSDK = (env = 'prod') => {
-  return new Promise((resolve, reject) => {
-    // Remove old script if exists
-    const existingScript = document.getElementById('cashfree-sdk');
-    if (existingScript) existingScript.remove();
-
-    const script = document.createElement('script');
-    script.id = 'cashfree-sdk';
-
-    if (env === 'sandbox') {
-      script.src = 'https://sdk.cashfree.com/js/ui/1.0.18/cashfree.sandbox.js';
-    } else {
-      script.src = 'https://sdk.cashfree.com/js/ui/2.0.0/cashfree.prod.js';
-    }
-
-    script.onload = () => {
-      console.log('Cashfree SDK loaded');
-      resolve();
-    };
-    script.onerror = () => reject(new Error('Failed to load Cashfree SDK'));
-
-    document.body.appendChild(script);
-  });
-};
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -119,22 +94,6 @@ const Register = () => {
 
       if (res.data.order_id && res.data.payment_session_id) {
         const { order_id, payment_session_id } = res.data;
-
-        if (!window.Cashfree || typeof window.Cashfree.checkout !== 'function') {
-          console.error('Cashfree SDK not loaded properly');
-          setAlertType('error');
-          setMessage('Cashfree SDK not loaded. Please check your internet or browser settings.');
-          return;
-        }
-
-        // Load Cashfree SDK dynamically before initiating payment
-      await loadCashfreeSDK('prod');     
-
-        window.Cashfree.checkout({
-          paymentSessionId: payment_session_id,
-          redirectTarget: '_blank',
-        });
-
         setShowOverlay(true);
         setOrderDetails({ order_id, payment_session_id });
       } else {
