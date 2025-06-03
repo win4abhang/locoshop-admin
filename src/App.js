@@ -13,7 +13,6 @@ import TermsConditions from './pages/TermsConditions';
 import ReturnRefundPolicy from './pages/ReturnRefundPolicy';
 import ShippingDeliveryPolicy from './pages/ShippingDeliveryPolicy';
 import Result from './pages/Result';
-import Checkout from './pages/Checkout';
 
 import './App.css';
 
@@ -52,7 +51,6 @@ function App() {
           <Route path="/return" element={<ReturnRefundPolicy />} />
           <Route path="/shipping" element={<ShippingDeliveryPolicy />} />
           <Route path="/result" element={<Result />} />
-          <Route path="/Checkout" element={<Checkout />} />
           
 
           {/* Dashboard Routes */}
