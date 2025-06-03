@@ -84,7 +84,7 @@ const Register = () => {
 
     try {
       const userData = {
-        order_amount: 365,
+        order_amount: 365.00,
         order_currency: 'INR',
         customerPhone: phone,
         customerName: name,
@@ -92,10 +92,13 @@ const Register = () => {
       const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
 
       if (res.data.order_id && res.data.payment_session_id && res.data.hosted_checkout_url) {
-        const { order_id, payment_session_id, hosted_checkout_url } = res.data;
-        window.open(hosted_checkout_url, "_blank");      
+        setAlertType('payment_session_id'+ payment_session_id);
+        const { order_id, payment_session_id, url } = res.data;
+        window.open(url, "_blank");      
         setShowOverlay(true);
         setOrderDetails({ order_id, payment_session_id });
+        
+
       } else {
         setAlertType('error');
         setMessage('❌ Failed to create Cashfree payment link.');
