@@ -92,8 +92,10 @@ const Register = () => {
       const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
 
       if (res.data.order_id && res.data.payment_session_id && res.data.hosted_checkout_url) {
-        setAlertType('payment_session_id'+ payment_session_id);
+        
+        
         const { order_id, payment_session_id, url } = res.data;
+        setMessage('payment_session_id: ' + payment_session_id);
         window.open(url, "_blank");      
         setShowOverlay(true);
         setOrderDetails({ order_id, payment_session_id });
