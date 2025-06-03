@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import axios from 'axios';
 import {
   Box,
@@ -14,13 +13,15 @@ import { useNavigate } from 'react-router-dom';
 import Menu from '../components/Menu';
 import { useEffect, useState } from "react";
 
+import { load } from "@cashfreepayments/cashfree-js";
 
-const [showOverlay, setShowOverlay] = useState(false);
-const [orderDetails, setOrderDetails] = useState({ order_id: '', payment_session_id: '' });
+
+
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
 
 const Register = () => {
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -36,7 +37,6 @@ const Register = () => {
   const navigate = useNavigate();
   const [showOverlay, setShowOverlay] = useState(false);
   const [orderDetails, setOrderDetails] = useState(null);
-
 
   useEffect(() => {
     const loadCheckout = async () => {
