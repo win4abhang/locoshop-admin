@@ -97,9 +97,7 @@ const Register = () => {
   
       if (res.data.order_id && res.data.payment_session_id) {
         const { order_id, payment_session_id } = res.data;
-  
-        setMessage('Call PG');
-  
+    
         // ✅ Initialize Cashfree **only here**, after SDK is loaded
         const cashfree = new window.Cashfree({ mode: "PROD" }); // Use 'TEST' if you're testing
   
@@ -115,8 +113,6 @@ const Register = () => {
           paymentSessionId: payment_session_id,
           redirectTarget: '_blank',
         });
-  
-        setMessage('open PG');
   
         setShowOverlay(true);
         setOrderDetails({ order_id, payment_session_id });
