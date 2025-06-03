@@ -15,19 +15,28 @@ import Menu from '../components/Menu';
 
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
 
-// ✅ Utility to load Cashfree SDK
-const loadCashfreeSDK = () => {
+// Helper function to dynamically load Cashfree SDK script
+const loadCashfreeSDK = (env = 'prod') => {
   return new Promise((resolve, reject) => {
-    if (window.Cashfree) {
-      resolve();
-      return;
-    }
+    // Remove old script if exists
+    const existingScript = document.getElementById('cashfree-sdk');
+    if (existingScript) existingScript.remove();
 
     const script = document.createElement('script');
-    script.src = 'https://sdk.cashfree.com/js/ui/2.0.0/cashfree.prod.js';
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Cashfree SDK failed to load'));
+    script.id = 'cashfree-sdk';
+
+    if (env === 'sandbox') {
+      script.src = 'https://sdk.cashfree.com/js/ui/1.0.18/cashfree.sandbox.js';
+    } else {
+      script.src = 'https://sdk.cashfree.com/js/ui/2.0.0/cashfree.prod.js';
+    }
+
+    script.onload = () => {
+      console.log('Cashfree SDK loaded');
+      resolve();
+    };
+    script.onerror = () => reject(new Error('Failed to load Cashfree SDK'));
+
     document.body.appendChild(script);
   });
 };
@@ -100,6 +109,9 @@ const Register = () => {
     }
 
     try {
+      // Load Cashfree SDK dynamically before initiating payment
+      await loadCashfreeSDK(process.env.REACT_APP_ENV === 'sandbox' ? 'sandbox' : 'prod');
+
       const userData = {
         order_amount: 365,
         order_currency: 'INR',
@@ -108,18 +120,14 @@ const Register = () => {
       };
 
       const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
-      setMessage('Back from backend.');
 
       if (res.data.order_id && res.data.payment_session_id) {
         const { order_id, payment_session_id } = res.data;
 
-        // ✅ Load Cashfree SDK dynamically
-        try {
-          await loadCashfreeSDK();
-        } catch (sdkErr) {
-          console.error('Cashfree SDK load error:', sdkErr);
+        if (!window.Cashfree || typeof window.Cashfree.checkout !== 'function') {
+          console.error('Cashfree SDK not loaded properly');
           setAlertType('error');
-          setMessage('❌ Could not load payment SDK. Please try again later.');
+          setMessage('Cashfree SDK not loaded. Please check your internet or browser settings.');
           return;
         }
 
@@ -254,7 +262,7 @@ const Register = () => {
           }}
         >
           <Typography variant="h6" align="center" gutterBottom>
-            Do not close this tab. Click "Continue" after completing the payment.
+            Do not Close this tab. Click "Continue" after completing the payment.
           </Typography>
           <Typography variant="body2" align="center" gutterBottom>
             Make sure popup is allowed in your browser.
