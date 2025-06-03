@@ -95,9 +95,8 @@ const Register = () => {
         
         
         const { order_id, payment_session_id, url } = res.data;
-        setMessage('payment_session_id: ' + payment_session_id);
         window.open(url, "_blank");      
-        setShowOverlay(true);
+        //setShowOverlay(true);
         setOrderDetails({ order_id, payment_session_id });
         
 
