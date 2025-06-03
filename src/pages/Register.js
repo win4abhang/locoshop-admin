@@ -110,7 +110,7 @@ const Register = () => {
 
     try {
       // Load Cashfree SDK dynamically before initiating payment
-      await loadCashfreeSDK(process.env.REACT_APP_ENV === 'sandbox' ? 'sandbox' : 'prod');
+      await loadCashfreeSDK('prod');
 
       const userData = {
         order_amount: 365,
