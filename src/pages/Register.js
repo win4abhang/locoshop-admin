@@ -109,16 +109,12 @@ const Register = () => {
     }
 
     try {
-      // Load Cashfree SDK dynamically before initiating payment
-      await loadCashfreeSDK('prod');
-
       const userData = {
         order_amount: 365,
         order_currency: 'INR',
         customerPhone: phone,
         customerName: name,
       };
-
       const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
 
       if (res.data.order_id && res.data.payment_session_id) {
@@ -130,6 +126,9 @@ const Register = () => {
           setMessage('Cashfree SDK not loaded. Please check your internet or browser settings.');
           return;
         }
+
+        // Load Cashfree SDK dynamically before initiating payment
+      await loadCashfreeSDK('prod');     
 
         window.Cashfree.checkout({
           paymentSessionId: payment_session_id,
