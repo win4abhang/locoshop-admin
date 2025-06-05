@@ -19,6 +19,7 @@ import { load } from "@cashfreepayments/cashfree-js";
 
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = process.env.FRONTEND_SECRET_KEY;
 
 const Register = () => {
 
@@ -122,7 +123,15 @@ const Register = () => {
         customerPhone: phone,
         customerName: name,
       };
-      const res = await axios.post(`${BACKEND_URL}/payment/create`, userData);
+      const res = await axios.post(
+        `${BACKEND_URL}/payment/create`, 
+        userData,
+      {
+        headers: {
+      'x-api-key': API_KEY
+        }
+      }
+    );
 
       if (res.data.order_id && res.data.payment_session_id) {
         const { order_id, payment_session_id } = res.data;
@@ -158,7 +167,13 @@ const Register = () => {
             parseFloat(formData.latitude)
           ]
         }
-      });
+      },
+      {
+        headers: {
+          'x-api-key': 'YourStrongSecret123' // Replace with your actual API key
+        }
+      },
+    );
 
       if (verifyRes.data.success) {
         navigate('/result', {
