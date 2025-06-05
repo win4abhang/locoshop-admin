@@ -73,6 +73,9 @@ const Menu = () => {
             <MenuItem onClick={handleMenuClose} component={Link} to="/shipping" disableRipple>
               Shipping & Delivery Policy
             </MenuItem>
+            <MenuItem onClick={handleMenuClose} component={Link} to="/landing_Local_Partner" disableRipple>
+              Become a Local Partner
+            </MenuItem>
             <MenuItem
               onClick={handleMenuClose}
               component="a"

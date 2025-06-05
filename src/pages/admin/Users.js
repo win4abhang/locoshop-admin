@@ -111,6 +111,7 @@ const Users = () => {
           <option value="admin">Admin</option>
           <option value="staff">Staff</option>
           <option value="store_owner">Store Owner</option>
+          <option value="local_partner">Local Partner</option>
         </select>
         <button type="submit" disabled={loading}>
           {loading

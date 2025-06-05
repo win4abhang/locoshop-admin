@@ -13,6 +13,8 @@ import TermsConditions from './pages/TermsConditions';
 import ReturnRefundPolicy from './pages/ReturnRefundPolicy';
 import ShippingDeliveryPolicy from './pages/ShippingDeliveryPolicy';
 import Result from './pages/Result';
+import LandingLocalPartner from './pages/LandingLocalPartner';
+import RegisterLocalPartner from './pages/RegisterLocalPartner';
 
 import './App.css';
 
@@ -51,6 +53,9 @@ function App() {
           <Route path="/return" element={<ReturnRefundPolicy />} />
           <Route path="/shipping" element={<ShippingDeliveryPolicy />} />
           <Route path="/result" element={<Result />} />
+          
+          <Route path="/landing_Local_Partner" element={<LandingLocalPartner />} />
+          <Route path="/register_local-partner" element={<RegisterLocalPartner />} />
           
 
           {/* Dashboard Routes */}
