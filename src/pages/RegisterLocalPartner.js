@@ -12,6 +12,10 @@ import {
   ListItem,
   ListItemText,
   FormControlLabel, Checkbox,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
 } from '@mui/material';
 
 import { useState } from 'react';
@@ -20,6 +24,7 @@ import Menu from '../components/Menu';
 const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
 
 const RegisterLocalPartner = () => {
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -140,9 +145,8 @@ const RegisterLocalPartner = () => {
     
 
     try {
-      await axios.post(`${BACKEND_URL}/users`, userPayload);
-      setAlertType('success');
-      setMessage('✅ Successfully registered as Local Partner!');
+      await axios.post(`${BACKEND_URL}/users/add_Local_Partner`, userPayload);
+      setShowSuccessDialog(true);
       setFormData({
         name: '',
         phone: '',
@@ -161,6 +165,7 @@ const RegisterLocalPartner = () => {
   };
 
   return (
+    <>
     <Container maxWidth="lg" sx={{ py: 6 }}>
       <Menu />
       <Box maxWidth="sm" mx="auto" mt={5}>
@@ -220,6 +225,29 @@ const RegisterLocalPartner = () => {
       </Paper>
       </Box>
     </Container>
+    
+    {/* Success Dialog — place this outside the Container */}
+    <Dialog open={showSuccessDialog} onClose={() => setShowSuccessDialog(false)}>
+      <DialogTitle>🎉 Registration Successful!</DialogTitle>
+      <DialogContent>
+        <Typography gutterBottom>
+          You’ll receive a call or WhatsApp message within 24 hours for verification.
+        </Typography>
+        <Typography gutterBottom>
+          After verification, we’ll share your User ID and Password.
+        </Typography>
+        <Typography>
+          Once that’s done, you can begin your work as a Local Partner!
+        </Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setShowSuccessDialog(false)} autoFocus variant="contained" color="primary">
+          OK
+        </Button>
+      </DialogActions>
+    </Dialog>
+</>
+
   );
 };
 
