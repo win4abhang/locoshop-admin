@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Papa from 'papaparse';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 function AddStore() {
   const [formData, setFormData] = useState({
@@ -44,7 +45,16 @@ function AddStore() {
     };
 
     try {
-      await axios.post(`${BACKEND_URL}/add`, storeData);
+      await axios.post(
+        `${BACKEND_URL}/stores/add`, 
+        storeData,
+        {
+          headers: {
+            'x-api-key': API_KEY,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       setMessage('✅ Store added successfully!');
       setFormData({ name: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
     } catch (error) {

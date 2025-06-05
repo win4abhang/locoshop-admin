@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 function EditStoreById() {
   const [formData, setFormData] = useState({
@@ -48,8 +49,13 @@ function EditStoreById() {
 
   const loadStoreById = async (id) => {
     try {
-      const res = await fetch(`${BACKEND_URL}/one/${id}`);
-      const data = await res.json();
+      const res = await axios.get(`${BACKEND_URL}/stores/one/${id}`, {
+        headers: {
+          'x-api-key': API_KEY
+        }
+      });
+      
+      const data = res.data;
 
       if (!res.ok) {
         setMessage(`❌ ${data.message || 'Failed to fetch store data.'}`);
@@ -103,7 +109,7 @@ function EditStoreById() {
     };
 
     try {
-      const res = await fetch(`${BACKEND_URL}/update-by-id/${storeId}`, {
+      const res = await fetch(`${BACKEND_URL}/stores/update-by-id/${storeId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),

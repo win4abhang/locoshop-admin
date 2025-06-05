@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com/api/stores';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = process.env.REACT_APP_API_KEY;
+
 
 function EditStore() {
   const [editName, setEditName] = useState('');
@@ -14,9 +16,14 @@ function EditStore() {
 
   const handleLoad = async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/by-name/${encodeURIComponent(editName)}`);
+      const res = await fetch(`${BACKEND_URL}/stores/by-name/${encodeURIComponent(editName)}`, {
+        method: 'GET',
+        headers: {
+          'x-api-key': API_KEY,
+          'Content-Type': 'application/json',
+        },
+      });
       const data = await res.json();
-  
       if (!res.ok) {
         setMessage(`❌ ${data.message || 'Failed to fetch store data.'}`);
         return;
@@ -80,9 +87,10 @@ function EditStore() {
     };
 
     try {
-      const res = await fetch(`${BACKEND_URL}/update-by-id/${selectedStoreId}`, {
+      const res = await fetch(`${BACKEND_URL}/stores/update-by-id/${selectedStoreId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'x-api-key': API_KEY,
+           'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
       });
 

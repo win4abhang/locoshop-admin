@@ -21,7 +21,8 @@ import {
 import { useState } from 'react';
 import Menu from '../components/Menu';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 const RegisterLocalPartner = () => {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -145,7 +146,15 @@ const RegisterLocalPartner = () => {
     
 
     try {
-      await axios.post(`${BACKEND_URL}/users/add_Local_Partner`, userPayload);
+      await axios.post(
+        `${BACKEND_URL}/users/add_Local_Partner`,
+        userPayload,
+        {
+          headers: {
+            'x-api-key': API_KEY // replace with your actual key or env variable
+          }
+        }
+      );
       setShowSuccessDialog(true);
       setFormData({
         name: '',

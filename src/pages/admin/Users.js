@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -16,7 +17,12 @@ const Users = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${BACKEND_URL}/api/users`);
+      const res = await axios.get(`${BACKEND_URL}/users`, {
+        headers: {
+          'x-api-key': API_KEY,
+          'Content-Type': 'application/json',
+        },
+      });
       setUsers(res.data);
     } catch (err) {
       console.error(err);
@@ -39,9 +45,9 @@ const Users = () => {
 
     try {
       if (editingUserId) {
-        await axios.put(`${BACKEND_URL}/api/users/${editingUserId}`, form);
+        await axios.put(`${BACKEND_URL}/users/${editingUserId}`, form);
       } else {
-        await axios.post(`${BACKEND_URL}/api/users`, form);
+        await axios.post(`${BACKEND_URL}/users`, form);
       }
       setForm({ username: '', password: '', userType: 'staff' });
       setEditingUserId(null);
@@ -71,7 +77,7 @@ const Users = () => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      await axios.delete(`${BACKEND_URL}/api/users/${id}`);
+      await axios.delete(`${BACKEND_URL}/users/${id}`);
       fetchUsers();
     } catch (err) {
       alert('Failed to delete user');

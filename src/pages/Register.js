@@ -18,7 +18,7 @@ import { load } from "@cashfreepayments/cashfree-js";
 
 
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com/api';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Register = () => {
 

@@ -1,6 +1,10 @@
 import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = process.env.REACT_APP_API_KEY;
+
 function AdminLayout() {
   const navigate = useNavigate();
   const userType = localStorage.getItem('userType');
@@ -8,8 +12,12 @@ function AdminLayout() {
   const handleDeleteAll = async () => {
     if (window.confirm("Are you sure you want to delete ALL stores?")) {
       try {
-        const res = await fetch('https://locoshop-backend.onrender.com/api/stores', {
+        const res = await fetch(`${BACKEND_URL}/stores`, {
           method: 'DELETE',
+          headers: {
+            'x-api-key': API_KEY,
+            'Content-Type': 'application/json', // optional but recommended
+          },
         });
         const data = await res.json();
         alert(data.message || 'All stores deleted');

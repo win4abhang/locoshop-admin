@@ -12,7 +12,8 @@ import {
 } from '@mui/material';
 import Menu from '../components/Menu'; // Adjust path if needed
 
-const BACKEND_URL = 'https://locoshop-backend.onrender.com';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -25,7 +26,14 @@ function Login() {
     setError('');
 
     try {
-      const res = await axios.post(`${BACKEND_URL}/api/auth/login`, { username, password });
+      const res = await axios.post(`${BACKEND_URL}/auth/login`, 
+        { username, password },
+        {
+          headers: {
+            'x-api-key': API_KEY 
+          }
+        }
+      );
       const { token, userType } = res.data;
 
       localStorage.setItem('storeOwnerName', username);
