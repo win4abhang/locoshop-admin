@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = 'YourStrongSecret123';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -17,9 +18,7 @@ const Users = () => {
   const fetchUsers = async () => {
     try {
       const res = await axios.get(`${BACKEND_URL}/users`, {
-        headers: {
-          'x-api-key': 'YourStrongSecret123',
-        },
+        headers: {'x-api-key': API_KEY,},
       });
       setUsers(res.data);
     } catch (err) {
