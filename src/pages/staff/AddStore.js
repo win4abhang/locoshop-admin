@@ -48,7 +48,6 @@ function AddStore() {
         {
           headers: {
             'x-api-key': API_KEY,
-            'Content-Type': 'application/json',
           },
         }
       );

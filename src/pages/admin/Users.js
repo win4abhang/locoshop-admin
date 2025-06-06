@@ -20,7 +20,6 @@ const Users = () => {
       const res = await axios.get(`${BACKEND_URL}/users`, {
         headers: {
           'x-api-key': API_KEY,
-          'Content-Type': 'application/json',
         },
       });
       setUsers(res.data);

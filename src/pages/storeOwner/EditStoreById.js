@@ -1,32 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import {
+  Box,
+  TextField,
+  Typography,
+  Button,
+  Stack,
+  Container,
+  Alert,
+  CircularProgress,
+} from '@mui/material';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
 
 function EditStoreById() {
   const [formData, setFormData] = useState({
-    name: '', usp: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
+    name: '',
+    usp: '',
+    address: '',
+    phone: '',
+    latitude: '',
+    longitude: '',
+    tags: '',
   });
   const [message, setMessage] = useState('');
   const [storeId, setStoreId] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Helper to get query parameter from URL
   const getStoreIdFromUrl = () => {
     const params = new URLSearchParams(window.location.search);
-    return params.get('id'); // expects ?id=...
+    return params.get('id');
   };
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setFormData({
-            ...formData,
+          setFormData((prev) => ({
+            ...prev,
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-          });
+          }));
         },
         () => {
           setMessage('❌ Unable to retrieve your location.');
@@ -48,20 +64,15 @@ function EditStoreById() {
   }, []);
 
   const loadStoreById = async (id) => {
+    setLoading(true);
     try {
       const res = await axios.get(`${BACKEND_URL}/stores/one/${id}`, {
         headers: {
-          'x-api-key': API_KEY
-        }
+          'x-api-key': API_KEY,
+        },
       });
-      
+
       const data = res.data;
-
-      if (!res.ok) {
-        setMessage(`❌ ${data.message || 'Failed to fetch store data.'}`);
-        return;
-      }
-
       const store = data.store;
 
       if (!store) {
@@ -84,6 +95,8 @@ function EditStoreById() {
       console.error('Load error:', err);
       setMessage('❌ Error loading store.');
       setIsLoaded(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,14 +106,12 @@ function EditStoreById() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-
     if (!storeId) {
       setMessage('❌ Store ID is missing.');
       return;
     }
 
-    const tagsArray = formData.tags.split(',').map(tag => tag.trim());
-
+    const tagsArray = formData.tags.split(',').map((tag) => tag.trim());
     const updatedData = {
       ...formData,
       latitude: parseFloat(formData.latitude),
@@ -116,103 +127,74 @@ function EditStoreById() {
       });
 
       const data = await res.json();
-      if (res.ok) {
-        setMessage('✅ Store updated successfully.');
-      } else {
-        setMessage('❌ ' + data.message);
-      }
+      setMessage(res.ok ? '✅ Store updated successfully.' : `❌ ${data.message}`);
     } catch (err) {
-      setMessage('❌ Update failed.');
       console.error(err);
+      setMessage('❌ Update failed.');
     }
   };
 
   return (
-        <div style={{ maxWidth: "600px", margin: "2rem auto", fontFamily: "Arial, sans-serif" }}>
-          <h2 style={{ marginBottom: "1rem", fontWeight: "bold" }}>Edit Store</h2>
-          {isLoaded ? (
-            <form onSubmit={handleUpdate} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              {[
-                { label: "Store Name:", name: "name" },
-                { label: "What's New:", name: "usp" },
-                { label: "Address:", name: "address" },
-                { label: "Phone:", name: "phone" },
-                { label: "Latitude:", name: "latitude" },
-                { label: "Longitude:", name: "longitude" },
-                { label: "Tags (comma separated):", name: "tags" },
-              ].map((field) => (
-                <div
-                  key={field.name}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "1rem",
-                  }}
-                >
-                  <label
-                    htmlFor={field.name}
-                    style={{
-                      width: "150px",
-                      fontWeight: "600",
-                    }}
-                  >
-                    {field.label}
-                  </label>
-                  <input
-                    type="text"
-                    id={field.name}
-                    name={field.name}
-                    value={formData[field.name]}
-                    onChange={handleChange}
-                    required
-                    style={{
-                      flex: 1,
-                      padding: "8px",
-                      borderRadius: "4px",
-                      border: "1px solid #ccc",
-                      fontSize: "14px",
-                    }}
-                  />
-                </div>
-              ))}
+    <Container maxWidth="sm" sx={{ py: 4 }}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Edit Store
+      </Typography>
 
-              <button
-                type="submit"
-                style={{
-                  backgroundColor: "#28a745",
-                  color: "white",
-                  padding: "10px 16px",
-                  border: "none",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                }}
-              >
-                Update Store
-              </button>
-            </form>
-          ) : (
-            <p>Loading or waiting for ID...</p>
-          )}
+      {loading ? (
+        <Box textAlign="center" my={4}>
+          <CircularProgress />
+        </Box>
+      ) : isLoaded ? (
+        <Box component="form" onSubmit={handleUpdate} noValidate>
+          <Stack spacing={2}>
+            {[
+              { label: 'Store Name', name: 'name' },
+              { label: "What's New", name: 'usp' },
+              { label: 'Address', name: 'address' },
+              { label: 'Phone', name: 'phone' },
+              { label: 'Latitude', name: 'latitude' },
+              { label: 'Longitude', name: 'longitude' },
+              { label: 'Tags (comma separated)', name: 'tags' },
+            ].map((field) => (
+              <TextField
+                key={field.name}
+                label={field.label}
+                name={field.name}
+                value={formData[field.name]}
+                onChange={handleChange}
+                fullWidth
+                required
+              />
+            ))}
 
-          {message && <p style={{ marginTop: "1rem", color: "green" }}>{message}</p>}
+            <Button type="submit" variant="contained" color="success" fullWidth>
+              Update Store
+            </Button>
+          </Stack>
+        </Box>
+      ) : (
+        <Typography>Loading or waiting for ID...</Typography>
+      )}
 
-          <button
-            onClick={getCurrentLocation}
-            style={{
-              marginTop: "1rem",
-              backgroundColor: "#007bff",
-              color: "white",
-              padding: "8px 12px",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-          >
-            Use Current Location
-          </button>
-        </div>
+      {message && (
+        <Alert
+          severity={message.startsWith('✅') ? 'success' : 'error'}
+          sx={{ mt: 3 }}
+        >
+          {message}
+        </Alert>
+      )}
+
+      <Button
+        onClick={getCurrentLocation}
+        variant="contained"
+        sx={{ mt: 3 }}
+        fullWidth
+      >
+        Use Current Location
+      </Button>
+    </Container>
   );
 }
+
 export default EditStoreById;
