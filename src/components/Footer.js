@@ -16,6 +16,9 @@ const Footer = () => {
           <Link component={RouterLink} to="/about" underline="hover" color="text.secondary">
             About Us
           </Link>
+          <Link component={RouterLink} to="/contact" underline="hover" color="text.secondary">
+            Contact Us
+          </Link>
           <Link component={RouterLink} to="/privacy" underline="hover" color="text.secondary">
             Privacy Policy
           </Link>

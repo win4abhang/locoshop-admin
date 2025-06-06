@@ -1,39 +1,76 @@
 import React from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link as RouterLink, useNavigate } from 'react-router-dom';
 import AddStore from './AddStore';
 import EditStore from './EditStore';
 import Users from './Users';
+
+import {
+  Box,
+  Button,
+  Typography,
+  Stack,
+  Link,
+  Divider,
+  Container
+} from '@mui/material';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // ✅ Clear localStorage and redirect to login
     localStorage.clear();
     navigate('/login');
   };
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <p>Admin Dashboard</p>
+    <Container sx={{ py: 4 }}>
+      <Typography variant="h5" gutterBottom>
+        Admin Dashboard
+      </Typography>
 
-      {/* ✅ Navigation Links */}
-      <nav style={{ marginBottom: '1rem' }}>
-        <Link to="/admin/add-store">➕ Add Store</Link> |{' '}
-        <Link to="/admin/edit-store">✏️ Edit Store</Link> |{' '}
-        <Link to="/admin/users">👥 Manage Users</Link> |{' '}
-        <button onClick={handleLogout} style={{ marginLeft: '1rem' }}>🚪 Logout</button>
-      </nav>
+      {/* Navigation Links */}
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={2}
+        alignItems="center"
+        sx={{ mb: 3 }}
+        flexWrap="wrap"
+      >
+        <Link component={RouterLink} to="/admin/add-store" underline="hover">
+          ➕ Add Store
+        </Link>
+        <Link component={RouterLink} to="/admin/edit-store" underline="hover">
+          ✏️ Edit Store
+        </Link>
+        <Link component={RouterLink} to="/admin/users" underline="hover">
+          👥 Manage Users
+        </Link>
+        <Button
+          onClick={handleLogout}
+          variant="outlined"
+          color="error"
+          size="small"
+        >
+          🚪 Logout
+        </Button>
+      </Stack>
 
-      {/* ✅ Admin Routes */}
-      <Routes>
-        <Route index element={<p>Welcome to Admin Panel</p>} />
-        <Route path="add-store" element={<AddStore />} />
-        <Route path="edit-store" element={<EditStore />} />
-        <Route path="users" element={<Users />} />
-        <Route path="*" element={<p>404 - Page Not Found in Admin</p>} />
-      </Routes>
-    </div>
+      <Divider sx={{ mb: 3 }} />
+
+      {/* Admin Routes */}
+      <Box>
+        <Routes>
+          <Route index element={<Typography>Welcome to Admin Panel</Typography>} />
+          <Route path="add-store" element={<AddStore />} />
+          <Route path="edit-store" element={<EditStore />} />
+          <Route path="users" element={<Users />} />
+          <Route
+            path="*"
+            element={<Typography color="error">404 - Page Not Found in Admin</Typography>}
+          />
+        </Routes>
+      </Box>
+    </Container>
   );
 };
 
