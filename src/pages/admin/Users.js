@@ -79,7 +79,13 @@ const Users = () => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      await axios.delete(`${BACKEND_URL}/users/${id}`);
+      
+      const config = {
+        headers: {
+          'x-api-key': API_KEY
+        }
+      };
+      await axios.delete(`${BACKEND_URL}/users/${id}`, config);
       fetchUsers();
     } catch (err) {
       alert('Failed to delete user');

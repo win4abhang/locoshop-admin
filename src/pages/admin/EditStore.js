@@ -81,16 +81,16 @@ function EditStore() {
       tags: tagsArray,
     };
 
-    try {
-      const res = await fetch(`${BACKEND_URL}/stores/update-by-id/${selectedStoreId}`, {
-        method: 'PUT',
+    try {   
+      const config = {
         headers: {
           'x-api-key': API_KEY,
-        },
-        body: JSON.stringify(updatedData),
-      });
-
-      const data = await res.json();
+          // other headers if needed
+        }
+      };
+      
+      const res = await axios.put(`${BACKEND_URL}/users/${selectedStoreId}`, updatedData, config);
+      const data = res.data;
       if (res.ok) {
         setMessage('✅ Store updated successfully.');
       } else {

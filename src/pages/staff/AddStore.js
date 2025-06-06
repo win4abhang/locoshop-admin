@@ -42,15 +42,12 @@ function AddStore() {
     };
 
     try {
-      await axios.post(
-        `${BACKEND_URL}/stores/add`,
-        storeData,
-        {
-          headers: {
-            'x-api-key': API_KEY,
-          },
+      const config = {
+        headers: {
+          'x-api-key': API_KEY
         }
-      );
+      };
+      await axios.post(`${BACKEND_URL}/stores/add`, storeData, config);
       setMessage('✅ Store added successfully!');
       setFormData({ name: '', usp: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
     } catch (error) {

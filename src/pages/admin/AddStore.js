@@ -45,15 +45,12 @@ function AddStore() {
     };
 
     try {
-      await axios.post(
-        `${BACKEND_URL}/stores/add`, 
-        storeData,
-        {
-          headers: {
-            'x-api-key': API_KEY,
-          },
+      const config = {
+        headers: {
+          'x-api-key': API_KEY
         }
-      );
+      };
+      await axios.post(`${BACKEND_URL}/stores/add`, storeData, config);
       setMessage('✅ Store added successfully!');
       setFormData({ name: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
     } catch (error) {
@@ -104,7 +101,12 @@ function AddStore() {
         }));
 
         try {
-          await axios.post(`${BACKEND_URL}/stores/bulk`, stores);
+          const config = {
+            headers: {
+              'x-api-key': API_KEY
+            }
+          };
+          await axios.post(`${BACKEND_URL}/stores/bulk`, stores, config);
           setBulkMessage('✅ Bulk stores uploaded successfully!');
         } catch (error) {
           setBulkMessage('❌ ' + (error.response?.data?.message || 'Bulk upload failed.'));

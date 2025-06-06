@@ -83,10 +83,13 @@ function EditStore() {
     try {
       const res = await fetch(`${BACKEND_URL}/stores/update-by-id/${selectedStoreId}`, {
         method: 'PUT',
-        headers: { 'x-api-key': API_KEY, },
-        body: JSON.stringify(updatedData),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': API_KEY
+        },
+        body: JSON.stringify(updatedData)
       });
-
+      
       const data = await res.json();
       if (res.ok) {
         setMessage('✅ Store updated successfully.');

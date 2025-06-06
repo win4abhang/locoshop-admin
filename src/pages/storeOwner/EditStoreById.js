@@ -66,12 +66,13 @@ function EditStoreById() {
   const loadStoreById = async (id) => {
     setLoading(true);
     try {
-      const res = await axios.get(`${BACKEND_URL}/stores/one/${id}`, {
+      const config = {
         headers: {
-          'x-api-key': API_KEY,
-        },
-      });
-
+          'x-api-key': API_KEY
+        }
+      };
+      
+      const res = await axios.get(`${BACKEND_URL}/stores/one/${id}`, config);
       const data = res.data;
       const store = data.store;
 
@@ -121,12 +122,15 @@ function EditStoreById() {
 
     try {
       const res = await fetch(`${BACKEND_URL}/stores/update-by-id/${storeId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedData),
-      });
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY
+      },
+      body: JSON.stringify(updatedData)
+    });
 
-      const data = await res.json();
+    const data = await res.json();
       setMessage(res.ok ? '✅ Store updated successfully.' : `❌ ${data.message}`);
     } catch (err) {
       console.error(err);
