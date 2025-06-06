@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API_KEY = 'YourStrongSecret123';
 
 function EditStore() {
   const [editName, setEditName] = useState('');
@@ -18,7 +17,7 @@ function EditStore() {
       const res = await fetch(`${BACKEND_URL}/stores/by-name/${encodeURIComponent(editName)}`, {
         method: 'GET',
         headers: {
-          'x-api-key': API_KEY,
+          'x-api-key': 'YourStrongSecret123',
         },
       });
       const data = await res.json();
@@ -88,7 +87,7 @@ function EditStore() {
       const res = await fetch(`${BACKEND_URL}/stores/update-by-id/${selectedStoreId}`, {
         method: 'PUT',        
         headers: {
-          'x-api-key': API_KEY,
+          'x-api-key': 'YourStrongSecret123',
         },
         body: JSON.stringify(updatedData),
       });
