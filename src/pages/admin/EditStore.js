@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = 'YourStrongSecret123';
 
 function EditStore() {
   const [editName, setEditName] = useState('');
@@ -85,8 +86,9 @@ function EditStore() {
 
     try {
       const res = await fetch(`${BACKEND_URL}/stores/update-by-id/${selectedStoreId}`, {
-        method: 'PUT',        
+        method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           'x-api-key': 'YourStrongSecret123',
         },
         body: JSON.stringify(updatedData),
