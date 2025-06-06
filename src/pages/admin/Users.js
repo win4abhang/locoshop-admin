@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API_KEY = process.env.FRONTEND_SECRET_KEY;
+const API_KEY = 'YourStrongSecret123';
 
 const Users = () => {
   const [users, setUsers] = useState([]);

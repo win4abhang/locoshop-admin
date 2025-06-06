@@ -22,7 +22,7 @@ import { useState } from 'react';
 import Menu from '../components/Menu';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API_KEY = process.env.FRONTEND_SECRET_KEY;
+const API_KEY = 'YourStrongSecret123';
 
 const RegisterLocalPartner = () => {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);

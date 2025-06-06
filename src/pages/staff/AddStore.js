@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API_KEY = process.env.FRONTEND_SECRET_KEY;
+const API_KEY = 'YourStrongSecret123';
 
 function AddStore() {
   const [formData, setFormData] = useState({
