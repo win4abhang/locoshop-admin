@@ -82,16 +82,18 @@ function EditStore() {
       tags: tagsArray,
     };
 
-    try {   
-      const config = {
-        headers: {
-          'x-api-key': API_KEY,
-          // other headers if needed
-        }
-      };
-      
-      const res = await axios.put(`${BACKEND_URL}/users/${selectedStoreId}`, updatedData, config);
-      const data = res.data;
+    try {
+        const config = {
+          headers: {
+            'x-api-key': API_KEY
+          }
+        };        
+        const res = await axios.put(
+          `${BACKEND_URL}/stores/update-by-id/${selectedStoreId}`,
+          updatedData,
+          config
+        );        
+        const data = res.data;
       if (res.ok) {
         setMessage('✅ Store updated successfully.');
       } else {
