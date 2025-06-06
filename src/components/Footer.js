@@ -12,6 +12,10 @@ const Footer = () => {
           alignItems="center"
           flexWrap="wrap"
         >
+
+          <Link component={RouterLink} to="/about" underline="hover" color="text.secondary">
+            About Us
+          </Link>
           <Link component={RouterLink} to="/privacy" underline="hover" color="text.secondary">
             Privacy Policy
           </Link>

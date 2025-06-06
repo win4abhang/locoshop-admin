@@ -53,17 +53,13 @@ const Menu = () => {
             Home
           </MenuItem>
           <MenuItem onClick={handleMenuClose} component={Link} to="/register" disableRipple>
-            Register
+            Register Your Store
           </MenuItem>
-          <MenuItem onClick={handleMenuClose} component={Link} to="/about" disableRipple>
-            About Us
-          </MenuItem>
-          <MenuItem onClick={handleMenuClose} component={Link} to="/contact" disableRipple>
-            Contact Us
-          </MenuItem>
+          
           <MenuItem onClick={handleMenuClose} component={Link} to="/landing_Local_Partner" disableRipple>
             Become a Local Partner
           </MenuItem>
+          
             <MenuItem
               onClick={handleMenuClose}
               component="a"

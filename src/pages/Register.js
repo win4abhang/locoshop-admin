@@ -16,8 +16,6 @@ import { useEffect, useState } from "react";
 import { load } from "@cashfreepayments/cashfree-js";
 
 
-
-
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
 
