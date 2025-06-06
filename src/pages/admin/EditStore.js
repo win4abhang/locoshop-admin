@@ -83,25 +83,22 @@ function EditStore() {
     };
 
     try {
-        const config = {
-          headers: {
-            'x-api-key': API_KEY
-          }
-        };        
-        const res = await axios.put(
-          `${BACKEND_URL}/stores/update-by-id/${selectedStoreId}`,
-          updatedData,
-          config
-        );        
-        const data = res.data;
-      if (res.ok) {
-        setMessage('✅ Store updated successfully.');
-      } else {
-        setMessage('❌ ' + errorMessage);
-      }
+      const config = {
+        headers: {
+          'x-api-key': API_KEY
+        }
+      };
+      
+      const res = await axios.put(
+        `${BACKEND_URL}/stores/update-by-id/${selectedStoreId}`,
+        updatedData,
+        config
+      );      
+      const data = res.data;
     } catch (err) {
       console.error('Update error:', err);
-      setMessage('❌ Update failed.');
+      const errorMessage = err.response?.data?.message || 'Update failed.';
+      setMessage('❌ ' + errorMessage);
     }
   };
 
