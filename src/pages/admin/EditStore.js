@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API_KEY = 'YourStrongSecret123';
+const API_KEY = 'YourStrongSecret123'; // Ensure this matches backend .env
 
 function EditStore() {
   const [editName, setEditName] = useState('');
   const [formData, setFormData] = useState({
-    name: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
+    name: '', usp: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
   });
   const [message, setMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   const [storeList, setStoreList] = useState([]);
-  const [selectedStoreId, setSelectedStoreId] = useState(null); // State for selected store ID
+  const [selectedStoreId, setSelectedStoreId] = useState(null);
 
   const handleLoad = async () => {
     try {
       const res = await fetch(`${BACKEND_URL}/stores/by-name/${encodeURIComponent(editName)}`, {
         method: 'GET',
         headers: {
-          'x-api-key': 'YourStrongSecret123',
+          'x-api-key': API_KEY,
         },
       });
       const data = await res.json();
@@ -26,16 +26,15 @@ function EditStore() {
         setMessage(`❌ ${data.message || 'Failed to fetch store data.'}`);
         return;
       }
-  
+
       const stores = data.stores || [];
-  
+
       if (stores.length === 0) {
         setMessage('❌ Store not found.');
         setIsLoaded(false);
         setSelectedStoreId(null);
       } else if (stores.length === 1) {
         const store = stores[0];
-  
         setFormData({
           name: store.name || '',
           usp: store.usp || '',
@@ -45,7 +44,6 @@ function EditStore() {
           longitude: store.location?.coordinates?.[0]?.toString() || '',
           tags: (store.tags || []).join(', '),
         });
-  
         setSelectedStoreId(store._id);
         setIsLoaded(true);
         setMessage('✅ Store loaded successfully.');
@@ -61,7 +59,6 @@ function EditStore() {
       setIsLoaded(false);
     }
   };
-  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -89,7 +86,7 @@ function EditStore() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'YourStrongSecret123',
+          'x-api-key': API_KEY,
         },
         body: JSON.stringify(updatedData),
       });
@@ -101,8 +98,8 @@ function EditStore() {
         setMessage('❌ ' + data.message);
       }
     } catch (err) {
+      console.error('Update error:', err);
       setMessage('❌ Update failed.');
-      console.error(err);
     }
   };
 
@@ -133,7 +130,7 @@ function EditStore() {
                     longitude: store.location?.coordinates?.[0] || '',
                     tags: (store.tags || []).join(', '),
                   });
-                  setSelectedStoreId(store._id);  // Set selected store ID
+                  setSelectedStoreId(store._id);
                   setIsLoaded(true);
                   setMessage('✅ Store loaded successfully.');
                 }}>
