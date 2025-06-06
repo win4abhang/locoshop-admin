@@ -15,6 +15,7 @@ import ShippingDeliveryPolicy from './pages/ShippingDeliveryPolicy';
 import Result from './pages/Result';
 import LandingLocalPartner from './pages/LandingLocalPartner';
 import RegisterLocalPartner from './pages/RegisterLocalPartner';
+import Footer from './components/Footer'; // Adjust path as needed
 
 import './App.css';
 
@@ -40,6 +41,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+
       <Router>
         <Routes>
           {/* Public Routes */}
@@ -57,7 +59,6 @@ function App() {
           <Route path="/landing_Local_Partner" element={<LandingLocalPartner />} />
           <Route path="/register_local-partner" element={<RegisterLocalPartner />} />
           
-
           {/* Dashboard Routes */}
           <Route path="/admin/*" element={<AdminDashboard />} />
           <Route path="/staff/*" element={<StaffDashboard />} />
@@ -66,6 +67,9 @@ function App() {
           {/* 404 fallback */}
           <Route path="*" element={<h2>404 Page Not Found</h2>} />
         </Routes>
+
+        {/* ✅ Footer will show on all pages */}
+        <Footer />
       </Router>
     </ThemeProvider>
   );

@@ -49,33 +49,21 @@ const Menu = () => {
               'aria-labelledby': 'basic-button',
             }}
           >
-            <MenuItem onClick={handleMenuClose} component={Link} to="/" disableRipple>
-              Home
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose} component={Link} to="/register" disableRipple>
-              Register
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose} component={Link} to="/about" disableRipple>
-              About Us
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose} component={Link} to="/contact" disableRipple>
-              Contact Us
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose} component={Link} to="/privacy" disableRipple>
-              Privacy Policy
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose} component={Link} to="/terms" disableRipple>
-              Terms & Conditions
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose} component={Link} to="/return" disableRipple>
-              Return, Refund, and Cancellation Policy
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose} component={Link} to="/shipping" disableRipple>
-              Shipping & Delivery Policy
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose} component={Link} to="/landing_Local_Partner" disableRipple>
-              Become a Local Partner
-            </MenuItem>
+          <MenuItem onClick={handleMenuClose} component={Link} to="/" disableRipple>
+            Home
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose} component={Link} to="/register" disableRipple>
+            Register
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose} component={Link} to="/about" disableRipple>
+            About Us
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose} component={Link} to="/contact" disableRipple>
+            Contact Us
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose} component={Link} to="/landing_Local_Partner" disableRipple>
+            Become a Local Partner
+          </MenuItem>
             <MenuItem
               onClick={handleMenuClose}
               component="a"
