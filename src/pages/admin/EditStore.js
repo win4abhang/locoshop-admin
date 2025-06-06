@@ -97,7 +97,7 @@ function EditStore() {
       if (res.ok) {
         setMessage('✅ Store updated successfully.');
       } else {
-        setMessage('❌ ' + data.message);
+        setMessage('❌ ' + errorMessage);
       }
     } catch (err) {
       console.error('Update error:', err);
