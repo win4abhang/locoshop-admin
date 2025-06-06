@@ -41,10 +41,15 @@ const Users = () => {
     setLoading(true);
 
     try {
+      const config = {
+        headers: {
+          'x-api-key': API_KEY
+        }
+      };
       if (editingUserId) {
-        await axios.put(`${BACKEND_URL}/users/${editingUserId}`, form);
+        await axios.put(`${BACKEND_URL}/users/${editingUserId}`, form, config);
       } else {
-        await axios.post(`${BACKEND_URL}/users`, form);
+        await axios.post(`${BACKEND_URL}/users`, form, config);
       }
       setForm({ username: '', password: '', userType: 'staff' });
       setEditingUserId(null);
