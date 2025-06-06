@@ -15,6 +15,7 @@ function EditStore() {
   const [selectedStoreId, setSelectedStoreId] = useState(null);
 
   const handleLoad = async () => {
+    setMessage('');
     try {
       const res = await fetch(`${BACKEND_URL}/stores/by-name/${encodeURIComponent(editName)}`, {
         method: 'GET',
@@ -66,6 +67,7 @@ function EditStore() {
   };
 
   const handleUpdate = async (e) => {
+    setMessage('');
     e.preventDefault();
 
     if (!selectedStoreId) {
@@ -95,6 +97,7 @@ function EditStore() {
         config
       );      
       const data = res.data;
+      setMessage('✅ Store updated successfully.');
     } catch (err) {
       console.error('Update error:', err);
       const errorMessage = err.response?.data?.message || 'Update failed.';
