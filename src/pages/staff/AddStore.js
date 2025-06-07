@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Papa from 'papaparse';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
@@ -15,6 +16,8 @@ function AddStore() {
     tags: '',
   });
   const [message, setMessage] = useState('');
+  const [bulkMessage, setBulkMessage] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -49,7 +52,7 @@ function AddStore() {
       };
       await axios.post(`${BACKEND_URL}/stores/add`, storeData, config);
       setMessage('✅ Store added successfully!');
-      setFormData({ name: '', usp: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
+      setFormData({ name: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
     } catch (error) {
       setMessage('❌ ' + (error.response?.data?.message || 'Error adding store.'));
     }
@@ -78,17 +81,66 @@ function AddStore() {
     <div className="App" style={{ padding: '1rem' }}>
       <h2>Add Store</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="name" placeholder="Store Name" value={formData.name} onChange={handleChange} required />
-        <input type="text" name="usp" placeholder="What's New" value={formData.usp} onChange={handleChange} required />
-        <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} required />
-        <input type="text" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} required />
-        <input type="text" name="latitude" placeholder="Latitude" value={formData.latitude} onChange={handleChange} required />
-        <input type="text" name="longitude" placeholder="Longitude" value={formData.longitude} onChange={handleChange} required />
-        <input type="text" name="tags" placeholder="Tags (e.g. bike, repair)" value={formData.tags} onChange={handleChange} required />
+      <input
+          type="text"
+          name="name"
+          placeholder="Store Name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+        <input
+        type="text"
+        name="usp"
+        placeholder="What's New"
+        value={formData.usp}
+        onChange={handleChange}
+        required
+      />
+        <input
+          type="text"
+          name="address"
+          placeholder="Address"
+          value={formData.address}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="phone"
+          placeholder="Phone"
+          value={formData.phone}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="latitude"
+          placeholder="Latitude"
+          value={formData.latitude}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="longitude"
+          placeholder="Longitude"
+          value={formData.longitude}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="tags"
+          placeholder="Tags (e.g. bike, repair)"
+          value={formData.tags}
+          onChange={handleChange}
+          required
+        />
+        <button type="submit">Add Store</button>
       </form>
-      <button type="submit">Add Store</button>
-      
-      <label className="flex items-center space-x-2">
+
+      <label className="flex items-center space-x-2" style={{ marginTop: '1rem', display: 'block' }}>
         <span>📍 Use Current Location</span>
         <input
           type="checkbox"
@@ -99,8 +151,6 @@ function AddStore() {
       </label>
 
       {message && <p>{message}</p>}
-
-      <hr />
     </div>
   );
 }

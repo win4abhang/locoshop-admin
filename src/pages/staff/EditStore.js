@@ -1,37 +1,42 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API_KEY = 'YourStrongSecret123';
+const API_KEY = 'YourStrongSecret123'; // Ensure this matches backend .env
 
 function EditStore() {
   const [editName, setEditName] = useState('');
   const [formData, setFormData] = useState({
-    name: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
+    name: '', usp: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
   });
   const [message, setMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   const [storeList, setStoreList] = useState([]);
-  const [selectedStoreId, setSelectedStoreId] = useState(null); // State for selected store ID
+  const [selectedStoreId, setSelectedStoreId] = useState(null);
 
   const handleLoad = async () => {
+    setMessage('');
     try {
-      const res = await fetch(`${BACKEND_URL}/stores/by-name/${encodeURIComponent(editName)}`);
+      const res = await fetch(`${BACKEND_URL}/stores/by-name/${encodeURIComponent(editName)}`, {
+        method: 'GET',
+        headers: {
+          'x-api-key': API_KEY,
+        },
+      });
       const data = await res.json();
-  
       if (!res.ok) {
         setMessage(`❌ ${data.message || 'Failed to fetch store data.'}`);
         return;
       }
-  
+
       const stores = data.stores || [];
-  
+
       if (stores.length === 0) {
         setMessage('❌ Store not found.');
         setIsLoaded(false);
         setSelectedStoreId(null);
       } else if (stores.length === 1) {
         const store = stores[0];
-  
         setFormData({
           name: store.name || '',
           usp: store.usp || '',
@@ -41,7 +46,6 @@ function EditStore() {
           longitude: store.location?.coordinates?.[0]?.toString() || '',
           tags: (store.tags || []).join(', '),
         });
-  
         setSelectedStoreId(store._id);
         setIsLoaded(true);
         setMessage('✅ Store loaded successfully.');
@@ -57,13 +61,13 @@ function EditStore() {
       setIsLoaded(false);
     }
   };
-  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleUpdate = async (e) => {
+    setMessage('');
     e.preventDefault();
 
     if (!selectedStoreId) {
@@ -81,24 +85,23 @@ function EditStore() {
     };
 
     try {
-      const res = await fetch(`${BACKEND_URL}/stores/update-by-id/${selectedStoreId}`, {
-        method: 'PUT',
+      const config = {
         headers: {
-          'Content-Type': 'application/json',
           'x-api-key': API_KEY
-        },
-        body: JSON.stringify(updatedData)
-      });
+        }
+      };
       
-      const data = await res.json();
-      if (res.ok) {
-        setMessage('✅ Store updated successfully.');
-      } else {
-        setMessage('❌ ' + data.message);
-      }
+      const res = await axios.put(
+        `${BACKEND_URL}/stores/update-by-id/${selectedStoreId}`,
+        updatedData,
+        config
+      );      
+      const data = res.data;
+      setMessage('✅ Store updated successfully.');
     } catch (err) {
-      setMessage('❌ Update failed.');
-      console.error(err);
+      console.error('Update error:', err);
+      const errorMessage = err.response?.data?.message || 'Update failed.';
+      setMessage('❌ ' + errorMessage);
     }
   };
 
@@ -129,7 +132,7 @@ function EditStore() {
                     longitude: store.location?.coordinates?.[0] || '',
                     tags: (store.tags || []).join(', '),
                   });
-                  setSelectedStoreId(store._id);  // Set selected store ID
+                  setSelectedStoreId(store._id);
                   setIsLoaded(true);
                   setMessage('✅ Store loaded successfully.');
                 }}>

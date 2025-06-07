@@ -15,6 +15,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
 
 function EditStoreById() {
+  setMessage('');
   const [formData, setFormData] = useState({
     name: '',
     usp: '',
@@ -64,6 +65,7 @@ function EditStoreById() {
   }, []);
 
   const loadStoreById = async (id) => {
+    setMessage('');
     setLoading(true);
     try {
       const config = {
