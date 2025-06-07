@@ -1,19 +1,61 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import StoreTable from '../../components/StoreTable';
+import StoreEditDialog from '../../components/StoreEditDialog';
+
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  Alert,
+} from '@mui/material';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
 
 function EditStore() {
   const [editName, setEditName] = useState('');
-  const [formData, setFormData] = useState({
-    name: '', usp: '', address: '', phone: '', latitude: '', longitude: '', tags: '', subscription: ''
-  });
   const [message, setMessage] = useState('');
-  const [isLoaded, setIsLoaded] = useState(false);
   const [storeList, setStoreList] = useState([]);
-  const [selectedStoreId, setSelectedStoreId] = useState(null);
+  const [selectedStore, setSelectedStore] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleSelectStore = (store) => {
+    setSelectedStore(store);
+    setDialogOpen(true);
+  };
+
+  const handleUpdate = async (updatedStore) => {
+    try {
+      await axios.put(`${BACKEND_URL}/stores/${updatedStore._id}`, updatedStore, {
+        headers: { 'x-api-key': API_KEY },
+      });
+      setMessage('✅ Store updated successfully.');
+      setDialogOpen(false);
+    } catch (err) {
+      console.error('Update failed:', err);
+      setMessage('❌ Failed to update store.');
+    }
+  };
+
+  const handleRequestPayment = async (store) => {
+    try {
+      await axios.post(`${BACKEND_URL}/payment/request`, {
+        storeId: store._id,
+        name: store.name,
+        phone: store.phone,
+        amount: 365,
+      }, {
+        headers: { 'x-api-key': API_KEY },
+      });
+      alert('✅ Payment request sent!');
+    } catch (err) {
+      console.error('Payment request failed:', err);
+      alert('❌ Payment request failed');
+    }
+  };
 
   const handleLoad = async () => {
     setMessage('');
@@ -25,81 +67,72 @@ function EditStore() {
         },
       });
       const data = await res.json();
+
       if (!res.ok) {
         setMessage(`❌ ${data.message || 'Failed to fetch store data.'}`);
         return;
       }
 
-      const stores = data.stores || [];
+      const stores = (data.stores || []).filter(store => store.subscription !== 'Paid');
 
       if (stores.length === 0) {
-        setMessage('❌ Store not found.');
-        setIsLoaded(false);
-        setSelectedStoreId(null);
-      } else if (stores.length === 1) {
-        const store = stores[0];
-        setFormData({
-          name: store.name || '',
-          usp: store.usp || '',
-          address: store.address || '',
-          phone: store.phone || '',
-          latitude: store.location?.coordinates?.[1]?.toString() || '',
-          longitude: store.location?.coordinates?.[0]?.toString() || '',
-          tags: (store.tags || []).join(', '),
-          subscription: store.subscription || '',
-        });
-        setSelectedStoreId(store._id);
-        setIsLoaded(true);
-        setMessage('✅ Store loaded successfully.');
+        setMessage('❌ No free stores found.');
       } else {
         setStoreList(stores);
-        setSelectedStoreId(null);
-        setIsLoaded(false);
-        setMessage('⚠️ Multiple stores found. Please select one.');
+        setMessage(`✅ Found ${stores.length} free store(s).`);
       }
     } catch (err) {
       console.error('Load error:', err);
       setMessage('❌ Error loading store.');
-      setIsLoaded(false);
     }
   };
 
   return (
-    <div>
-      <h2>Edit Store by Name</h2>
-      <input
-        type="text"
-        placeholder="Enter store name"
-        value={editName}
-        onChange={(e) => setEditName(e.target.value)}
-      />
-      <button onClick={handleLoad}>Load Store</button>
-
-      {storeList.length > 1 && (
-        <div style={{ marginTop: '1rem' }}>
-          <StoreTable
-            storeList={storeList.filter(store => store.subscription !== 'Paid')}
-            onSelectStore={(store) => {
-              setFormData({
-                name: store.name || '',
-                usp: store.usp || '',
-                address: store.address || '',
-                phone: store.phone || '',
-                latitude: store.location?.coordinates?.[1] || '',
-                longitude: store.location?.coordinates?.[0] || '',
-                tags: (store.tags || []).join(', '),
-                subscription: store.subscription || '',
-              });
-              setSelectedStoreId(store._id);
-              setIsLoaded(true);
-              setMessage('✅ Store loaded successfully.');
-            }}
+    <Box sx={{ maxWidth: '800px', mx: 'auto', mt: 4, px: 2 }}>
+      <Paper sx={{ p: 3, mb: 4 }} elevation={3}>
+        <Typography variant="h5" gutterBottom>
+          Find Store by Name
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <TextField
+            label="Store Name"
+            variant="outlined"
+            fullWidth
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
           />
-        </div>
-      )}
+          <Button variant="contained" color="primary" onClick={handleLoad}>
+            Load Store
+          </Button>
+        </Box>
 
-      {message && <p>{message}</p>}
-    </div>
+        {message && (
+          <Alert
+            severity={message.includes('❌') ? 'error' : message.includes('⚠️') ? 'warning' : 'success'}
+            sx={{ mt: 2 }}
+          >
+            {message}
+          </Alert>
+        )}
+      </Paper>
+
+      {storeList.length > 0 && (
+        <>
+          <StoreTable
+            storeList={storeList}
+            onSelectStore={handleSelectStore}
+          />
+
+          <StoreEditDialog
+            open={dialogOpen}
+            store={selectedStore}
+            handleClose={() => setDialogOpen(false)}
+            onUpdate={handleUpdate}
+            onRequestPayment={handleRequestPayment}
+          />
+        </>
+      )}
+    </Box>
   );
 }
 
