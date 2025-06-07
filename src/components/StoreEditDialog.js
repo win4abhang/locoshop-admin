@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, TextField, Grid, useMediaQuery
+  Button, TextField, Grid, useMediaQuery, Stack
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-
-const userType = localStorage.getItem('userType');
 
 const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
+  const [userType, setUserType] = useState('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Load userType safely
+  useEffect(() => {
+    const storedUserType = localStorage.getItem('userType');
+    setUserType(storedUserType);
+  }, []);
 
   useEffect(() => {
     if (store) {
@@ -51,13 +56,13 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>Edit Store Information</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2} sx={{ mt: 1 }}>
+      <DialogContent sx={{ pt: 2 }}>
+        <Grid container spacing={2}>
           {['name', 'usp', 'tags', 'address', 'phone', 'latitude', 'longitude'].map((field) => (
             <Grid item xs={12} sm={6} key={field}>
               <TextField
                 fullWidth
-                margin="normal"
+                margin="dense"
                 label={field.toUpperCase()}
                 name={field}
                 value={formData[field] || ''}
@@ -69,32 +74,41 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
           ))}
         </Grid>
       </DialogContent>
-      <DialogActions sx={{ flexDirection: isMobile ? 'column' : 'row', gap: 1, m: 2 }}>
-      {userType !== 'local_partner' && (
+
+      <DialogActions>
+        <Stack
+          direction={isMobile ? 'column' : 'row'}
+          spacing={2}
+          sx={{ width: '100%', p: 2 }}
+        >
+          {userType !== 'local_partner' && (
             <Button
-                onClick={handleSubmit}
-                variant="contained"
-                color="primary"
-                fullWidth={isMobile}
+              onClick={handleSubmit}
+              variant="contained"
+              color="primary"
+              fullWidth={isMobile}
             >
-                Update Store
+              Update Store
             </Button>
-            )}
-        <Button
-          onClick={() => onRequestPayment(formData)}
-          variant="outlined"
-          color="success"
-          fullWidth={isMobile}
-        >
-          Request Payment
-        </Button>
-        <Button
-          onClick={handleClose}
-          variant="text"
-          fullWidth={isMobile}
-        >
-          Close
-        </Button>
+          )}
+
+          <Button
+            onClick={() => onRequestPayment(formData)}
+            variant="outlined"
+            color="success"
+            fullWidth={isMobile}
+          >
+            Request Payment
+          </Button>
+
+          <Button
+            onClick={handleClose}
+            variant="text"
+            fullWidth={isMobile}
+          >
+            Close
+          </Button>
+        </Stack>
       </DialogActions>
     </Dialog>
   );

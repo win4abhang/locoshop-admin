@@ -13,11 +13,8 @@ import {
 } from '@mui/material';
 
 const username = localStorage.getItem('username');
-
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
-
-const [paymentDetails, setPaymentDetails] = useState(null);
 
 function EditStore() {
   const [editName, setEditName] = useState('');
@@ -25,6 +22,7 @@ function EditStore() {
   const [storeList, setStoreList] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState(null); // ✅ moved inside component
 
   const handleSelectStore = (store) => {
     setSelectedStore(store);
@@ -62,7 +60,7 @@ function EditStore() {
 
   const handleRequestPayment = async (store) => {
     try {
-      await axios.post(`${BACKEND_URL}/payment/request`, {
+      const response = await axios.post(`${BACKEND_URL}/payment/request`, {
         LocalPartnerUsername: username,
         storeId: store._id,
         order_amount: 365,
@@ -73,22 +71,22 @@ function EditStore() {
       }, {
         headers: { 'x-api-key': API_KEY },
       });
+
       if (response.data.success) {
         setPaymentDetails({
           storeName: store.name,
           phone: store.phone,
           paymentLink: response.data.link_url,
         });
+        alert('✅ Payment request sent! Payment Link expiry: 24 Hours');
       } else {
         alert('❌ Payment link creation failed');
       }
-      alert('✅ Payment request sent! Pyment Link expiry 24 Hours');
     } catch (err) {
       console.error('Payment request failed:', err);
       alert('❌ Payment request failed');
     }
   };
-  
 
   const handleLoad = async () => {
     setMessage('');
@@ -166,7 +164,7 @@ function EditStore() {
           />
         </>
       )}
-      
+
       {paymentDetails && (
         <PaymentLinkCard
           storeName={paymentDetails.storeName}
@@ -174,7 +172,6 @@ function EditStore() {
           paymentLink={paymentDetails.paymentLink}
         />
       )}
-
     </Box>
   );
 }
