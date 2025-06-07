@@ -10,7 +10,8 @@ import {
   Stack,
   Link,
   Divider,
-  Container
+  Container,
+  Paper,
 } from '@mui/material';
 
 const LocalPartnerDashboard = () => {
@@ -22,54 +23,73 @@ const LocalPartnerDashboard = () => {
   };
 
   return (
-    <Container sx={{ py: 4 }}>
-      <Typography variant="h5" gutterBottom>
-      Local Partner Dashboard
-      </Typography>
+    <Container maxWidth="sm" sx={{ py: 4 }}>
+      <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
+        <Typography variant="h5" fontWeight="bold" gutterBottom align="center">
+          🌐 Local Partner Dashboard
+        </Typography>
 
-      {/* Navigation Links */}
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={2}
-        alignItems="center"
-        sx={{ mb: 3 }}
-        flexWrap="wrap"
-      >
-        <Link component={RouterLink} to="/local_partner/add-store" underline="hover">
-          ➕ Add Store
-        </Link>
-        <Link component={RouterLink} to="/local_partner/edit-store" underline="hover">
-          ✏️ Edit Store
-        </Link>
-        <Button
-          onClick={handleLogout}
-          variant="outlined"
-          color="error"
-          size="small"
+        <Stack
+          direction="column"
+          spacing={2}
+          sx={{ mb: 3 }}
+          alignItems="stretch"
         >
-          🚪 Logout
-        </Button>
-      </Stack>
+          <Button
+            component={RouterLink}
+            to="/local_partner/add-store"
+            variant="contained"
+            color="primary"
+            fullWidth
+          >
+            ➕ Add Store
+          </Button>
 
-      <Divider sx={{ mb: 3 }} />
+          <Button
+            component={RouterLink}
+            to="/local_partner/edit-store"
+            variant="outlined"
+            color="primary"
+            fullWidth
+          >
+            ✏️ Edit Store
+          </Button>
 
-      {/* Routes */}
-      <Box>
-        <Routes>
-          <Route
-            index
-            element={<Typography>Welcome to Staff Panel</Typography>}
-          />
-          <Route path="add-store" element={<AddStore />} />
-          <Route path="edit-store" element={<EditStore />} />
-          <Route
-            path="*"
-            element={
-              <Typography color="error">404 - Page Not Found in Staff Panel</Typography>
-            }
-          />
-        </Routes>
-      </Box>
+          <Button
+            onClick={handleLogout}
+            variant="text"
+            color="error"
+            fullWidth
+          >
+            🚪 Logout
+          </Button>
+        </Stack>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Box sx={{ mt: 2 }}>
+          <Routes>
+            <Route
+              index
+              element={
+                <Typography align="center" variant="body1">
+                  👋 Welcome to Local Partner Dashboard.
+                </Typography>
+              }
+            />
+            <Route path="add-store" element={<AddStore />} />
+            <Route path="edit-store" element={<EditStore />} />
+            <Route
+              path="*"
+              element={
+                <Typography color="error" align="center">
+                  404 - Page Not Found in Local Partner Dashboard
+                </Typography>
+              }
+            />
+          </Routes>
+        </Box>
+      </Paper>
     </Container>
   );
 };

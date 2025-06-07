@@ -5,6 +5,8 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
+const userType = localStorage.getItem('userType');
+
 const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
@@ -68,14 +70,16 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
         </Grid>
       </DialogContent>
       <DialogActions sx={{ flexDirection: isMobile ? 'column' : 'row', gap: 1, m: 2 }}>
-        <Button
-          onClick={handleSubmit}
-          variant="contained"
-          color="primary"
-          fullWidth={isMobile}
-        >
-          Update Store
-        </Button>
+      {userType !== 'local_partner' && (
+            <Button
+                onClick={handleSubmit}
+                variant="contained"
+                color="primary"
+                fullWidth={isMobile}
+            >
+                Update Store
+            </Button>
+            )}
         <Button
           onClick={() => onRequestPayment(formData)}
           variant="outlined"

@@ -11,8 +11,12 @@ import {
   Alert,
 } from '@mui/material';
 
+const username = localStorage.getItem('username');
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
+
+const [paymentDetails, setPaymentDetails] = useState(null);
 
 function EditStore() {
   const [editName, setEditName] = useState('');
@@ -58,19 +62,32 @@ function EditStore() {
   const handleRequestPayment = async (store) => {
     try {
       await axios.post(`${BACKEND_URL}/payment/request`, {
+        LocalPartnerUsername: username,
         storeId: store._id,
-        name: store.name,
-        phone: store.phone,
-        amount: 365,
+        order_amount: 365,
+        order_currency: "INR",
+        customerPhone: store.phone,
+        customerName: store.name,
+        link_expiry_hours: 24,
       }, {
         headers: { 'x-api-key': API_KEY },
       });
-      alert('✅ Payment request sent!');
+      if (response.data.success) {
+        setPaymentDetails({
+          storeName: store.name,
+          phone: store.phone,
+          paymentLink: response.data.link_url,
+        });
+      } else {
+        alert('❌ Payment link creation failed');
+      }
+      alert('✅ Payment request sent! Pyment Link expiry 24 Hours');
     } catch (err) {
       console.error('Payment request failed:', err);
       alert('❌ Payment request failed');
     }
   };
+  
 
   const handleLoad = async () => {
     setMessage('');
@@ -148,6 +165,15 @@ function EditStore() {
           />
         </>
       )}
+      
+      {paymentDetails && (
+        <PaymentLinkCard
+          storeName={paymentDetails.storeName}
+          phone={paymentDetails.phone}
+          paymentLink={paymentDetails.paymentLink}
+        />
+      )}
+
     </Box>
   );
 }
