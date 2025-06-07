@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import StoreTable from '../components/StoreTable'; // Make sure path is correct
+import StoreTable from '../../components/StoreTable';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
