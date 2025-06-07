@@ -9,21 +9,21 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #fff;
-      text-align: center;
       height: 100vh;
-      background: radial-gradient(#000428, #004e92);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(ellipse at bottom, #001d3d, #000814);
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       flex-direction: column;
+      color: white;
+      text-align: center;
     }
 
     h1 {
       font-size: 6rem;
       margin: 0;
-      text-shadow: 0 0 20px #fff;
+      text-shadow: 0 0 30px white;
     }
 
     p {
@@ -33,8 +33,8 @@
 
     a {
       text-decoration: none;
-      color: #000;
-      background-color: #fff;
+      color: black;
+      background-color: white;
       padding: 0.7rem 1.5rem;
       border-radius: 30px;
       font-weight: bold;
@@ -42,7 +42,7 @@
     }
 
     a:hover {
-      background-color: #ffd700;
+      background-color: #1A73E8;
     }
 
     .star {
@@ -51,8 +51,8 @@
       height: 2px;
       background: white;
       border-radius: 50%;
-      opacity: 0.8;
-      animation: twinkle 2s infinite ease-in-out alternate;
+      opacity: 0.7;
+      animation: twinkle 2s infinite alternate;
     }
 
     @keyframes twinkle {
@@ -62,54 +62,57 @@
 
     .shooting-star {
       position: absolute;
-      width: 150px;
+      width: 120px;
       height: 2px;
-      background: linear-gradient(-45deg, white, rgba(255,255,255,0));
-      animation: shoot 3s linear infinite;
+      background: linear-gradient(90deg, white, transparent);
+      transform: rotate(45deg);
+      opacity: 0;
+      animation: shoot 6s linear forwards;
     }
 
     @keyframes shoot {
       0% {
-        transform: translateX(-200px) translateY(-200px) rotate(-45deg);
+        transform: translate(0, 0) rotate(45deg);
         opacity: 0;
       }
       10% {
         opacity: 1;
       }
       100% {
-        transform: translateX(100vw) translateY(100vh) rotate(-45deg);
+        transform: translate(600px, 600px) rotate(45deg);
         opacity: 0;
       }
     }
   </style>
 </head>
 <body>
-  <div class="sky">
-    <h1>404</h1>
-    <p>Lost in the stars? This page doesn't exist.</p>
-    <a href="/">Take me home</a>
-  </div>
+  <h1>404</h1>
+  <p>Lost in the stars? This page doesn't exist.</p>
+  <a href="/">Take me home</a>
 
   <script>
-    // Create static stars
-    for (let i = 0; i < 100; i++) {
+    // Generate twinkling stars
+    for (let i = 0; i < 150; i++) {
       const star = document.createElement('div');
       star.className = 'star';
       star.style.top = Math.random() * 100 + 'vh';
       star.style.left = Math.random() * 100 + 'vw';
+      star.style.animationDelay = Math.random() * 5 + 's';
       document.body.appendChild(star);
     }
 
-    // Create occasional shooting stars
+    // Generate multiple shooting stars
     setInterval(() => {
-      const shootingStar = document.createElement('div');
-      shootingStar.className = 'shooting-star';
-      shootingStar.style.top = Math.random() * 50 + 'vh';
-      shootingStar.style.left = Math.random() * 50 + 'vw';
-      document.body.appendChild(shootingStar);
+      for (let i = 0; i < 2; i++) { // 2 stars at a time
+        const shootingStar = document.createElement('div');
+        shootingStar.className = 'shooting-star';
+        shootingStar.style.top = Math.random() * 60 + 'vh';
+        shootingStar.style.left = Math.random() * 50 + 'vw';
+        document.body.appendChild(shootingStar);
 
-      setTimeout(() => shootingStar.remove(), 3000);
-    }, 4000);
+        setTimeout(() => shootingStar.remove(), 6000);
+      }
+    }, 2000); // Every 2 seconds
   </script>
 </body>
 </html>
