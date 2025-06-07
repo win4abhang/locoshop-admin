@@ -12,7 +12,6 @@ import {
   Alert,
 } from '@mui/material';
 
-const username = localStorage.getItem('username');
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
 
@@ -22,7 +21,7 @@ function EditStore() {
   const [storeList, setStoreList] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [paymentDetails, setPaymentDetails] = useState(null); // ✅ moved inside component
+  const [paymentDetails, setPaymentDetails] = useState(null);
 
   const handleSelectStore = (store) => {
     setSelectedStore(store);
@@ -51,6 +50,7 @@ function EditStore() {
 
       setMessage('✅ Store updated successfully.');
       setDialogOpen(false);
+      // Optionally refresh store list or update UI here
     } catch (err) {
       console.error('Update error:', err);
       const errorMessage = err.response?.data?.message || 'Update failed.';
@@ -59,15 +59,29 @@ function EditStore() {
   };
 
   const handleRequestPayment = async (store) => {
+    if (!store?._id) {
+      alert('❌ Invalid store selected for payment.');
+      return;
+    }
+
     try {
-      const response = await axios.post(`${BACKEND_URL}/payment/request`, {
-        LocalPartnerUsername: username,
+      const LocalPartnerUsername = localStorage.getItem('username') || 'UnknownUser';
+
+      console.log('Sending payment request:', {
         storeId: store._id,
+        phone: store.phone,
+        name: store.name,
+        LocalPartnerUsername,
+      });
+
+      const response = await axios.post(`${BACKEND_URL}/payment/request`, {
         order_amount: 365,
         order_currency: "INR",
         customerPhone: store.phone,
         customerName: store.name,
         link_expiry_hours: 24,
+        storeId: store._id,
+        LocalPartnerUsername,
       }, {
         headers: { 'x-api-key': API_KEY },
       });
@@ -78,7 +92,7 @@ function EditStore() {
           phone: store.phone,
           paymentLink: response.data.link_url,
         });
-        alert('✅ Payment request sent! Payment Link expiry: 24 Hours');
+        alert('✅ Payment request sent! Payment Link expires in 24 hours');
       } else {
         alert('❌ Payment link creation failed');
       }
@@ -90,6 +104,7 @@ function EditStore() {
 
   const handleLoad = async () => {
     setMessage('');
+    setStoreList([]);
     try {
       const res = await fetch(`${BACKEND_URL}/stores/by-name/${encodeURIComponent(editName)}`, {
         method: 'GET',
