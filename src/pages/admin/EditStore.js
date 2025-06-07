@@ -7,7 +7,7 @@ const API_KEY = 'YourStrongSecret123'; // Ensure this matches backend .env
 function EditStore() {
   const [editName, setEditName] = useState('');
   const [formData, setFormData] = useState({
-    name: '', usp: '', address: '', phone: '', latitude: '', longitude: '', tags: ''
+    name: '', usp: '', address: '', phone: '', latitude: '', longitude: '', tags: '', subscription: ''
   });
   const [message, setMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
@@ -45,6 +45,7 @@ function EditStore() {
           latitude: store.location?.coordinates?.[1]?.toString() || '',
           longitude: store.location?.coordinates?.[0]?.toString() || '',
           tags: (store.tags || []).join(', '),
+          subscription: store.subscription || '',
         });
         setSelectedStoreId(store._id);
         setIsLoaded(true);
@@ -131,6 +132,7 @@ function EditStore() {
                     latitude: store.location?.coordinates?.[1] || '',
                     longitude: store.location?.coordinates?.[0] || '',
                     tags: (store.tags || []).join(', '),
+                    subscription: store.subscription || '',
                   });
                   setSelectedStoreId(store._id);
                   setIsLoaded(true);
@@ -154,6 +156,15 @@ function EditStore() {
           <input type="text" name="latitude" value={formData.latitude} onChange={handleChange} required />
           <input type="text" name="longitude" value={formData.longitude} onChange={handleChange} required />
           <input type="text" name="tags" value={formData.tags} onChange={handleChange} required />
+          <select
+            name="subscription"
+            value={formData.subscription}
+            onChange={handleChange}
+            required
+          >
+            <option value="Free">Free</option>
+            <option value="Paid">Paid</option>
+          </select>          
           <button type="submit">Update Store</button>
         </form>
       )}
@@ -164,3 +175,6 @@ function EditStore() {
 }
 
 export default EditStore;
+
+
+

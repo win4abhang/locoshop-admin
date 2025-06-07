@@ -24,7 +24,7 @@ const LocalPartnerDashboard = () => {
   return (
     <Container sx={{ py: 4 }}>
       <Typography variant="h5" gutterBottom>
-        Staff Dashboard
+      Local Partner Dashboard
       </Typography>
 
       {/* Navigation Links */}
