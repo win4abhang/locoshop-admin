@@ -11,13 +11,18 @@
       overflow: hidden;
       height: 100vh;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: radial-gradient(ellipse at bottom, #001d3d, #000814);
+      background: radial-gradient(ellipse at bottom, #000814, #000814);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
       color: white;
       text-align: center;
+    }
+
+    img.logo {
+      width: 150px;
+      margin-bottom: 20px;
     }
 
     h1 {
@@ -43,6 +48,7 @@
 
     a:hover {
       background-color: #1A73E8;
+      color: white;
     }
 
     .star {
@@ -62,12 +68,12 @@
 
     .shooting-star {
       position: absolute;
-      width: 120px;
+      width: 100px;
       height: 2px;
-      background: linear-gradient(90deg, white, transparent);
+      background: linear-gradient(-90deg, white, transparent);
       transform: rotate(45deg);
       opacity: 0;
-      animation: shoot 6s linear forwards;
+      animation: shoot 8s linear forwards;
     }
 
     @keyframes shoot {
@@ -79,19 +85,22 @@
         opacity: 1;
       }
       100% {
-        transform: translate(600px, 600px) rotate(45deg);
+        transform: translate(500px, 500px) rotate(45deg);
         opacity: 0;
       }
     }
   </style>
 </head>
 <body>
+  <!-- 🔄 Replace the src with your actual logo path -->
+  <img src="./images/logoWhiteNoBg.png" alt="Logo" class="logo">
+
   <h1>404</h1>
   <p>Lost in the stars? This page doesn't exist.</p>
   <a href="/">Take me home</a>
 
   <script>
-    // Generate twinkling stars
+    // ✨ Twinkling stars
     for (let i = 0; i < 150; i++) {
       const star = document.createElement('div');
       star.className = 'star';
@@ -101,18 +110,15 @@
       document.body.appendChild(star);
     }
 
-    // Generate multiple shooting stars
+    // 🌠 One shooting star every 4 seconds
     setInterval(() => {
-      for (let i = 0; i < 2; i++) { // 2 stars at a time
-        const shootingStar = document.createElement('div');
-        shootingStar.className = 'shooting-star';
-        shootingStar.style.top = Math.random() * 60 + 'vh';
-        shootingStar.style.left = Math.random() * 50 + 'vw';
-        document.body.appendChild(shootingStar);
-
-        setTimeout(() => shootingStar.remove(), 6000);
-      }
-    }, 2000); // Every 2 seconds
+      const shootingStar = document.createElement('div');
+      shootingStar.className = 'shooting-star';
+      shootingStar.style.top = Math.random() * 60 + 'vh';
+      shootingStar.style.left = Math.random() * 50 + 'vw';
+      document.body.appendChild(shootingStar);
+      setTimeout(() => shootingStar.remove(), 8000);
+    }, 4000);
   </script>
 </body>
 </html>
