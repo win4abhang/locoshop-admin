@@ -44,6 +44,7 @@ function Login() {
       if (userType === 'admin') navigate('/admin/AdminDashboard');
       else if (userType === 'staff') navigate('/staff');
       else if (userType === 'store_owner') navigate('/store_owner');
+      else if (userType === 'local_partner') navigate('/local_partner');
     } catch (err) {
       console.error('Login error:', err);
       setError(err.response?.data?.error || 'Login failed');

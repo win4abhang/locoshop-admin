@@ -3,9 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import Register from './pages/Register';
 import Login from './pages/Login';
+
 import AdminDashboard from './pages/admin/AdminDashboard';
 import StaffDashboard from './pages/staff/StaffDashboard';
 import StoreOwnerDashboard from './pages/storeOwner/StoreOwnerDashboard';
+import LocalPartnerDashboard from './pages/local_partner/LocalPartnerDashboard';
+
 import About from './pages/About'; // adjust path if different
 import Contact from './pages/Contact'; // adjust path if different
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -63,10 +66,11 @@ function App() {
           <Route path="/admin/*" element={<AdminDashboard />} />
           <Route path="/staff/*" element={<StaffDashboard />} />
           <Route path="/store_owner/*" element={<StoreOwnerDashboard />} />
+          <Route path="/local_partner/*" element={<LocalPartnerDashboard />} />
 
           {/* 404 fallback */}
           <Route path="*" element={<h2>404 Page Not Found</h2>} />
-        </Routes>
+        </Routes> 
 
         {/* ✅ Footer will show on all pages */}
         <Footer />

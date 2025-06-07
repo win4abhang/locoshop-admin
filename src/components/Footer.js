@@ -39,7 +39,7 @@ const Footer = () => {
           align="center"
           sx={{ mt: 2 }}
         >
-          © {new Date().getFullYear()} Locoshop. All rights reserved.
+          © {new Date().getFullYear()} Localz.online All rights reserved.
         </Typography>
       </Container>
     </Box>
