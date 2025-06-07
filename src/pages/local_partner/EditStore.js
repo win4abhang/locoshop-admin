@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import StoreTable from '../../components/StoreTable';
 import StoreEditDialog from '../../components/StoreEditDialog';
-
 import {
   Box,
   Button,
@@ -28,15 +27,31 @@ function EditStore() {
   };
 
   const handleUpdate = async (updatedStore) => {
+    if (!updatedStore || !updatedStore._id) {
+      setMessage('❌ No store selected.');
+      return;
+    }
+
+    const tagsArray = (updatedStore.tags || '').split(',').map(tag => tag.trim());
+
+    const updatedData = {
+      ...updatedStore,
+      latitude: parseFloat(updatedStore.latitude),
+      longitude: parseFloat(updatedStore.longitude),
+      tags: tagsArray,
+    };
+
     try {
-      await axios.put(`${BACKEND_URL}/stores/${updatedStore._id}`, updatedStore, {
-        headers: { 'x-api-key': API_KEY },
+      await axios.put(`${BACKEND_URL}/stores/update-by-id/${updatedStore._id}`, updatedData, {
+        headers: { 'x-api-key': API_KEY }
       });
+
       setMessage('✅ Store updated successfully.');
       setDialogOpen(false);
     } catch (err) {
-      console.error('Update failed:', err);
-      setMessage('❌ Failed to update store.');
+      console.error('Update error:', err);
+      const errorMessage = err.response?.data?.message || 'Update failed.';
+      setMessage('❌ ' + errorMessage);
     }
   };
 
@@ -66,6 +81,7 @@ function EditStore() {
           'x-api-key': API_KEY,
         },
       });
+
       const data = await res.json();
 
       if (!res.ok) {
