@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import StoreTable from '../../components/StoreTable';
 import StoreEditDialog from '../../components/StoreEditDialog';
+import PaymentLinkCard from '../../components/PaymentLinkCard';
 import {
   Box,
   Button,
