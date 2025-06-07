@@ -75,11 +75,11 @@ function EditStore() {
       });
 
       const response = await axios.post(`${BACKEND_URL}/payment/request`, {
-        order_amount: 365,
+        order_amount: "365",
         order_currency: "INR",
         customerPhone: store.phone,
         customerName: store.name,
-        link_expiry_hours: 24,
+        link_expiry_hours: "24",
         storeId: store._id,
         LocalPartnerUsername,
       }, {
