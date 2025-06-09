@@ -7,15 +7,28 @@ const Result = () => {
   const navigate = useNavigate();
   const state = location.state;
 
-  // ✅ Fire conversion tracking only when payment/store registration is successful
+  // 🔄 TEMPORARILY inject gtag on this page directly
   useEffect(() => {
-    if (state?.success && window.gtag) {
-      window.gtag('event', 'conversion', {
-        send_to: 'AW-17100124901' // Optional: Add '/LABEL' if you have a specific conversion label
-      });
-      console.log('✅ Google Ads conversion event fired');
-    }
-  }, [state]);
+    const script1 = document.createElement('script');
+    script1.src = 'https://www.googletagmanager.com/gtag/js?id=AW-17100124901';
+    script1.async = true;
+    document.head.appendChild(script1);
+
+    const script2 = document.createElement('script');
+    script2.innerHTML = `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-17100124901');
+    `;
+    document.head.appendChild(script2);
+
+    // Clean up scripts when component unmounts
+    return () => {
+      document.head.removeChild(script1);
+      document.head.removeChild(script2);
+    };
+  }, []);
 
   return (
     <Container maxWidth="sm" sx={{ py: 6 }}>
