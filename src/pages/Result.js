@@ -9,12 +9,12 @@ const Result = () => {
 
   // ✅ Fire conversion tracking only when payment/store registration is successful
   useEffect(() => {
-    if (state?.success && window.gtag) {
+   
       window.gtag('event', 'conversion', {
-        send_to: 'AW-17100124901' // Optional: Add '/LABEL' if you have a specific conversion label
+      send_to: 'AW-17100124901' // Optional: Add '/LABEL' if you have a specific conversion label
       });
       console.log('✅ Google Ads conversion event fired');
-    }
+    
   }, [state]);
 
   return (
