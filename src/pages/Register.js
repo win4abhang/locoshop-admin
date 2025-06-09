@@ -113,7 +113,11 @@ const Register = () => {
       setMessage('Please enter a valid 10-digit phone number.');
       return;
     }
-
+    if (window.gtag) {
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-17100124901/j4z9CKeS6NYaEOXl_Nk_',
+      });
+    }
     try {
       const userData = {
         order_amount: 365,
@@ -172,7 +176,6 @@ const Register = () => {
         }
       },
     );
-
       if (verifyRes.data.success) {
         navigate('/result', {
           state: {
