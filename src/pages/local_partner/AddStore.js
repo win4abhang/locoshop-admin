@@ -138,6 +138,15 @@ function AddStore() {
           onChange={handleChange}
           required
         />
+        <Button
+          onClick={getCurrentLocation}
+          to="/local_partner/edit-store"
+          variant="outlined"
+          color="primary"
+          fullWidth
+        >
+          Use Current Location
+        </Button>
         <input
           type="text"
           name="tags"
@@ -149,23 +158,13 @@ function AddStore() {
         <Button
         type="submit"
         to="/local_partner/edit-store"
-        variant="outlined"
+        variant='contained'
         color="primary"
         fullWidth
       >
         Add Store
       </Button>
-      </form>
-
-      <Button
-        onClick={getCurrentLocation}
-        to="/local_partner/edit-store"
-        variant="outlined"
-        color="primary"
-        fullWidth
-      >
-        Use Current Location
-      </Button>
+      </form>      
 
       {message && <p>{message}</p>}
     </div>
