@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Papa from 'papaparse';
-
 import {
   Box,
   Button,
   Typography,
+  TextField,
   Stack,
-  Link,
-  Divider,
   Container,
   Paper,
+  Alert,
 } from '@mui/material';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -61,7 +59,15 @@ function AddStore() {
       };
       await axios.post(`${BACKEND_URL}/stores/add`, storeData, config);
       setMessage('✅ Store added successfully!');
-      setFormData({ name: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
+      setFormData({
+        name: '',
+        usp: '',
+        address: '',
+        phone: '',
+        latitude: '',
+        longitude: '',
+        tags: ''
+      });
     } catch (error) {
       setMessage('❌ ' + (error.response?.data?.message || 'Error adding store.'));
     }
@@ -87,89 +93,99 @@ function AddStore() {
   };
 
   return (
-    <div className="App" style={{ padding: '1rem' }}>
-      <h2>Add Store</h2>
-      <form onSubmit={handleSubmit}>
-      <input
-          type="text"
-          name="name"
-          placeholder="Store Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-        type="text"
-        name="usp"
-        placeholder="What's New"
-        value={formData.usp}
-        onChange={handleChange}
-        required
-      />
-        <input
-          type="text"
-          name="address"
-          placeholder="Address"
-          value={formData.address}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone"
-          value={formData.phone}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="latitude"
-          placeholder="Latitude"
-          value={formData.latitude}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="longitude"
-          placeholder="Longitude"
-          value={formData.longitude}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="tags"
-          placeholder="Tags (e.g. bike, repair)"
-          value={formData.tags}
-          onChange={handleChange}
-          required
-        />
-        <Button
-        onClick={handleSubmit}
-        to="/local_partner/edit-store"
-        variant='contained'
-        color="primary"
-        fullWidth
-      >
-        Add Store
-      </Button>
-      </form>
-      
+    <Container maxWidth="sm" sx={{ mt: 4 }}>
+      <Paper elevation={3} sx={{ p: 3 }}>
+        <Typography variant="h5" gutterBottom>
+          Add Store
+        </Typography>
 
-      <Button
-        onClick={getCurrentLocation}
-        to="/local_partner/edit-store"
-        variant="outlined"
-        color="primary"
-        fullWidth
-      >
-        Use Current Location
-      </Button>
+        <Box component="form" onSubmit={handleSubmit} noValidate autoComplete="off">
+          <Stack spacing={2}>
+            <TextField
+              label="Store Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="What's New (USP)"
+              name="usp"
+              value={formData.usp}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Latitude"
+              name="latitude"
+              type="number"
+              value={formData.latitude}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Longitude"
+              name="longitude"
+              type="number"
+              value={formData.longitude}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <Button
+              variant="outlined"
+              onClick={getCurrentLocation}
+              color="secondary"
+            >
+              Use Current Location
+            </Button>
+            <TextField
+              label="Tags (comma-separated)"
+              name="tags"
+              value={formData.tags}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+            >
+              Add Store
+            </Button>
+          </Stack>
+        </Box>
 
-      {message && <p>{message}</p>}
-    </div>
+        {message && (
+          <Box mt={2}>
+            <Alert severity={message.startsWith('✅') ? 'success' : 'error'}>
+              {message}
+            </Alert>
+          </Box>
+        )}
+      </Paper>
+    </Container>
   );
 }
 
