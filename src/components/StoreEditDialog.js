@@ -81,16 +81,15 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
           spacing={2}
           sx={{ width: '100%', p: 2 }}
         >
-          {userType !== 'local_partner' && (
-            <Button
-              onClick={handleSubmit}
-              variant="contained"
-              color="primary"
-              fullWidth={isMobile}
-            >
-              Update Store
-            </Button>
-          )}
+          
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            color="primary"
+            fullWidth={isMobile}
+          >
+            Update Store
+          </Button>
 
           <Button
             onClick={() => onRequestPayment(formData)}
