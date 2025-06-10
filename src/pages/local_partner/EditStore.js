@@ -91,7 +91,7 @@ function EditStore() {
 
       if (response.data.success) {
         setPaymentDetails({
-          name: store.name,
+          storeName: store.name,
           phone: store.phone,
           paymentLink: response.data.link_url,
         });
@@ -207,7 +207,7 @@ function EditStore() {
 
         <DialogContent dividers>
           <PaymentLinkCard
-            name={paymentDetails.name}
+            storeName={paymentDetails.storeName}
             phone={paymentDetails.phone}
             paymentLink={paymentDetails.paymentLink}
           />
