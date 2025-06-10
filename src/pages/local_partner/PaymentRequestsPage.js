@@ -1,5 +1,9 @@
 // src/pages/PaymentRequestsPage.js
 
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
+
 import React, { useState, useEffect } from 'react';
 import {
   Box, Paper, Typography, Table, TableHead, TableBody, TableRow,

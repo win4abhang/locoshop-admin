@@ -100,6 +100,7 @@ const LocalPartnerDashboard = () => {
             />
             <Route path="add-store" element={<AddStore />} />
             <Route path="edit-store" element={<EditStore />} />
+            <Route path="PaymentRequestsPage" element={<PaymentRequests />} />
             <Route
               path="*"
               element={
