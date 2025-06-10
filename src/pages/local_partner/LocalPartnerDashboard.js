@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Routes, Route, Link as RouterLink, useNavigate } from 'react-router-dom';
 import AddStore from './AddStore';
 import EditStore from './EditStore';
+import PaymentRequests from './PaymentRequestsPage';
 
 import {
   Box,
@@ -63,6 +64,16 @@ const LocalPartnerDashboard = () => {
             fullWidth
           >
             ✏️ Edit Store
+          </Button>
+
+          <Button
+            component={RouterLink}
+            to="/local_partner/PaymentRequestsPage"
+            variant="outlined"
+            color="primary"
+            fullWidth
+          >
+            💸 Payment Requests
           </Button>
 
           <Button
