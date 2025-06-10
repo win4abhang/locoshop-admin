@@ -4,13 +4,12 @@ import StoreTable from '../../components/StoreTable';
 import StoreEditDialog from '../../components/StoreEditDialog';
 import PaymentLinkCard from '../../components/PaymentLinkCard';
 import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Paper,
-  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
@@ -180,13 +179,32 @@ function EditStore() {
         </>
       )}
 
-      {paymentDetails && (
-        <PaymentLinkCard
-          storeName={paymentDetails.storeName}
-          phone={paymentDetails.phone}
-          paymentLink={paymentDetails.paymentLink}
-        />
-      )}
+      <Dialog
+        open={!!paymentDetails}
+        onClose={() => setPaymentDetails(null)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>
+          Payment Link
+          <IconButton
+            onClick={() => setPaymentDetails(null)}
+            sx={{ position: 'absolute', right: 8, top: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent>
+          {paymentDetails && (
+            <PaymentLinkCard
+              storeName={paymentDetails.storeName}
+              phone={paymentDetails.phone}
+              paymentLink={paymentDetails.paymentLink}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
