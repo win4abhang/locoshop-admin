@@ -29,8 +29,8 @@ function EditStore() {
   };
 
   const handleUpdate = async (updatedStore) => {
-    if (!updatedStore || !updatedStore._id) {
-      setMessage('❌ No store selected.');       
+    if (!updatedStore || !updatedStore._id) {  
+      alert('❌ No store selected.');
       return;
     }
 
@@ -48,15 +48,8 @@ function EditStore() {
         headers: { 'x-api-key': API_KEY }
       });
 
-      {message && (
-          <Alert
-            severity={message.includes('❌') ? 'error' : message.includes('⚠️') ? 'warning' : 'success'}
-            sx={{ mt: 2 }}
-          >
-            {message}
-          </Alert>
-        )}        
       
+      alert('✅ Store is updated, Request payment');   
       //setDialogOpen(false);
       // Optionally refresh store list or update UI here
     } catch (err) {
