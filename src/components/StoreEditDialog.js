@@ -22,8 +22,8 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
     if (store) {
       setFormData({
         ...store,
-        latitude: store.latitude || '',
-        longitude: store.longitude || '',
+        latitude: parseFloat(store.location?.coordinates?.[1]?.toString() || ''),        
+        longitude: parseFloat(store.location?.coordinates?.[0]?.toString() || ''),
         tags: Array.isArray(store.tags) ? store.tags.join(', ') : (store.tags || ''),
       });
       setErrors({});

@@ -36,6 +36,7 @@ function Login() {
       );
       const { token, userType } = res.data;
 
+      localStorage.setItem('username', username);
       localStorage.setItem('storeOwnerName', username);
       localStorage.setItem('token', token);
       localStorage.setItem('userType', userType);
