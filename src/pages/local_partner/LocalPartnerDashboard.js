@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, Link as RouterLink, useNavigate } from 'react-router-dom';
 import AddStore from './AddStore';
 import EditStore from './EditStore';
@@ -16,6 +16,14 @@ import {
 
 const LocalPartnerDashboard = () => {
   const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username'); // Adjust the key if different
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -26,15 +34,17 @@ const LocalPartnerDashboard = () => {
     <Container maxWidth="sm" sx={{ py: 4 }}>
       <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
         <Typography variant="h5" fontWeight="bold" gutterBottom align="center">
-          🌐 Local Partner Dashboard
+          Local Partner Dashboard
         </Typography>
 
-        <Stack
-          direction="column"
-          spacing={2}
-          sx={{ mb: 3 }}
-          alignItems="stretch"
-        >
+        {/* 👇 Show username if available */}
+        {username && (
+          <Typography align="center" variant="subtitle1" color="textSecondary" sx={{ mb: 2 }}>
+            Logged in as: <strong>{username}</strong>
+          </Typography>
+        )}
+
+        <Stack direction="column" spacing={2} sx={{ mb: 3 }} alignItems="stretch">
           <Button
             component={RouterLink}
             to="/local_partner/add-store"

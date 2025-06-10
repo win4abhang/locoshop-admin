@@ -38,8 +38,8 @@ function EditStore() {
 
     const updatedData = {
       ...updatedStore,
-      latitude: parseFloat(updatedStore.latitude),
-      longitude: parseFloat(updatedStore.longitude),
+      latitude: parseFloat(updatedStore.location?.coordinates?.[1]?.toString() || ''), 
+      longitude: parseFloat(updatedStore.location?.coordinates?.[0]?.toString() || ''),
       tags: tagsArray,
     };
 
