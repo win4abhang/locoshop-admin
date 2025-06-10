@@ -10,7 +10,12 @@ import {
   Typography,
   Paper,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
@@ -63,10 +68,8 @@ function EditStore() {
       alert('❌ Invalid store selected for payment.');
       return;
     }
-
     try {
       const LocalPartnerUsername = localStorage.getItem('username') || 'UnknownUser';
-
       console.log('Sending payment request:', {
         storeId: store._id,
         phone: store.phone,
@@ -180,13 +183,36 @@ function EditStore() {
         </>
       )}
 
-      {paymentDetails && (
-        <PaymentLinkCard
-          storeName={paymentDetails.storeName}
-          phone={paymentDetails.phone}
-          paymentLink={paymentDetails.paymentLink}
-        />
-      )}
+      <Dialog
+        open={!!paymentDetails}
+        onClose={() => setPaymentDetails(null)} // You must have a setter like setPaymentDetails
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>
+          Payment Link
+          <IconButton
+            aria-label="close"
+            onClick={() => setPaymentDetails(null)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent dividers>
+          <PaymentLinkCard
+            storeName={paymentDetails.storeName}
+            phone={paymentDetails.phone}
+            paymentLink={paymentDetails.paymentLink}
+          />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
