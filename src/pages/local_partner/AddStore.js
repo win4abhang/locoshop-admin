@@ -116,7 +116,6 @@ function AddStore() {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Paper elevation={3} sx={{ p: 3, width: '100%' }}>
         <Typography variant="h5" gutterBottom>
           Add Store
         </Typography>
@@ -214,7 +213,6 @@ function AddStore() {
             </Alert>
           </Box>
         )}
-      </Paper>
     </Container>
   );  
 }
