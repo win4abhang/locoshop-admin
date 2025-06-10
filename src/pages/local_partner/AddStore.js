@@ -146,7 +146,6 @@ function AddStore() {
             onClick={getCurrentLocation}
             variant="contained"
             color="primary"
-            fullWidth={isMobile}
           >
             Use Current Location
       </Button>
