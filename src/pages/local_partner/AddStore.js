@@ -50,7 +50,7 @@ function AddStore() {
       };
       await axios.post(`${BACKEND_URL}/stores/add`, storeData, config);
       setMessage('✅ Store added successfully!');
-      setFormData({ name: '', usp: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
+      setFormData({ name: '', address: '', phone: '', latitude: '', longitude: '', tags: '' });
     } catch (error) {
       setMessage('❌ ' + (error.response?.data?.message || 'Error adding store.'));
     }

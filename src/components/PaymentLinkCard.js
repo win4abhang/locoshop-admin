@@ -13,11 +13,11 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
-const PaymentLinkCard = ({ name, phone, paymentLink }) => {
+const PaymentLinkCard = ({ storeName, phone, paymentLink }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const message = `Hi ${name} team, please complete your payment using this link: ${paymentLink}`;
+  const message = `Hi ${storeName} team, please complete your payment using this link: ${paymentLink}`;
   const whatsappURL = `https://wa.me/91${phone}?text=${encodeURIComponent(message)}`;
 
   const handleCopy = async () => {

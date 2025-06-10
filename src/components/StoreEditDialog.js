@@ -8,9 +8,15 @@ import { useTheme } from '@mui/material/styles';
 const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
-  const [isUpdated, setIsUpdated] = useState(false); // NEW
+  const [userType, setUserType] = useState('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Load userType safely
+  useEffect(() => {
+    const storedUserType = localStorage.getItem('userType');
+    setUserType(storedUserType);
+  }, []);
 
   useEffect(() => {
     if (store) {
@@ -21,7 +27,6 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
         tags: Array.isArray(store.tags) ? store.tags.join(', ') : (store.tags || ''),
       });
       setErrors({});
-      setIsUpdated(false); // reset update flag on reopen
     }
   }, [store]);
 
@@ -46,7 +51,6 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
       return;
     }
     onUpdate(formData);
-    setIsUpdated(true); // Mark store as updated
   };
 
   return (
@@ -54,7 +58,7 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
       <DialogTitle>Edit Store Information</DialogTitle>
       <DialogContent sx={{ pt: 2 }}>
         <Grid container spacing={2}>
-          {['name', 'usp', 'services', 'address', 'phone', 'latitude', 'longitude'].map((field) => (
+          {['name', 'usp', 'tags', 'address', 'phone', 'latitude', 'longitude'].map((field) => (
             <Grid item xs={12} sm={6} key={field}>
               <TextField
                 fullWidth
@@ -77,25 +81,25 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
           spacing={2}
           sx={{ width: '100%', p: 2 }}
         >
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            color="primary"
-            fullWidth={isMobile}
-          >
-            Update Store
-          </Button>
-
-          {isUpdated && (
+          {userType !== 'local_partner' && (
             <Button
-              onClick={() => onRequestPayment(formData)}
-              variant="outlined"
-              color="success"
+              onClick={handleSubmit}
+              variant="contained"
+              color="primary"
               fullWidth={isMobile}
             >
-              Request Payment
+              Update Store
             </Button>
           )}
+
+          <Button
+            onClick={() => onRequestPayment(formData)}
+            variant="outlined"
+            color="success"
+            fullWidth={isMobile}
+          >
+            Request Payment
+          </Button>
 
           <Button
             onClick={handleClose}

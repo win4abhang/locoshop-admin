@@ -12,7 +12,7 @@ const StoreTable = ({ storeList, onSelectStore }) => {
 
   const [filterText, setFilterText] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [sortKey, setSortKey] = useState(''); 
+  const [sortKey, setSortKey] = useState('');
 
   const filteredAndSortedStores = useMemo(() => {
     let filtered = storeList;
