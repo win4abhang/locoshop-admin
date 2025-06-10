@@ -3,7 +3,14 @@ import axios from 'axios';
 import Papa from 'papaparse';
 
 import {
+  Box,
   Button,
+  Typography,
+  Stack,
+  Link,
+  Divider,
+  Container,
+  Paper,
 } from '@mui/material';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -139,18 +146,26 @@ function AddStore() {
           onChange={handleChange}
           required
         />
-        <button type="submit">Add Store</button>
+        <Button
+        type="submit"
+        to="/local_partner/edit-store"
+        variant="outlined"
+        color="primary"
+        fullWidth
+      >
+        Add Store
+      </Button>
       </form>
 
       <Button
-            onClick={getCurrentLocation}
-            variant="contained"
-            color="primary"
-          >
-            Use Current Location
+        onClick={getCurrentLocation}
+        to="/local_partner/edit-store"
+        variant="outlined"
+        color="primary"
+        fullWidth
+      >
+        Use Current Location
       </Button>
-
-
 
       {message && <p>{message}</p>}
     </div>
