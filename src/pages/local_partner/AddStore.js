@@ -24,15 +24,36 @@ function AddStore() {
     longitude: '',
     tags: '',
   });
+
+  const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'Store name is required';
+    if (!formData.usp.trim()) newErrors.usp = 'USP is required';
+    if (!formData.address.trim()) newErrors.address = 'Address is required';
+    if (!/^\d{10}$/.test(formData.phone)) newErrors.phone = 'Phone must be 10 digits';
+    const lat = parseFloat(formData.latitude);
+    if (isNaN(lat) || lat < -90 || lat > 90) newErrors.latitude = 'Latitude must be between -90 and 90';
+    const lng = parseFloat(formData.longitude);
+    if (isNaN(lng) || lng < -180 || lng > 180) newErrors.longitude = 'Longitude must be between -180 and 180';
+    if (!formData.tags.trim()) newErrors.tags = 'At least one tag is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
+
+    if (!validate()) return;
 
     const tagsArray = formData.tags.split(',').map(tag => tag.trim());
 
@@ -68,6 +89,7 @@ function AddStore() {
         longitude: '',
         tags: ''
       });
+      setErrors({});
     } catch (error) {
       setMessage('❌ ' + (error.response?.data?.message || 'Error adding store.'));
     }
@@ -94,19 +116,20 @@ function AddStore() {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Paper elevation={3} sx={{ p: 3 }}>
+      <Paper elevation={3} sx={{ p: 3, width: '100%' }}>
         <Typography variant="h5" gutterBottom>
           Add Store
         </Typography>
-
-        <Box component="form" onSubmit={handleSubmit} noValidate autoComplete="off">
-          <Stack spacing={2}>
+  
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+          <Stack spacing={2} width="100%">
             <TextField
               label="Store Name"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              required
+              error={!!errors.name}
+              helperText={errors.name}
               fullWidth
             />
             <TextField
@@ -114,7 +137,8 @@ function AddStore() {
               name="usp"
               value={formData.usp}
               onChange={handleChange}
-              required
+              error={!!errors.usp}
+              helperText={errors.usp}
               fullWidth
             />
             <TextField
@@ -122,7 +146,8 @@ function AddStore() {
               name="address"
               value={formData.address}
               onChange={handleChange}
-              required
+              error={!!errors.address}
+              helperText={errors.address}
               fullWidth
             />
             <TextField
@@ -130,7 +155,8 @@ function AddStore() {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              required
+              error={!!errors.phone}
+              helperText={errors.phone}
               fullWidth
             />
             <TextField
@@ -139,7 +165,8 @@ function AddStore() {
               type="number"
               value={formData.latitude}
               onChange={handleChange}
-              required
+              error={!!errors.latitude}
+              helperText={errors.latitude}
               fullWidth
             />
             <TextField
@@ -148,13 +175,15 @@ function AddStore() {
               type="number"
               value={formData.longitude}
               onChange={handleChange}
-              required
+              error={!!errors.longitude}
+              helperText={errors.longitude}
               fullWidth
             />
             <Button
               variant="outlined"
               onClick={getCurrentLocation}
               color="secondary"
+              fullWidth
             >
               Use Current Location
             </Button>
@@ -163,7 +192,8 @@ function AddStore() {
               name="tags"
               value={formData.tags}
               onChange={handleChange}
-              required
+              error={!!errors.tags}
+              helperText={errors.tags}
               fullWidth
             />
             <Button
@@ -176,7 +206,7 @@ function AddStore() {
             </Button>
           </Stack>
         </Box>
-
+  
         {message && (
           <Box mt={2}>
             <Alert severity={message.startsWith('✅') ? 'success' : 'error'}>
@@ -186,7 +216,7 @@ function AddStore() {
         )}
       </Paper>
     </Container>
-  );
+  );  
 }
 
 export default AddStore;
