@@ -207,7 +207,7 @@ function EditStore() {
 
         <DialogContent dividers>
           <PaymentLinkCard
-            storeName={paymentDetails.name}
+            storeName={paymentDetails.storeName}
             phone={paymentDetails.phone}
             paymentLink={paymentDetails.paymentLink}
           />
