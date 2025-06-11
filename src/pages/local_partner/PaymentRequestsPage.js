@@ -22,7 +22,9 @@ import PhoneIcon from '@mui/icons-material/Phone';
 
 dayjs.extend(relativeTime);
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
+
 const STAGES = ['pending', 'sent reminder', 'paid', 'expired'];
 const PAGE_SIZE = 20;
 
@@ -41,7 +43,7 @@ function PaymentRequestsPage() {
   const fetchRequests = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/api/payment-requests', {
+      const res = await axios.get(`${BACKEND_URL}/payment/requestedbyLP`, {
         headers: { 'x-api-key': API_KEY },
         params: {
           localPartnerUsername,
@@ -59,7 +61,7 @@ function PaymentRequestsPage() {
 
   const updateStage = async (id, stage) => {
     try {
-      await axios.put(`/api/payment-requests/${id}/status`, { status: stage }, {
+      await axios.put(`${BACKEND_URL}/payment-requests/${id}/status`, { status: stage }, {
         headers: { 'x-api-key': API_KEY }
       });
       setRequests(reqs => reqs.map(r => r._id === id ? { ...r, status: stage } : r));
@@ -70,7 +72,7 @@ function PaymentRequestsPage() {
 
   const updateNote = async (id, note) => {
     try {
-      await axios.put(`/api/payment-requests/${id}/notes`, { notes: note }, {
+      await axios.put(`${BACKEND_URL}/payment-requests/${id}/notes`, { notes: note }, {
         headers: { 'x-api-key': API_KEY }
       });
     } catch (err) {
