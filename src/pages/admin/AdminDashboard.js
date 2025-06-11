@@ -3,6 +3,7 @@ import { Routes, Route, Link as RouterLink, useNavigate } from 'react-router-dom
 import AddStore from './AddStore';
 import EditStore from './EditStore';
 import Users from './Users';
+import PaymentsPage from './PaymentsPage'; // adjust path if needed
 
 import {
   Box,
@@ -45,6 +46,9 @@ const AdminDashboard = () => {
         <Link component={RouterLink} to="/admin/users" underline="hover">
           👥 Manage Users
         </Link>
+        <Link component={RouterLink} to="/admin/payments" underline="hover">
+          💰 Payments Received
+        </Link>
         <Button
           onClick={handleLogout}
           variant="outlined"
@@ -64,6 +68,7 @@ const AdminDashboard = () => {
           <Route path="add-store" element={<AddStore />} />
           <Route path="edit-store" element={<EditStore />} />
           <Route path="users" element={<Users />} />
+          <Route path="payments" element={<PaymentsPage />} />
           <Route
             path="*"
             element={<Typography color="error">404 - Page Not Found in Admin</Typography>}
