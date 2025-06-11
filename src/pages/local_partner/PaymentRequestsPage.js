@@ -63,7 +63,6 @@ const PaymentRequestsPage = () => {
         Payment Requests
       </Typography>
 
-      <Paper sx={{ width: '100%', overflowX: 'auto' }}>
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
             <CircularProgress />
@@ -120,7 +119,6 @@ const PaymentRequestsPage = () => {
             </Stack>
           </>
         )}
-      </Paper>
 
       {/* Popup Dialog */}
       {selectedRequest && (

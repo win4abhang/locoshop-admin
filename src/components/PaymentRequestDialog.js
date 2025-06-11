@@ -51,7 +51,7 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-      <DialogTitle>Update Payment Request</DialogTitle>
+      <DialogTitle>Information about Payment Request</DialogTitle>
       <DialogContent>
         <DialogContentText sx={{ mb: 2 }}>
           {request?.storeId?.name || request?.customerName} ({request?.customerPhone})

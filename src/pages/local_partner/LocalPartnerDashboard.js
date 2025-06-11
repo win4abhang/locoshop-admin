@@ -32,7 +32,7 @@ const LocalPartnerDashboard = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
         <Typography variant="h5" fontWeight="bold" gutterBottom align="center">
           Local Partner Dashboard
         </Typography>
