@@ -26,7 +26,7 @@ const PaymentsPage = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(`${BACKEND_URL}/api/payments-received`, {
+      const res = await axios.get(`${BACKEND_URL}/payment/payments-received`, {
         params: {
           page: page + 1,
           limit: rowsPerPage,
