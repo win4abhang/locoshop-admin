@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
-  DialogContentText, TextField, MenuItem, Stack, Button
+  DialogContentText, TextField, MenuItem, Stack, Button, Typography
 } from '@mui/material';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -10,17 +10,40 @@ const STAGES = ['pending', 'sent reminder', 'paid', 'expired'];
 
 const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
   const [status, setStatus] = useState(request?.status || '');
-  const [note, setNote] = useState(request?.notes || '');
+  const [newNote, setNewNote] = useState('');
+  const [oldNote, setOldNote] = useState(request?.notes || '');
 
   useEffect(() => {
     if (request) {
       setStatus(request.status);
-      setNote(request.notes || '');
+      setOldNote(request.notes || '');
+      setNewNote('');
     }
   }, [request]);
 
+  const getCurrentFormattedDateTime = () => {
+    const now = new Date();
+    return now.toLocaleString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  };
+
   const handleSave = () => {
-    onUpdate(request._id, { status, notes: note });
+    const timestamp = getCurrentFormattedDateTime();
+    const combinedNote = newNote
+      ? `(${timestamp}) ${newNote}\n${oldNote}`
+      : oldNote;
+
+    onUpdate(request._id, {
+      status,
+      notes: combinedNote,
+    });
+
     handleClose();
   };
 
@@ -46,7 +69,7 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
               <MenuItem
                 key={stage}
                 value={stage}
-                disabled={stage === 'paid' && !isPaid} // ✅ Disable if not already paid
+                disabled={stage === 'paid' && !isPaid}
               >
                 {stage}
               </MenuItem>
@@ -54,13 +77,25 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
           </TextField>
 
           <TextField
-            label="Notes"
+            label="Add New Note"
             fullWidth
             multiline
             rows={3}
-            value={note}
-            onChange={e => setNote(e.target.value)}
+            value={newNote}
+            onChange={e => setNewNote(e.target.value)}
+            placeholder="Type new note to add..."
           />
+
+          {oldNote && (
+            <TextField
+              label="Old Notes"
+              fullWidth
+              multiline
+              rows={5}
+              value={oldNote}
+              InputProps={{ readOnly: true }}
+            />
+          )}
 
           <Stack direction="row" spacing={2}>
             <Button
