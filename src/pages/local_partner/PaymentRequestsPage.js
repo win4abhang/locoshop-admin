@@ -51,7 +51,7 @@ function PaymentRequestsPage() {
           limit: PAGE_SIZE
         }
       });
-      setRequests(res.data);
+      setRequests(res.data.data); // ✅ only the array
     } catch (err) {
       console.error(err);
     } finally {
