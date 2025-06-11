@@ -33,7 +33,6 @@ const LocalPartnerDashboard = () => {
 
   return (
     <Container maxWidth="sm" sx={{ py: 4 }}>
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
         <Typography variant="h5" fontWeight="bold" gutterBottom align="center">
           Local Partner Dashboard
         </Typography>
@@ -111,7 +110,6 @@ const LocalPartnerDashboard = () => {
             />
           </Routes>
         </Box>
-      </Paper>
     </Container>
   );
 };

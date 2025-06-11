@@ -66,13 +66,13 @@ function EditStore() {
     }
 
     try {
-      const LocalPartnerUsername = localStorage.getItem('username') || 'UnknownUser';
+      const localPartnerUsername = localStorage.getItem('username') || 'UnknownUser';
 
       console.log('Sending payment request:', {
         storeId: store._id,
         phone: store.phone,
         name: store.name,
-        LocalPartnerUsername,
+        localPartnerUsername,
       });
 
       const response = await axios.post(`${BACKEND_URL}/payment/request`, {
@@ -82,7 +82,7 @@ function EditStore() {
         customerName: store.name,
         link_expiry_hours: "24",
         storeId: store._id,
-        LocalPartnerUsername,
+        localPartnerUsername,
       }, {
         headers: { 'x-api-key': API_KEY },
       });
