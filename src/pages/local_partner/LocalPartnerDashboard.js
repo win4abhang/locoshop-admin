@@ -3,6 +3,7 @@ import { Routes, Route, Link as RouterLink, useNavigate } from 'react-router-dom
 import AddStore from './AddStore';
 import EditStore from './EditStore';
 import PaymentRequests from './PaymentRequestsPage';
+import PartnerEarningsCard from '../../components/PartnerEarningsCard';
 
 import {
   Box,
@@ -76,6 +77,16 @@ const LocalPartnerDashboard = () => {
           </Button>
 
           <Button
+            component={RouterLink}
+            to="/local_partner/earnings"
+            variant="outlined"
+            color="success"
+            fullWidth
+          >
+            💰 Earnings
+          </Button>
+
+          <Button
             onClick={handleLogout}
             variant="text"
             color="error"
@@ -100,6 +111,7 @@ const LocalPartnerDashboard = () => {
             <Route path="add-store" element={<AddStore />} />
             <Route path="edit-store" element={<EditStore />} />
             <Route path="PaymentRequestsPage" element={<PaymentRequests />} />
+            <Route path="earnings" element={<PartnerEarningsCard />} />
             <Route
               path="*"
               element={
