@@ -1,9 +1,7 @@
-// === FRONTEND: PaymentRequestsPage.js (optimized version) ===
-
 import React, { useEffect, useState } from 'react';
 import {
-  Box, Typography, Paper, CircularProgress,
-  Table, TableHead, TableCell, TableRow, TableBody,
+  Box, Typography, CircularProgress, Table,
+  TableHead, TableCell, TableRow, TableBody,
   Button, Stack, TextField, MenuItem, TableSortLabel
 } from '@mui/material';
 import axios from 'axios';
@@ -23,7 +21,7 @@ const PaymentRequestsPage = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('All');
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -70,7 +68,7 @@ const PaymentRequestsPage = () => {
 
   const handleSort = (column) => {
     if (sortBy === column) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
       setSortBy(column);
       setSortOrder('asc');
@@ -83,7 +81,7 @@ const PaymentRequestsPage = () => {
         Payment Request Report
       </Typography>
 
-      <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+      <Stack direction="column" spacing={2} sx={{ mb: 2 }}>
         <TextField
           label="Search"
           value={search}
@@ -145,8 +143,8 @@ const PaymentRequestsPage = () => {
                   <TableCell>{dayjs(req.createdAt).fromNow()}</TableCell>
                   <TableCell>
                     <Typography color={
-                      req.status === 'Paid' ? 'green' :
-                      req.status === 'Expired' ? 'red' : 'orange'}>
+                      req.status?.toLowerCase() === 'paid' ? 'green' :
+                      req.status?.toLowerCase() === 'expired' ? 'red' : 'orange'}>
                       {req.status}
                     </Typography>
                   </TableCell>
@@ -154,6 +152,7 @@ const PaymentRequestsPage = () => {
                     <Button
                       variant="outlined"
                       onClick={() => setSelectedRequest(req)}
+                      disabled={req.status?.toLowerCase() === 'paid'}
                     >
                       Update
                     </Button>
