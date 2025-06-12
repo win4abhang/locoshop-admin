@@ -1,51 +1,72 @@
-// src/components/PartnerEarningsCard.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Card, CardContent, Typography, TextField,
-  Stack, Button
+  Card, CardContent, Typography, Stack
 } from '@mui/material';
+import axios from 'axios';
 
 const PartnerEarningsCard = () => {
-  const [upi, setUpi] = useState('vinod@upi');
-  const [isEditing, setIsEditing] = useState(false);
-  const [tempUpi, setTempUpi] = useState(upi);
+  const [todayEarnings, setTodayEarnings] = useState(0);
+  const [upcomingPayment, setUpcomingPayment] = useState(0);
+  const [nextPaymentDate, setNextPaymentDate] = useState('');
 
-  const handleUpdate = () => {
-    setUpi(tempUpi);
-    setIsEditing(false);
-    // TODO: Connect with API to update UPI
+  const username = localStorage.getItem('username');
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const API_KEY = 'YourStrongSecret123';
+
+  useEffect(() => {
+    const fetchEarnings = async () => {
+      try {
+        const res = await axios.post(`${BACKEND_URL}/api/payments/partner-earnings`, {
+          username
+        }, {
+          headers: {
+            'x-api-key': API_KEY
+          }
+        });
+  
+        const data = res.data;
+        setTodayEarnings(data.todayEarnings || 0);
+        setUpcomingPayment(data.upcomingPayment || 0);
+        setNextPaymentDate(getNextFriday());
+      } catch (error) {
+        console.error('Error fetching earnings:', error);
+      }
+    };
+  
+    if (username) {
+      fetchEarnings();
+    }
+  }, [username]);
+  
+
+  const getNextFriday = () => {
+    const today = new Date();
+    const day = today.getDay(); // 0 (Sun) to 6 (Sat)
+    const diff = (5 - day + 7) % 7 || 7; // Days until Friday
+    const nextFriday = new Date(today);
+    nextFriday.setDate(today.getDate() + diff);
+    nextFriday.setHours(18, 0, 0, 0); // 6 PM
+    return nextFriday.toDateString();
   };
 
   return (
     <Card sx={{ maxWidth: 500, margin: 'auto', p: 3 }}>
       <CardContent>
-        <Stack spacing={2}>
+        <Stack spacing={3}>
           <div>
-            <Typography variant="h5" fontWeight="bold">Today’s Earnings: ₹250</Typography>
-            <Typography color="text.secondary" fontSize={14}>Total Earnings till date: ₹5,400</Typography>
+            <Typography variant="h5" fontWeight="bold">
+              Today’s Earnings: ₹{todayEarnings}
+            </Typography>
           </div>
 
           <div>
-            <Typography variant="h5" fontWeight="bold">Upcoming Payment: ₹1,000</Typography>
-            <Typography color="text.secondary" fontSize={14}>Next Payment Date: 15 June 2025</Typography>
-          </div>
-
-          <div>
-            <Typography variant="h6">Payment will be done on:</Typography>
-            {isEditing ? (
-              <Stack direction="row" spacing={1} alignItems="center">
-                <TextField
-                  size="small"
-                  value={tempUpi}
-                  onChange={(e) => setTempUpi(e.target.value)}
-                />
-                <Button size="small" variant="contained" onClick={handleUpdate}>Update</Button>
-              </Stack>
-            ) : (
-              <Stack direction="row" spacing={1} alignItems="center">
-                <Typography variant="body1" fontWeight="medium">{upi}</Typography>
-                <Button size="small" onClick={() => setIsEditing(true)}>Edit</Button>
-              </Stack>
+            <Typography variant="h5" fontWeight="bold">
+              Upcoming Payment: ₹{upcomingPayment}
+            </Typography>
+            {nextPaymentDate && (
+              <Typography color="text.secondary" fontSize={14}>
+                Next Payment Date: {nextPaymentDate}
+              </Typography>
             )}
           </div>
         </Stack>
