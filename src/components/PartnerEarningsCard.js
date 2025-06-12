@@ -110,10 +110,13 @@ const PartnerEarningsCard = () => {
           <Box display="flex" alignItems="center" gap={2}>  
           <AccessTimeIcon color="info" fontSize="large" />     
           {nextPaymentDate && (
-            <Box>         
-                  <Typography fontSize={14} color="text.secondary">
-                    Next Payment: {nextPaymentDate}
-                  </Typography>
+            <Box> 
+              <Typography variant="subtitle2" color="text.secondary">
+              Next Payment:
+                </Typography>                
+              <Typography variant="h5" fontWeight="bold" color="warning.main">
+              {nextPaymentDate}
+              </Typography> 
             </Box>               
               )}               
             </Box>
