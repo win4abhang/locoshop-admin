@@ -55,40 +55,46 @@ const StoreTable = ({ storeList, onSelectStore }) => {
   return (
     <Box>
       {/* Filter Controls */}
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
-        <TextField
-          label="Search by name, tag, or address"
-          variant="outlined"
-          value={filterText}
-          onChange={(e) => setFilterText(e.target.value)}
-          fullWidth={isMobile}
-          sx={{ flex: 1 }}
-        />
-        <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel>Status</InputLabel>
-          <Select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            label="Status"
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="Paid">Paid</MenuItem>
-            <MenuItem value="Free">Free</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel>Sort</InputLabel>
-          <Select
-            value={sortKey}
-            onChange={(e) => setSortKey(e.target.value)}
-            label="Sort"
-          >
-            <MenuItem value="">None</MenuItem>
-            <MenuItem value="name">Name</MenuItem>
-            <MenuItem value="status">Status</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+      <Stack spacing={2} sx={{ mb: 2 }}>
+  {/* Line 1: Search Bar */}
+  <TextField
+    label="Search by name, tag, or address"
+    variant="outlined"
+    value={filterText}
+    onChange={(e) => setFilterText(e.target.value)}
+    fullWidth
+  />
+
+  {/* Line 2: Status and Sort */}
+  <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+    <FormControl sx={{ minWidth: 120, flex: 1 }}>
+      <InputLabel>Subscription</InputLabel>
+      <Select
+        value={statusFilter}
+        onChange={(e) => setStatusFilter(e.target.value)}
+        label="Status"
+      >
+        <MenuItem value="">All</MenuItem>
+        <MenuItem value="Paid">Paid</MenuItem>
+        <MenuItem value="Free">Free</MenuItem>
+      </Select>
+    </FormControl>
+
+    <FormControl sx={{ minWidth: 120, flex: 1 }}>
+      <InputLabel>Sort</InputLabel>
+      <Select
+        value={sortKey}
+        onChange={(e) => setSortKey(e.target.value)}
+        label="Sort"
+      >
+        <MenuItem value="">None</MenuItem>
+        <MenuItem value="name">Name</MenuItem>
+        <MenuItem value="status">Status</MenuItem>
+      </Select>
+    </FormControl>
+  </Box>
+</Stack>
+
 
       <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
         <Table size={isMobile ? 'small' : 'medium'}>
@@ -96,7 +102,7 @@ const StoreTable = ({ storeList, onSelectStore }) => {
             <TableRow>
               <TableCell><strong>Name</strong></TableCell>
               <TableCell><strong>Address</strong></TableCell>
-              <TableCell><strong>USP</strong></TableCell>
+              <TableCell><strong>Offer or Announcement</strong></TableCell>
               <TableCell><strong>Phone</strong></TableCell>
               <TableCell><strong>Tags</strong></TableCell>
               <TableCell><strong>Status</strong></TableCell>
@@ -116,7 +122,7 @@ const StoreTable = ({ storeList, onSelectStore }) => {
                     variant="body2"
                     color={store.subscription === 'Paid' ? 'green' : 'orange'}
                   >
-                    {store.subscription === 'Paid' ? '✅ Paid' : '🆓 Free'}
+                    {store.subscription === 'Paid' ? 'Paid' : 'Free'}
                   </Typography>
                 </TableCell>
                 <TableCell>

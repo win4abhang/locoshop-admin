@@ -114,7 +114,7 @@ const PartnerEarningsCard = () => {
               <Typography variant="subtitle2" color="text.secondary">
               Next Payment:
                 </Typography>                
-              <Typography variant="h5" fontWeight="bold" color="warning.main">
+              <Typography variant="body1" fontWeight="bold" color='textDisabled'>
               {nextPaymentDate}
               </Typography> 
             </Box>               
