@@ -58,7 +58,7 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
         </DialogContentText>
 
         <Stack spacing={2}>
-          <TextField
+        <TextField
             label="Status"
             select
             fullWidth
@@ -69,7 +69,7 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
               <MenuItem
                 key={stage}
                 value={stage}
-                disabled={stage === 'paid' && !isPaid}
+                disabled={stage === 'paid'} // 🔒 Always disable "paid"
               >
                 {stage}
               </MenuItem>
