@@ -44,7 +44,7 @@ const PaymentRequestsPage = () => {
           page,
           limit: PAGE_SIZE,
           search,
-          status: statusFilter === 'all' ? undefined : statusFilter,
+          status: statusFilter === 'All' ? undefined : statusFilter,
           sortBy,
           order: sortOrder,
         }
