@@ -2,9 +2,11 @@ import React, { useState, useMemo } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Button, Typography,
-  Box, TextField, MenuItem, Select, InputLabel, FormControl, useMediaQuery,Stack
+  Box, TextField, MenuItem, Select, InputLabel,
+  FormControl, useMediaQuery, Stack, Chip, Tooltip, IconButton, InputAdornment
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const StoreTable = ({ storeList, onSelectStore }) => {
   const theme = useTheme();
@@ -17,7 +19,6 @@ const StoreTable = ({ storeList, onSelectStore }) => {
   const filteredAndSortedStores = useMemo(() => {
     let filtered = storeList;
 
-    // Filter by name, tag, or address
     if (filterText) {
       const lower = filterText.toLowerCase();
       filtered = filtered.filter(store =>
@@ -27,12 +28,10 @@ const StoreTable = ({ storeList, onSelectStore }) => {
       );
     }
 
-    // Filter by subscription
     if (statusFilter) {
       filtered = filtered.filter(store => store.subscription === statusFilter);
     }
 
-    // Sort logic
     if (sortKey === 'name') {
       filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortKey === 'status') {
@@ -54,55 +53,62 @@ const StoreTable = ({ storeList, onSelectStore }) => {
 
   return (
     <Box>
-      {/* Filter Controls */}
+      {/* Filters */}
       <Stack spacing={2} sx={{ mb: 2 }}>
-  {/* Line 1: Search Bar */}
-  <TextField
-    label="Search by name, tag, or address"
-    variant="outlined"
-    value={filterText}
-    onChange={(e) => setFilterText(e.target.value)}
-    fullWidth
-  />
+        <TextField
+          label="Search by name, tag, or address"
+          variant="outlined"
+          value={filterText}
+          onChange={(e) => setFilterText(e.target.value)}
+          fullWidth
+          InputProps={{
+            endAdornment: filterText && (
+              <InputAdornment position="end">
+                <IconButton onClick={() => setFilterText('')}>
+                  <ClearIcon />
+                </IconButton>
+              </InputAdornment>
+            )
+          }}
+        />
 
-  {/* Line 2: Status and Sort */}
-  <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-    <FormControl sx={{ minWidth: 120, flex: 1 }}>
-      <InputLabel>Subscription</InputLabel>
-      <Select
-        value={statusFilter}
-        onChange={(e) => setStatusFilter(e.target.value)}
-        label="Status"
-      >
-        <MenuItem value="">All</MenuItem>
-        <MenuItem value="Paid">Paid</MenuItem>
-        <MenuItem value="Free">Free</MenuItem>
-      </Select>
-    </FormControl>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <FormControl sx={{ minWidth: 120, flex: 1 }}>
+            <InputLabel>Subscription</InputLabel>
+            <Select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              label="Subscription"
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="Paid">Paid</MenuItem>
+              <MenuItem value="Free">Free</MenuItem>
+            </Select>
+          </FormControl>
 
-    <FormControl sx={{ minWidth: 120, flex: 1 }}>
-      <InputLabel>Sort</InputLabel>
-      <Select
-        value={sortKey}
-        onChange={(e) => setSortKey(e.target.value)}
-        label="Sort"
-      >
-        <MenuItem value="">None</MenuItem>
-        <MenuItem value="name">Name</MenuItem>
-        <MenuItem value="status">Status</MenuItem>
-      </Select>
-    </FormControl>
-  </Box>
-</Stack>
+          <FormControl sx={{ minWidth: 120, flex: 1 }}>
+            <InputLabel>Sort</InputLabel>
+            <Select
+              value={sortKey}
+              onChange={(e) => setSortKey(e.target.value)}
+              label="Sort"
+            >
+              <MenuItem value="">None</MenuItem>
+              <MenuItem value="name">Name</MenuItem>
+              <MenuItem value="status">Status</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+      </Stack>
 
-
+      {/* Table */}
       <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
         <Table size={isMobile ? 'small' : 'medium'}>
           <TableHead>
             <TableRow>
               <TableCell><strong>Name</strong></TableCell>
               <TableCell><strong>Address</strong></TableCell>
-              <TableCell><strong>Offer or Announcement</strong></TableCell>
+              <TableCell><strong>Offer</strong></TableCell>
               <TableCell><strong>Phone</strong></TableCell>
               <TableCell><strong>Tags</strong></TableCell>
               <TableCell><strong>Status</strong></TableCell>
@@ -113,33 +119,42 @@ const StoreTable = ({ storeList, onSelectStore }) => {
             {filteredAndSortedStores.map((store) => (
               <TableRow key={store._id}>
                 <TableCell>{store.name}</TableCell>
-                <TableCell>{store.address}</TableCell>
-                <TableCell>{store.usp}</TableCell>
+
+                <TableCell>
+                  <Tooltip title={store.address}>
+                    <Typography noWrap>{store.address}</Typography>
+                  </Tooltip>
+                </TableCell>
+
+                <TableCell>
+                  <Tooltip title={store.usp || ''}>
+                    <Typography noWrap>{store.usp || '—'}</Typography>
+                  </Tooltip>
+                </TableCell>
+
                 <TableCell>{store.phone}</TableCell>
                 <TableCell>{(store.tags || []).join(', ')}</TableCell>
+
                 <TableCell>
-                  <Typography
-                    variant="body2"
-                    color={store.subscription === 'Paid' ? 'green' : 'orange'}
-                  >
-                    {store.subscription === 'Paid' ? 'Paid' : 'Free'}
-                  </Typography>
+                  <Chip
+                    label={store.subscription}
+                    color={store.subscription === 'Paid' ? 'success' : 'warning'}
+                    size="small"
+                  />
                 </TableCell>
+
                 <TableCell>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: isMobile ? 'column' : 'row',
-                      gap: 1,
-                      flexWrap: 'wrap',
-                    }}
+                  <Stack
+                    direction={isMobile ? 'column' : 'row'}
+                    spacing={1}
+                    useFlexGap
+                    flexWrap="wrap"
                   >
                     <Button
                       variant="contained"
                       color="primary"
                       href={`tel:${store.phone}`}
                       size="small"
-                      fullWidth={isMobile}
                     >
                       📞 Call
                     </Button>
@@ -150,7 +165,6 @@ const StoreTable = ({ storeList, onSelectStore }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                       size="small"
-                      fullWidth={isMobile}
                     >
                       💬 WhatsApp
                     </Button>
@@ -159,11 +173,10 @@ const StoreTable = ({ storeList, onSelectStore }) => {
                       color="info"
                       onClick={() => onSelectStore(store)}
                       size="small"
-                      fullWidth={isMobile}
                     >
-                      ✏️ Edit and Request payment
+                      ✏️ Edit & Pay
                     </Button>
-                  </Box>
+                  </Stack>
                 </TableCell>
               </TableRow>
             ))}
