@@ -95,7 +95,7 @@ const PartnerEarningsCard = () => {
 
           {/* Upcoming Payment */}
           <Box display="flex" alignItems="center" gap={2}>
-            <CurrencyRupeeIcon color="warning" fontSize="large" />
+            <CurrencyRupeeIcon color="success" fontSize="large" />
             <Box>
               <Typography variant="subtitle2" color="text.secondary">
                 Upcoming Payment
@@ -103,16 +103,21 @@ const PartnerEarningsCard = () => {
               <Typography variant="h5" fontWeight="bold" color="warning.main">
                 ₹{upcomingPayment}
               </Typography>
-              {nextPaymentDate && (
-                <Box display="flex" alignItems="center" gap={1} mt={1}>
-                  <AccessTimeIcon fontSize="small" color="action" />
+            </Box>
+          </Box>
+          <Divider />
+
+          <Box display="flex" alignItems="center" gap={2}>       
+          {nextPaymentDate && (
+            <Box>
+              <AccessTimeIcon color="info" fontSize="large" />
                   <Typography fontSize={14} color="text.secondary">
                     Next Payment: {nextPaymentDate}
                   </Typography>
-                </Box>
-              )}
+            </Box>               
+              )}               
             </Box>
-          </Box>
+
         </Stack>
       </CardContent>
     </Card>
