@@ -58,23 +58,28 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
         </DialogContentText>
 
         <Stack spacing={2}>
+
+
         <TextField
             label="Status"
             select
             fullWidth
             value={status}
             onChange={e => setStatus(e.target.value)}
+            disabled={request?.status === 'paid'} // Disable whole dropdown if already paid
           >
             {STAGES.map(stage => (
               <MenuItem
                 key={stage}
                 value={stage}
-                disabled={stage === 'paid'} // 🔒 Always disable "paid"
+                disabled={stage === 'paid'} // Always disable "paid" as an option
               >
                 {stage}
               </MenuItem>
             ))}
           </TextField>
+        
+
 
           <TextField
             label="Add New Note"
