@@ -6,7 +6,7 @@ import {
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import PhoneIcon from '@mui/icons-material/Phone';
 
-const STAGES = ['pending', 'sent reminder', 'expired']; // ❌ removed "paid"
+const STAGES = ['pending', 'sent reminder', 'expired','paid']; // ❌ removed "paid"
 
 const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
   const [status, setStatus] = useState(request?.status || '');
