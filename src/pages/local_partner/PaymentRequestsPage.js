@@ -152,7 +152,6 @@ const PaymentRequestsPage = () => {
                     <Button
                       variant="outlined"
                       onClick={() => setSelectedRequest(req)}
-                      disabled={req.status?.toLowerCase() === 'paid'}
                     >
                       Update
                     </Button>
