@@ -94,17 +94,10 @@ const LocalPartnerDashboard = () => {
       </Drawer>
 
       {/* Page Content */}
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="xl" sx={{ py: 4 }}>
         <Box sx={{ mt: 2 }}>
           <Routes>
-            <Route
-              index
-              element={
-                <Typography align="center" variant="body1">
-                  👋 Welcome to Local Partner Dashboard.
-                </Typography>
-              }
-            />
+            <Route index element={<PartnerEarningsCard />} />
             <Route path="add-store" element={<AddStore />} />
             <Route path="edit-store" element={<EditStore />} />
             <Route path="PaymentRequestsPage" element={<PaymentRequests />} />

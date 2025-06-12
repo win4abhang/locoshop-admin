@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Card, CardContent, Typography, Stack
+  Card,
+  CardContent,
+  Typography,
+  Stack,
+  Divider,
+  Box,
+  useTheme
 } from '@mui/material';
 import axios from 'axios';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import PaidIcon from '@mui/icons-material/Paid';
 
 const PartnerEarningsCard = () => {
   const [todayEarnings, setTodayEarnings] = useState(0);
   const [upcomingPayment, setUpcomingPayment] = useState(0);
   const [nextPaymentDate, setNextPaymentDate] = useState('');
+  const theme = useTheme();
 
   const username = localStorage.getItem('username');
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -16,14 +26,14 @@ const PartnerEarningsCard = () => {
   useEffect(() => {
     const fetchEarnings = async () => {
       try {
-        const res = await axios.post(`${BACKEND_URL}/payment/partner-earnings`, {
-          username
-        }, {
-          headers: {
-            'x-api-key': API_KEY
+        const res = await axios.post(
+          `${BACKEND_URL}/payment/partner-earnings`,
+          { username },
+          {
+            headers: { 'x-api-key': API_KEY }
           }
-        });
-  
+        );
+
         const data = res.data;
         setTodayEarnings(data.todayEarnings || 0);
         setUpcomingPayment(data.upcomingPayment || 0);
@@ -32,12 +42,11 @@ const PartnerEarningsCard = () => {
         console.error('Error fetching earnings:', error);
       }
     };
-  
+
     if (username) {
       fetchEarnings();
     }
   }, [username]);
-  
 
   const getNextFriday = () => {
     const today = new Date();
@@ -46,29 +55,64 @@ const PartnerEarningsCard = () => {
     const nextFriday = new Date(today);
     nextFriday.setDate(today.getDate() + diff);
     nextFriday.setHours(18, 0, 0, 0); // 6 PM
-    return nextFriday.toDateString();
+    return nextFriday.toLocaleDateString('en-IN', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    });
   };
 
   return (
-    <Card sx={{ maxWidth: 500, margin: 'auto', p: 3 }}>
+    <Card
+      sx={{
+        maxWidth: 500,
+        margin: 'auto',
+        p: 3,
+        boxShadow: 6,
+        borderRadius: 3,
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
       <CardContent>
-        <Stack spacing={3}>
-          <div>
-            <Typography variant="h5" fontWeight="bold">
-              Today’s Earnings: ₹{todayEarnings}
-            </Typography>
-          </div>
-
-          <div>
-            <Typography variant="h5" fontWeight="bold">
-              Upcoming Payment: ₹{upcomingPayment}
-            </Typography>
-            {nextPaymentDate && (
-              <Typography color="text.secondary" fontSize={14}>
-                Next Payment Date: {nextPaymentDate}
+        <Stack spacing={4}>
+          {/* Today’s Earnings */}
+          <Box display="flex" alignItems="center" gap={2}>
+            <PaidIcon color="success" fontSize="large" />
+            <Box>
+              <Typography variant="subtitle2" color="text.secondary">
+                Today’s Earnings
               </Typography>
-            )}
-          </div>
+              <Typography variant="h5" fontWeight="bold" color="success.main">
+                ₹{todayEarnings}
+              </Typography>
+            </Box>
+          </Box>
+
+          <Divider />
+
+          {/* Upcoming Payment */}
+          <Box display="flex" alignItems="center" gap={2}>
+            <CurrencyRupeeIcon color="warning" fontSize="large" />
+            <Box>
+              <Typography variant="subtitle2" color="text.secondary">
+                Upcoming Payment
+              </Typography>
+              <Typography variant="h5" fontWeight="bold" color="warning.main">
+                ₹{upcomingPayment}
+              </Typography>
+              {nextPaymentDate && (
+                <Box display="flex" alignItems="center" gap={1} mt={1}>
+                  <AccessTimeIcon fontSize="small" color="action" />
+                  <Typography fontSize={14} color="text.secondary">
+                    Next Payment: {nextPaymentDate}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Box>
         </Stack>
       </CardContent>
     </Card>
