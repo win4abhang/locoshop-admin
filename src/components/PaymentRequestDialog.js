@@ -62,9 +62,9 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
             fullWidth
             value={status}
             onChange={e => setStatus(e.target.value)}
-            disabled={status === 'paid'} // Disable entire dropdown if already 'paid'
+            disabled={status === 'Paid'} // Disable entire dropdown if already 'paid'
           >
-            {STAGES.filter(stage => status === 'paid' || stage !== 'paid').map(stage => (
+            {STAGES.filter(stage => status === 'Paid' || stage !== 'Paid').map(stage => (
               <MenuItem key={stage} value={stage}>
                 {stage}
               </MenuItem>

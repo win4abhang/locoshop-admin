@@ -16,7 +16,7 @@ dayjs.extend(relativeTime);
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
 const PAGE_SIZE = 20;
-const STATUS_OPTIONS = ['all', 'pending', 'sent reminder', 'paid', 'expired'];
+const STATUS_OPTIONS = ['All', 'Pending', 'Sent reminder', 'Paid', 'Expired'];
 
 const PaymentRequestsPage = () => {
   const [requests, setRequests] = useState([]);
@@ -145,8 +145,8 @@ const PaymentRequestsPage = () => {
                   <TableCell>{dayjs(req.createdAt).fromNow()}</TableCell>
                   <TableCell>
                     <Typography color={
-                      req.status === 'paid' ? 'green' :
-                      req.status === 'expired' ? 'red' : 'orange'}>
+                      req.status === 'Paid' ? 'green' :
+                      req.status === 'Expired' ? 'red' : 'orange'}>
                       {req.status}
                     </Typography>
                   </TableCell>
