@@ -3,7 +3,7 @@ import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Button, Typography,
   Box, TextField, MenuItem, Select, InputLabel,
-  FormControl, useMediaQuery, Stack, Chip, Tooltip, IconButton, InputAdornment
+  FormControl, useMediaQuery, Stack, Tooltip, IconButton, InputAdornment
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -13,7 +13,6 @@ const StoreTable = ({ storeList, onSelectStore }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [filterText, setFilterText] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
   const [sortKey, setSortKey] = useState('');
 
   const filteredAndSortedStores = useMemo(() => {
@@ -28,18 +27,12 @@ const StoreTable = ({ storeList, onSelectStore }) => {
       );
     }
 
-    if (statusFilter) {
-      filtered = filtered.filter(store => store.subscription === statusFilter);
-    }
-
     if (sortKey === 'name') {
       filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortKey === 'status') {
-      filtered = [...filtered].sort((a, b) => (a.subscription > b.subscription ? 1 : -1));
     }
 
     return filtered;
-  }, [storeList, filterText, statusFilter, sortKey]);
+  }, [storeList, filterText, sortKey]);
 
   if (!storeList || storeList.length === 0) {
     return (
@@ -74,19 +67,6 @@ const StoreTable = ({ storeList, onSelectStore }) => {
 
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <FormControl sx={{ minWidth: 120, flex: 1 }}>
-            <InputLabel>Subscription</InputLabel>
-            <Select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              label="Subscription"
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="Paid">Paid</MenuItem>
-              <MenuItem value="Free">Free</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl sx={{ minWidth: 120, flex: 1 }}>
             <InputLabel>Sort</InputLabel>
             <Select
               value={sortKey}
@@ -95,7 +75,6 @@ const StoreTable = ({ storeList, onSelectStore }) => {
             >
               <MenuItem value="">None</MenuItem>
               <MenuItem value="name">Name</MenuItem>
-              <MenuItem value="status">Status</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -103,16 +82,15 @@ const StoreTable = ({ storeList, onSelectStore }) => {
 
       {/* Table */}
       <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
-        <Table size={isMobile ? 'small' : 'medium'}>
+        <Table size="medium">
           <TableHead>
             <TableRow>
-              <TableCell><strong>Name</strong></TableCell>
-              <TableCell><strong>Address</strong></TableCell>
-              <TableCell><strong>Offer</strong></TableCell>
-              <TableCell><strong>Phone</strong></TableCell>
-              <TableCell><strong>Tags</strong></TableCell>
-              <TableCell><strong>Status</strong></TableCell>
-              <TableCell><strong>Actions</strong></TableCell>
+              <TableCell sx={{ minWidth: 180 }}><strong>Name</strong></TableCell>
+              <TableCell sx={{ minWidth: 200 }}><strong>Address</strong></TableCell>
+              <TableCell sx={{ minWidth: 200 }}><strong>Offer</strong></TableCell>
+              <TableCell sx={{ minWidth: 150 }}><strong>Phone</strong></TableCell>
+              <TableCell sx={{ minWidth: 180 }}><strong>Tags</strong></TableCell>
+              <TableCell sx={{ minWidth: 260 }}><strong>Actions</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -133,22 +111,14 @@ const StoreTable = ({ storeList, onSelectStore }) => {
                 </TableCell>
 
                 <TableCell>{store.phone}</TableCell>
+
                 <TableCell>{(store.tags || []).join(', ')}</TableCell>
 
                 <TableCell>
-                  <Chip
-                    label={store.subscription}
-                    color={store.subscription === 'Paid' ? 'success' : 'warning'}
-                    size="small"
-                  />
-                </TableCell>
-
-                <TableCell>
                   <Stack
-                    direction={isMobile ? 'column' : 'row'}
+                    direction="row"
                     spacing={1}
-                    useFlexGap
-                    flexWrap="wrap"
+                    flexWrap="nowrap"
                   >
                     <Button
                       variant="contained"
