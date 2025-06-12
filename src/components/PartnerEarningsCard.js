@@ -16,7 +16,7 @@ const PartnerEarningsCard = () => {
   useEffect(() => {
     const fetchEarnings = async () => {
       try {
-        const res = await axios.post(`${BACKEND_URL}/payments/partner-earnings`, {
+        const res = await axios.post(`${BACKEND_URL}/payment/partner-earnings`, {
           username
         }, {
           headers: {
