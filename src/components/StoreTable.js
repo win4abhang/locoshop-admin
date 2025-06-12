@@ -136,7 +136,7 @@ const StoreTable = ({ storeList, onSelectStore }) => {
                   >
                     <Button
                       variant="contained"
-                      color="success"
+                      color="primary"
                       href={`tel:${store.phone}`}
                       size="small"
                       fullWidth={isMobile}
@@ -144,8 +144,8 @@ const StoreTable = ({ storeList, onSelectStore }) => {
                       📞 Call
                     </Button>
                     <Button
-                      variant="outlined"
-                      color="success"
+                      variant="contained"
+                      color="secondary"
                       href={`https://wa.me/91${store.phone.replace(/\D/g, '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -155,12 +155,13 @@ const StoreTable = ({ storeList, onSelectStore }) => {
                       💬 WhatsApp
                     </Button>
                     <Button
-                      variant="text"
+                      variant="contained"
+                      color="info"
                       onClick={() => onSelectStore(store)}
                       size="small"
                       fullWidth={isMobile}
                     >
-                      ✏️ Edit
+                      ✏️ Edit and Request payment
                     </Button>
                   </Box>
                 </TableCell>
