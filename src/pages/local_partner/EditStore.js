@@ -22,6 +22,7 @@ function EditStore() {
   const [selectedStore, setSelectedStore] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSelectStore = (store) => {
     setSelectedStore(store);
@@ -29,7 +30,7 @@ function EditStore() {
   };
 
   const handleUpdate = async (updatedStore) => {
-    if (!updatedStore || !updatedStore._id) {  
+    if (!updatedStore || !updatedStore._id) {
       alert('❌ No store selected.');
       return;
     }
@@ -38,7 +39,7 @@ function EditStore() {
 
     const updatedData = {
       ...updatedStore,
-      latitude: parseFloat(updatedStore.location?.coordinates?.[1]?.toString() || ''), 
+      latitude: parseFloat(updatedStore.location?.coordinates?.[1]?.toString() || ''),
       longitude: parseFloat(updatedStore.location?.coordinates?.[0]?.toString() || ''),
       tags: tagsArray,
     };
@@ -48,10 +49,7 @@ function EditStore() {
         headers: { 'x-api-key': API_KEY }
       });
 
-      
-      alert('✅ Store is updated, Request payment');   
-      //setDialogOpen(false);
-      // Optionally refresh store list or update UI here
+      alert('✅ Store is updated, Request payment');
     } catch (err) {
       console.error('Update error:', err);
       const errorMessage = err.response?.data?.message || 'Update failed.';
@@ -67,13 +65,6 @@ function EditStore() {
 
     try {
       const localPartnerUsername = localStorage.getItem('username') || 'UnknownUser';
-
-      console.log('Sending payment request:', {
-        storeId: store._id,
-        phone: store.phone,
-        name: store.name,
-        localPartnerUsername,
-      });
 
       const response = await axios.post(`${BACKEND_URL}/payment/request`, {
         order_amount: "365",
@@ -106,40 +97,63 @@ function EditStore() {
   const handleLoad = async () => {
     setMessage('');
     setStoreList([]);
-    try {
-      const res = await fetch(`${BACKEND_URL}/stores/by-name/${encodeURIComponent(editName)}`, {
-        method: 'GET',
-        headers: {
-          'x-api-key': API_KEY,
-        },
-      });
+    setIsLoading(true);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMessage(`❌ ${data.message || 'Failed to fetch store data.'}`);
-        return;
-      }
-
-      const stores = (data.stores || []).filter(store => store.subscription !== 'Paid');
-
-      if (stores.length === 0) {
-        setMessage('❌ No free stores found.');
-      } else {
-        setStoreList(stores);
-        setMessage(`✅ Found ${stores.length} free store(s).`);
-      }
-    } catch (err) {
-      console.error('Load error:', err);
-      setMessage('❌ Error loading store.');
+    if (!navigator.geolocation) {
+      alert('❌ Geolocation is not supported by your browser.');
+      setIsLoading(false);
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        try {
+          const response = await fetch(
+            `${BACKEND_URL}/stores/by-nameForLP?row_query=${encodeURIComponent(editName)}&page=1&limit=100&latitude=${lat}&longitude=${lng}`,
+            {
+              headers: {
+                'x-api-key': API_KEY,
+              },
+            }
+          );
+
+          const data = await response.json();
+
+          if (!Array.isArray(data.stores) || data.stores.length === 0) {
+            setMessage('❌ No matching stores found.');
+          } else {
+            const unpaidStores = data.stores.filter(store => store.subscription !== 'Paid');
+
+            if (unpaidStores.length === 0) {
+              setMessage('❌ All found stores are already paid.');
+            } else {
+              setStoreList(unpaidStores);
+              setMessage(`✅ Found ${unpaidStores.length} free store(s).`);
+            }
+          }
+        } catch (err) {
+          console.error('Search error:', err);
+          setMessage('❌ Failed to fetch store data.');
+        } finally {
+          setIsLoading(false);
+        }
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        alert('❌ Location access is required to load stores near you.\n\nPlease allow location and try again.');
+        setIsLoading(false);
+      }
+    );
   };
 
   return (
     <Box sx={{ maxWidth: '800px', mx: 'auto', mt: 4, px: 2 }}>
       <Paper sx={{ p: 3, mb: 4 }} elevation={3}>
         <Typography variant="h5" gutterBottom>
-          Find Store by Name
+          Find Store by Name (Location Required)
         </Typography>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <TextField
@@ -149,8 +163,13 @@ function EditStore() {
             value={editName}
             onChange={(e) => setEditName(e.target.value)}
           />
-          <Button variant="contained" color="primary" onClick={handleLoad}>
-            Load Store
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleLoad}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Loading...' : 'Load Store'}
           </Button>
         </Box>
 

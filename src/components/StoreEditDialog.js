@@ -69,6 +69,8 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
                 onChange={handleChange}
                 error={!!errors[field]}
                 helperText={errors[field] || ''}
+                multiline={['usp', 'tags', 'address'].includes(field)}
+                minRows={['usp', 'tags', 'address'].includes(field) ? 3 : 1}
               />
             </Grid>
           ))}

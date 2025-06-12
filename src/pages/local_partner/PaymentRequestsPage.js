@@ -151,7 +151,7 @@ const PaymentRequestsPage = () => {
                   <TableCell>
                     <Button
                       variant="outlined"
-                      onClick={() => setSelectedRequest(req)}
+                      onClick={() => setSelectedRequest(req)} 
                     >
                       Update
                     </Button>
