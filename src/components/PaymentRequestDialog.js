@@ -6,7 +6,7 @@ import {
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import PhoneIcon from '@mui/icons-material/Phone';
 
-const STAGES = ['pending', 'sent reminder', 'paid', 'expired'];
+const STAGES = ['pending', 'sent reminder', 'expired']; // ❌ removed "paid"
 
 const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
   const [status, setStatus] = useState(request?.status || '');
@@ -47,8 +47,6 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
     handleClose();
   };
 
-  const isPaid = request?.status === 'paid';
-
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>Information about Payment Request</DialogTitle>
@@ -58,28 +56,20 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
         </DialogContentText>
 
         <Stack spacing={2}>
-
-
-        <TextField
+          <TextField
             label="Status"
             select
             fullWidth
             value={status}
             onChange={e => setStatus(e.target.value)}
-            disabled={request?.status === 'paid'} // Disable whole dropdown if already paid
+            disabled={status === 'paid'} // 🔒 Entire field disabled if status is already "paid"
           >
             {STAGES.map(stage => (
-              <MenuItem
-                key={stage}
-                value={stage}
-                disabled={stage === 'paid'} // Always disable "paid" as an option
-              >
+              <MenuItem key={stage} value={stage}>
                 {stage}
               </MenuItem>
             ))}
           </TextField>
-        
-
 
           <TextField
             label="Add New Note"

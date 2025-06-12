@@ -73,7 +73,7 @@ const LocalPartnerDashboard = () => {
             color="primary"
             fullWidth
           >
-            💸 Payment Requests
+            💸 Payment Request Report
           </Button>
 
           <Button
