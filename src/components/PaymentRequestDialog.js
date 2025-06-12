@@ -56,20 +56,20 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
         </DialogContentText>
 
         <Stack spacing={2}>
-          <TextField
-              label="Status"
-              select
-              fullWidth
-              value={status}
-              onChange={e => setStatus(e.target.value)}
-              disabled={request?.status === 'paid'} // ✅ This ensures "paid" is correctly shown
-            >
-              {STAGES.map(stage => (
-                <MenuItem key={stage} value={stage}>
-                  {stage}
-                </MenuItem>
-              ))}
-            </TextField>
+        <TextField
+            label="Status"
+            select
+            fullWidth
+            value={status}
+            onChange={e => setStatus(e.target.value)}
+            disabled={status === 'paid'} // Disable entire dropdown if already 'paid'
+          >
+            {STAGES.filter(stage => status === 'paid' || stage !== 'paid').map(stage => (
+              <MenuItem key={stage} value={stage}>
+                {stage}
+              </MenuItem>
+            ))}
+          </TextField>
 
           <TextField
             label="Add New Note"
