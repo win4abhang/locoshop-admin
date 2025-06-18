@@ -9,39 +9,84 @@ const LocalPartnerTrainingPage = () => {
 
       {/* Page Title */}
       <Typography variant="h4" align="center" fontWeight="bold" color="primary" gutterBottom>
-        🎓 Local Partner Training: Help More Shops, Earn More
+        🎓 Local Partner Training: <br/> Help More Shops, Earn More
       </Typography>
 
       {/* Welcome Message */}
       <Typography variant="h6" align="center" paragraph>
-        👋 Welcome to your Training Page, Local Partner!<br/>
+        Welcome to your Training Page, Local Partner!<br/>
         Here, you’ll learn how to use the platform, explain it to businesses, and earn faster. Let’s get started.
       </Typography>
 
       {/* What You Do */}
       <Box mt={4}>
-        <Typography variant="h5" fontWeight="bold" color="success.main" gutterBottom>
-          ✅ What You Do:
+      <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
+          What You Do:
         </Typography>
         <List>
-          <ListItem><ListItemText primary="Talk to shop owners or service providers" /></ListItem>
-          <ListItem><ListItemText primary="Add their business on Localz using your dashboard" /></ListItem>
-          <ListItem><ListItemText primary="Help them understand how they benefit" /></ListItem>
-          <ListItem><ListItemText primary="Earn commission when they go live (after they pay)" /></ListItem>
+        <ListItem>
+            <ListItemText
+            primary="Step 1: Get Mobile Numbers of Shop Owners"
+            secondary="You can find mobile numbers in two ways: (a) Use the Edit & Payment Details page in your dashboard where some contacts may be listed, or (b) Search manually on platforms like Google, Facebook, WhatsApp groups, JustDial, or even local directories."
+            />
+        </ListItem>
+
+        <ListItem>
+            <ListItemText
+            primary="Step 2: Call the Shop Owner or Service Provider"
+            secondary="Introduce yourself politely as a Localz Partner. Mention that you're helping shops get more customers online. Speak in their preferred language if needed."
+            />
+        </ListItem>
+
+        <ListItem>
+            <ListItemText
+            primary="Step 3: Explain Localz Benefits Clearly"
+            secondary="Tell them Localz helps them appear in local search results when people search for their service. Highlight features like: Google Maps link, WhatsApp button, direct call button, customer visibility based on open hours and location, and that no app is needed."
+            />
+        </ListItem>
+
+        <ListItem>
+            <ListItemText
+            primary="Step 4: Understand the Shop’s Business Properly"
+            secondary="Ask them what they sell or which services they provide. Based on that, identify proper tags or keywords (e.g., 'Mobile Repair', 'AC Service', 'Grocery Store'). Add these in the right way during registration."
+            />
+        </ListItem>
+
+        <ListItem>
+            <ListItemText
+            primary="Step 5: Fill Their Business Details on the Platform"
+            secondary="Go to the 'Add Store' page in your dashboard and enter accurate information like Shop Name, Phone Number, Tags (keywords), Address, Open Hours, and optional photo. Make sure everything is correct."
+            />
+        </ListItem>
+
+        <ListItem>
+            <ListItemText
+            primary="Step 6: Convince Them to Make the Payment Online"
+            secondary="Once you submit their details, a payment link will be sent to them. Explain that the cost is only ₹365/year and there's no commission. Assure them it’s safe and helps them grow. Follow up politely if needed."
+            />
+        </ListItem>
+
+        <ListItem>
+            <ListItemText
+            primary="Step 7: Confirm Payment & Earn Commission"
+            secondary="When the shop owner makes the payment, their listing will be activated and you’ll receive ₹36 as commission. You can check the payment status in your dashboard."
+            />
+        </ListItem>
         </List>
-        <Typography align="center" fontStyle="italic" color="textSecondary">
-          🟩 “Find shops. Add them. Explain benefits. Help them go live. Earn.”
+
+        <Typography  fontStyle="italic" color="textSecondary">
+          “Find shops. Add them. Explain benefits. Help them go live. Earn.”
         </Typography>
       </Box>
 
       {/* Benefits to Shop Owners */}
       <Box mt={6}>
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
-          🛍️ What You Should Explain to Shop Owners
+          What You Should Explain to Shop Owners
         </Typography>
 
         <Typography variant="h6" gutterBottom>
-          🔥 How Localz Helps Shops & Service Providers
+          How Localz Helps Shops & Service Providers
         </Typography>
         <List>
           <ListItem><ListItemText primary="✅ More Visibility Online — shown to customers nearby without needing a website" /></ListItem>
@@ -57,7 +102,7 @@ const LocalPartnerTrainingPage = () => {
       {/* How to Use the Platform */}
       <Box mt={6}>
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
-          📲 How to Use the Platform (Simple Steps)
+          How to Use the Platform (Simple Steps)
         </Typography>
         <List>
           <ListItem><ListItemText primary="Login at: https://about.localz.online/login" /></ListItem>
@@ -72,7 +117,7 @@ const LocalPartnerTrainingPage = () => {
       {/* Earnings Section */}
       <Box mt={6}>
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
-          💰 How Earnings Work (Clear & Honest)
+          How Earnings Work (Clear & Honest)
         </Typography>
         <List>
           <ListItem><ListItemText primary="Earn only after payment" /></ListItem>
@@ -85,7 +130,7 @@ const LocalPartnerTrainingPage = () => {
       {/* Explaining Localz */}
       <Box mt={6}>
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
-          🎯 How to Explain Localz to Shop Owners
+          How to Explain Localz to Shop Owners
         </Typography>
         <Typography>
           “Sir, nowadays people search for everything online. If your shop is on Localz, more nearby customers will find you — even if you don’t have a website or app.”<br/>
@@ -96,7 +141,7 @@ const LocalPartnerTrainingPage = () => {
       {/* Best Practices */}
       <Box mt={6}>
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
-          🧠 Best Practices for Success
+          Best Practices for Success
         </Typography>
         <List>
           <ListItem><ListItemText primary="Double-check phone numbers and timings" /></ListItem>
@@ -110,20 +155,20 @@ const LocalPartnerTrainingPage = () => {
       {/* Tools */}
       <Box mt={6}>
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
-          📦 Tools to Make Work Easy
+          Tools to Make Work Easy
         </Typography>
         <List>
           <ListItem><ListItemText primary="Mobile phone with internet" /></ListItem>
           <ListItem><ListItemText primary="WhatsApp for quick sharing" /></ListItem>
           <ListItem><ListItemText primary="Partner login ID" /></ListItem>
-          <ListItem><ListItemText primary="Confidence and local knowledge 😉" /></ListItem>
+          <ListItem><ListItemText primary="Confidence and local knowledge" /></ListItem>
         </List>
       </Box>
 
       {/* FAQs */}
       <Box mt={6}>
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
-          ❓ Common Questions
+          Common Questions
         </Typography>
         <List>
           <ListItem><ListItemText primary="Q: What if the shop never pays?" secondary="A: You won’t earn unless they pay. Focus on genuine businesses." /></ListItem>
@@ -134,9 +179,9 @@ const LocalPartnerTrainingPage = () => {
       </Box>
 
       {/* Final Tip */}
-      <Box mt={6} textAlign="center">
+      <Box mt={6}>
         <Typography variant="h5" fontWeight="bold" color="success.main" gutterBottom>
-          🚀 Final Tip: Keep Going!
+          Final Tip: Keep Going!
         </Typography>
         <Typography>
           The more you help shops, the more you earn. Your work brings real businesses online. 🌐<br/>
