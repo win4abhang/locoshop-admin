@@ -48,7 +48,7 @@ const LocalPartnerDashboard = () => {
 
   const drawerItems = [
     { label: '➕ Add Store', path: '/local_partner/add-store' },
-    { label: '✏️ Edit Store', path: '/local_partner/edit-store' },
+    { label: '✏️ Edit & Payment Request', path: '/local_partner/edit-store' },
     { label: '💸 Payment Request Report', path: '/local_partner/PaymentRequestsPage' },
     { label: '💰 Earnings', path: '/local_partner/earnings' },
     { label: '🚪 Logout', action: handleLogout },
