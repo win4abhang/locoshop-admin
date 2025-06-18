@@ -4,6 +4,7 @@ import AddStore from './AddStore';
 import EditStore from './EditStore';
 import PaymentRequests from './PaymentRequestsPage';
 import PartnerEarningsCard from '../../components/PartnerEarningsCard';
+import LocalPartnerTrainingPage from './LocalPartnerTrainingPage';
 
 import {
   Box,
@@ -51,6 +52,7 @@ const LocalPartnerDashboard = () => {
     { label: '✏️ Edit & Payment Request', path: '/local_partner/edit-store' },
     { label: '💸 Payment Request Report', path: '/local_partner/PaymentRequestsPage' },
     { label: '💰 Earnings', path: '/local_partner/earnings' },
+    { label: '📗 Trainings', path: '/local_partner/trainings' },
     { label: '🚪 Logout', action: handleLogout },
   ];
 
@@ -102,6 +104,7 @@ const LocalPartnerDashboard = () => {
             <Route path="edit-store" element={<EditStore />} />
             <Route path="PaymentRequestsPage" element={<PaymentRequests />} />
             <Route path="earnings" element={<PartnerEarningsCard />} />
+            <Route path="trainings" element={<LocalPartnerTrainingPage />} />
             <Route
               path="*"
               element={
