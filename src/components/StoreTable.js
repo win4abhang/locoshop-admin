@@ -114,40 +114,46 @@ const StoreTable = ({ storeList, onSelectStore }) => {
 
                 <TableCell>{(store.tags || []).join(', ')}</TableCell>
 
-                <TableCell>
+                <TableCell sx={{ whiteSpace: 'nowrap' }}>
                   <Stack
                     direction="row"
                     spacing={1}
                     flexWrap="nowrap"
+                    alignItems="center"
+                    sx={{ overflowX: 'auto' }}
                   >
                     <Button
                       variant="contained"
                       color="primary"
                       href={`tel:${store.phone}`}
                       size="small"
+                      sx={{ minWidth: '90px' }}
                     >
                       📞 Call
                     </Button>
                     <Button
                       variant="contained"
-                      color="secondary"
+                      color="primary"
                       href={`https://wa.me/91${store.phone.replace(/\D/g, '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       size="small"
+                      sx={{ minWidth: '110px' }}
                     >
                       💬 WhatsApp
                     </Button>
                     <Button
                       variant="contained"
-                      color="info"
+                      color="primary"
                       onClick={() => onSelectStore(store)}
                       size="small"
+                      sx={{ minWidth: '120px' }}
                     >
                       ✏️ Edit & Pay
                     </Button>
                   </Stack>
                 </TableCell>
+
               </TableRow>
             ))}
           </TableBody>
