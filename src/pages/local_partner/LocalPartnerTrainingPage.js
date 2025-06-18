@@ -1,15 +1,16 @@
 // Updated Landing Page: Local Partner Training
 import React from 'react';
 import { Container, Typography, Box, Grid, Card, CardContent, List, ListItem, ListItemText } from '@mui/material';
-
+import Menu from '../components/Menu';
 
 const LocalPartnerTrainingPage = () => {
   return (
     <Container maxWidth="md" sx={{ py: 6 }}>
+      <Menu />
 
       {/* Page Title */}
       <Typography variant="h4" align="center" fontWeight="bold" color="primary" gutterBottom>
-        🎓 Local Partner Training: <br/> Help More Shops, Earn More
+        Local Partner Training: Help More Shops, Earn More
       </Typography>
 
       {/* Welcome Message */}
@@ -20,61 +21,16 @@ const LocalPartnerTrainingPage = () => {
 
       {/* What You Do */}
       <Box mt={4}>
-      <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
+        <Typography variant="h5" fontWeight="bold" color="success.main" gutterBottom>
           What You Do:
         </Typography>
         <List>
-        <ListItem>
-            <ListItemText
-            primary="Step 1: Get Mobile Numbers of Shop Owners"
-            secondary="You can find mobile numbers in two ways: (a) Use the Edit & Payment Details page in your dashboard where some contacts may be listed, or (b) Search manually on platforms like Google, Facebook, WhatsApp groups, JustDial, or even local directories."
-            />
-        </ListItem>
-
-        <ListItem>
-            <ListItemText
-            primary="Step 2: Call the Shop Owner or Service Provider"
-            secondary="Introduce yourself politely as a Localz Partner. Mention that you're helping shops get more customers online. Speak in their preferred language if needed."
-            />
-        </ListItem>
-
-        <ListItem>
-            <ListItemText
-            primary="Step 3: Explain Localz Benefits Clearly"
-            secondary="Tell them Localz helps them appear in local search results when people search for their service. Highlight features like: Google Maps link, WhatsApp button, direct call button, customer visibility based on open hours and location, and that no app is needed."
-            />
-        </ListItem>
-
-        <ListItem>
-            <ListItemText
-            primary="Step 4: Understand the Shop’s Business Properly"
-            secondary="Ask them what they sell or which services they provide. Based on that, identify proper tags or keywords (e.g., 'Mobile Repair', 'AC Service', 'Grocery Store'). Add these in the right way during registration."
-            />
-        </ListItem>
-
-        <ListItem>
-            <ListItemText
-            primary="Step 5: Fill Their Business Details on the Platform"
-            secondary="Go to the 'Add Store' page in your dashboard and enter accurate information like Shop Name, Phone Number, Tags (keywords), Address, Open Hours, and optional photo. Make sure everything is correct."
-            />
-        </ListItem>
-
-        <ListItem>
-            <ListItemText
-            primary="Step 6: Convince Them to Make the Payment Online"
-            secondary="Once you submit their details, a payment link will be sent to them. Explain that the cost is only ₹365/year and there's no commission. Assure them it’s safe and helps them grow. Follow up politely if needed."
-            />
-        </ListItem>
-
-        <ListItem>
-            <ListItemText
-            primary="Step 7: Confirm Payment & Earn Commission"
-            secondary="When the shop owner makes the payment, their listing will be activated and you’ll receive ₹36 as commission. You can check the payment status in your dashboard."
-            />
-        </ListItem>
+          <ListItem><ListItemText primary="Talk to shop owners or service providers" /></ListItem>
+          <ListItem><ListItemText primary="Add their business on Localz using your dashboard" /></ListItem>
+          <ListItem><ListItemText primary="Help them understand how they benefit" /></ListItem>
+          <ListItem><ListItemText primary="Earn commission when they go live (after they pay)" /></ListItem>
         </List>
-
-        <Typography  fontStyle="italic" color="textSecondary">
+        <Typography align="center" fontStyle="italic" color="textSecondary">
           “Find shops. Add them. Explain benefits. Help them go live. Earn.”
         </Typography>
       </Box>
@@ -89,20 +45,20 @@ const LocalPartnerTrainingPage = () => {
           How Localz Helps Shops & Service Providers
         </Typography>
         <List>
-          <ListItem><ListItemText primary="✅ More Visibility Online — shown to customers nearby without needing a website" /></ListItem>
-          <ListItem><ListItemText primary="✅ Google Maps Link + Call + WhatsApp — contact in one click" /></ListItem>
-          <ListItem><ListItemText primary="✅ Open Hours Logic — live stores appear at the top during their open hours" /></ListItem>
-          <ListItem><ListItemText primary="✅ Show Nearby Customers — closer shops rank higher" /></ListItem>
-          <ListItem><ListItemText primary="✅ Simple Link to Share — works like a mini-website" /></ListItem>
-          <ListItem><ListItemText primary="✅ Supports 50+ Business Categories — like Kirana, Tailor, Bike Repair, Tutors" /></ListItem>
-          <ListItem><ListItemText primary="✅ No App or Tech Needed — simple onboarding" /></ListItem>
+          <ListItem><ListItemText primary="More Visibility Online — shown to customers nearby without needing a website" /></ListItem>
+          <ListItem><ListItemText primary="Google Maps Link + Call + WhatsApp — contact in one click" /></ListItem>
+          <ListItem><ListItemText primary="Open Hours Logic — live stores appear at the top during their open hours" /></ListItem>
+          <ListItem><ListItemText primary="Show Nearby Customers — closer shops rank higher" /></ListItem>
+          <ListItem><ListItemText primary="Simple Link to Share — works like a mini-website" /></ListItem>
+          <ListItem><ListItemText primary="Supports 50+ Business Categories — like Kirana, Tailor, Bike Repair, Tutors" /></ListItem>
+          <ListItem><ListItemText primary="No App or Tech Needed — simple onboarding" /></ListItem>
         </List>
       </Box>
 
       {/* How to Use the Platform */}
       <Box mt={6}>
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
-          How to Use the Platform (Simple Steps)
+          📲 How to Use the Platform (Simple Steps)
         </Typography>
         <List>
           <ListItem><ListItemText primary="Login at: https://about.localz.online/login" /></ListItem>
@@ -179,12 +135,12 @@ const LocalPartnerTrainingPage = () => {
       </Box>
 
       {/* Final Tip */}
-      <Box mt={6}>
+      <Box mt={6} textAlign="center">
         <Typography variant="h5" fontWeight="bold" color="success.main" gutterBottom>
           Final Tip: Keep Going!
         </Typography>
         <Typography>
-          The more you help shops, the more you earn. Your work brings real businesses online. 🌐<br/>
+          The more you help shops, the more you earn. Your work brings real businesses online.<br/>
           Keep learning, keep helping — and you’ll grow with Localz.
         </Typography>
       </Box>
