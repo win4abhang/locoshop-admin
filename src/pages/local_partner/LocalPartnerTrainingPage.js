@@ -1,12 +1,11 @@
 // Updated Landing Page: Local Partner Training
 import React from 'react';
 import { Container, Typography, Box, Grid, Card, CardContent, List, ListItem, ListItemText } from '@mui/material';
-import Menu from '../components/Menu';
+
 
 const LocalPartnerTrainingPage = () => {
   return (
     <Container maxWidth="md" sx={{ py: 6 }}>
-      <Menu />
 
       {/* Page Title */}
       <Typography variant="h4" align="center" fontWeight="bold" color="primary" gutterBottom>
