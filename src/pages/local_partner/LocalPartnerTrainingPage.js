@@ -15,7 +15,7 @@ const LocalPartnerTrainingPage = () => {
 
       {/* Welcome Message */}
       <Typography variant="h6" align="center" paragraph>
-        Welcome, Partner! 👋<br />
+        Welcome, Partner!<br />
         You're playing a valuable role in supporting India’s small businesses.<br />
         This guide will walk you through how to grow your income by helping shops get discovered locally.
       </Typography>
@@ -33,7 +33,7 @@ const LocalPartnerTrainingPage = () => {
           <ListItem>
             <ListItemText
               primary="📞 Step 1: Identify Local Businesses"
-              secondary="Explore your area or online platforms (like Google, WhatsApp groups, Facebook, JustDial, etc.) to find store owners who might benefit from more online visibility."
+              secondary="Explore your area or online platforms to find store owners who might benefit from more online visibility."
             />
           </ListItem>
 
@@ -47,35 +47,35 @@ const LocalPartnerTrainingPage = () => {
           <ListItem>
             <ListItemText
               primary="💡 Step 3: Explain How Localz Helps"
-              secondary="Share how Localz allows their shop to appear when nearby people search for services. Show benefits like WhatsApp/call buttons, maps direction, and real-time open hour logic."
+              secondary="Share how Localz allows their shop to appear when nearby people search for services. Show benefits like WhatsApp/call buttons, maps direction."
             />
           </ListItem>
 
           <ListItem>
             <ListItemText
               primary="🔍 Step 4: Understand Their Business"
-              secondary="Learn what they offer — products or services. Choose clear tags like 'Tailor', 'Mobile Repair', or 'Tiffin Service' so customers can find them easily."
+              secondary="Learn what they offer — products or services. Choose clear tags like 'Tailor', 'Mobile Repair', or 'Tiffin Service' so customers can find them easily. Consider that how local people will search for that particular product or service on our platform add thouse tag in while listing "
             />
           </ListItem>
 
           <ListItem>
             <ListItemText
               primary="📝 Step 5: Register Their Store Accurately"
-              secondary="Use your dashboard's 'Add Store' option to fill in the details clearly — name, phone, tags, location, open hours, etc. Accuracy builds trust."
+              secondary="Use your dashboard's 'Add Store' option to fill in the details clearly — name, phone, tags, location, etc. Accuracy builds trust."
             />
           </ListItem>
 
           <ListItem>
             <ListItemText
               primary="💳 Step 6: Request Online Activation"
-              secondary="Once details are submitted, a secure payment link (₹365/year) is shared with the shop. Politely guide them about the value — no app, no tech skills, full visibility."
+              secondary="Once details are submitted, go to Edit and payment request page Search the store name which you added Click on edit & pay then check details Confirm from client Then click on payment request Link will generated and share with the client automatically. Link is valid for the 24 hours only So if you and client fully convinced they only generate the linka secure payment link (₹365/year) is shared with the shop. Politely guide them about the value — no app, no tech skills, full visibility."
             />
           </ListItem>
 
           <ListItem>
             <ListItemText
               primary="🎉 Step 7: Confirm Activation & Receive Commission"
-              secondary="After the payment is completed and the listing is verified, the store goes live. You'll receive ₹36 commission — check your dashboard for status updates."
+              secondary="After the payment is completed and the listing is verified, the store goes live. You'll receive ₹36 (10%)commission — check your dashboard for status updates."
             />
           </ListItem>
         </List>
@@ -152,11 +152,11 @@ const LocalPartnerTrainingPage = () => {
           Best Practices to Build Long-Term Trust
         </Typography>
         <List>
-          <ListItem><ListItemText primary="✅ Always verify phone number and working hours" /></ListItem>
+          <ListItem><ListItemText primary="✅ Always verify information" /></ListItem>
           <ListItem><ListItemText primary="✅ Speak respectfully and never push for payment" /></ListItem>
           <ListItem><ListItemText primary="✅ Save leads in a personal log or notes app" /></ListItem>
           <ListItem><ListItemText primary="✅ Only upload after confirming with the owner" /></ListItem>
-          <ListItem><ListItemText primary="✅ Follow up politely after 1–2 days if needed" /></ListItem>
+          <ListItem><ListItemText primary="✅ Follow up politely after 1 days if needed" /></ListItem>
         </List>
       </Box>
 
@@ -180,7 +180,7 @@ const LocalPartnerTrainingPage = () => {
         </Typography>
         <List>
           <ListItem><ListItemText primary="Q: What if the shop doesn’t pay?" secondary="A: That’s okay — focus on genuine businesses. You earn only when they activate their listing." /></ListItem>
-          <ListItem><ListItemText primary="Q: The shop owner has doubts — what to do?" secondary="A: Share another live Localz listing with them as proof." /></ListItem>
+          <ListItem><ListItemText primary="Q: The shop owner has doubts — what to do?" secondary="A: Describe about that how we are going to help them to grow their business" /></ListItem>
           <ListItem><ListItemText primary="Q: Can I register shops outside my city?" secondary="A: Absolutely! You can add shops from any location across India." /></ListItem>
           <ListItem><ListItemText primary="Q: Is there a daily limit?" secondary="A: No limit! You can register as many shops as you can manage accurately." /></ListItem>
         </List>
