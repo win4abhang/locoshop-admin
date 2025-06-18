@@ -82,24 +82,23 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
           direction={isMobile ? 'column' : 'row'}
           spacing={2}
           sx={{ width: '100%', p: 2 }}
-        >
-          
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            color="primary"
-            fullWidth={isMobile}
-          >
-            Update Store
-          </Button>
-
-          <Button
+        >       
+           <Button
             onClick={() => onRequestPayment(formData)}
-            variant="outlined"
-            color="success"
+            variant="contained"
+            color='primary'
             fullWidth={isMobile}
           >
             Request Payment
+          </Button>
+
+          <Button
+            onClick={handleSubmit}
+            variant='outlined'
+            color="success"
+            fullWidth={isMobile}
+          >
+            Update Store
           </Button>
 
           <Button
