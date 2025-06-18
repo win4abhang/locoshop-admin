@@ -8,8 +8,12 @@ const LocalPartnerTrainingPage = () => {
 
       {/* Page Title */}
       <Typography variant="h4" align="center" fontWeight="bold" color="primary" gutterBottom>
-        Local Partner Training: Help More Shops, Earn More
+        Local Partner Training: <br/>
+        Help More Shops, Earn More
       </Typography>
+      <Box display="flex" justifyContent="center" mb={2}>
+        <img src="/images/telecaller-hero.jpg" alt="Work from home telecalling" style={{ maxWidth: 1280, width: '100%', borderRadius: 10 }} />
+      </Box>
 
       {/* Welcome Message */}
       <Typography variant="h6" align="center" paragraph>
@@ -19,7 +23,7 @@ const LocalPartnerTrainingPage = () => {
 
       {/* What You Do */}
       <Box mt={4}>
-        <Typography variant="h5" fontWeight="bold" color="success.main" gutterBottom>
+      <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
           What You Do:
         </Typography>
         <List>
@@ -28,7 +32,7 @@ const LocalPartnerTrainingPage = () => {
           <ListItem><ListItemText primary="Help them understand how they benefit" /></ListItem>
           <ListItem><ListItemText primary="Earn commission when they go live (after they pay)" /></ListItem>
         </List>
-        <Typography align="center" fontStyle="italic" color="textSecondary">
+        <Typography  fontStyle="italic" color="textSecondary">
           “Find shops. Add them. Explain benefits. Help them go live. Earn.”
         </Typography>
       </Box>
@@ -56,7 +60,7 @@ const LocalPartnerTrainingPage = () => {
       {/* How to Use the Platform */}
       <Box mt={6}>
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
-          📲 How to Use the Platform (Simple Steps)
+          How to Use the Platform (Simple Steps)
         </Typography>
         <List>
           <ListItem><ListItemText primary="Login at: https://about.localz.online/login" /></ListItem>
