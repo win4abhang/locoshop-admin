@@ -47,7 +47,8 @@ const LocalPartnerTrainingPage = () => {
         {/* Sales Pitch */}
         <Typography mt={3} fontStyle="italic">
           Example Pitch: <br />
-          “Sir, Localz helps people nearby find your shop on phone. It works like a mini website — WhatsApp, call, map — all in one link.”
+          “Sir/Madam, people search for services when they need something urgently — like a tailor, plumber, or repair. Localz helps your shop show up at that exact moment. It’s not a website — it’s smart local listing and online promotion. With one link, customers nearby can call, WhatsApp, or find you on Maps. That’s how you close more deals — by showing up when it matters.
+          ”
         </Typography>
       </Box>
 
@@ -60,7 +61,6 @@ const LocalPartnerTrainingPage = () => {
           <ListItem><ListItemText primary="✅ Reach local customers instantly" /></ListItem>
           <ListItem><ListItemText primary="✅ One-click WhatsApp, call, map" /></ListItem>
           <ListItem><ListItemText primary="✅ Ranks by distance — more local reach" /></ListItem>
-          <ListItem><ListItemText primary="✅ Shareable mini page" /></ListItem>
           <ListItem><ListItemText primary="✅ No app or login needed for customers" /></ListItem>
         </List>
       </Box>
