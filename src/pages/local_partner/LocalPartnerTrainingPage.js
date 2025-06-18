@@ -6,10 +6,10 @@ import {
 
 const LocalPartnerTrainingPage = () => {
   return (
-    <Container maxWidth="md" sx={{ py: 6 }}>
+    <Container maxWidth="md" sx={{ py: 1 }}>
       {/* Page Title */}
       <Typography variant="h4" align="center" fontWeight="bold" color="primary" gutterBottom>
-        🎓 Local Partner Training<br />Empower Local Stores, Earn With Pride
+        Local Partner Training<br />Empower Local Stores, Earn With Pride
       </Typography>
 
       {/* Welcome Message */}
@@ -94,10 +94,9 @@ const LocalPartnerTrainingPage = () => {
         <List>
           <ListItem><ListItemText primary="✅ Local Discovery — attract nearby customers instantly" /></ListItem>
           <ListItem><ListItemText primary="✅ One-Click Contact — WhatsApp, Call, Maps in one place" /></ListItem>
-          <ListItem><ListItemText primary="✅ Timings Logic — only open stores appear on top" /></ListItem>
           <ListItem><ListItemText primary="✅ Distance Ranking — closer shops rank better" /></ListItem>
           <ListItem><ListItemText primary="✅ Mini Website — shareable and search-friendly" /></ListItem>
-          <ListItem><ListItemText primary="✅ Works for 50+ Shop Types — grocery, repairs, tuition, salon, more" /></ListItem>
+          <ListItem><ListItemText primary="✅ Works for all Shop Types — grocery, repairs, tuition, salon, more" /></ListItem>
           <ListItem><ListItemText primary="✅ No App Required — accessible on any mobile browser" /></ListItem>
         </List>
       </Box>
@@ -108,14 +107,14 @@ const LocalPartnerTrainingPage = () => {
           How to Use the Dashboard (Step-by-Step)
         </Typography>
         <List>
-          <ListItem><ListItemText primary="🔐 Step 1: Log In" secondary="Go to https://about.localz.online/login and sign in with your Partner ID." /></ListItem>
+          <ListItem><ListItemText primary="🔐 Step 1: Log In" secondary="Go to https://about.localz.online/login and sign in with your User Name." /></ListItem>
           <ListItem><ListItemText primary="📊 Step 2: Dashboard Access" secondary="Track store entries, payment status, and commissions." /></ListItem>
           <ListItem><ListItemText primary="➕ Step 3: Add Store" secondary="Fill shop details correctly — name, tags, phone, and address." /></ListItem>
           <ListItem><ListItemText primary="🔎 Step 4: Avoid Duplicates" secondary="Search if the store already exists before adding." /></ListItem>
           <ListItem><ListItemText primary="📨 Step 5: Submit Form" secondary="Only submit once all details are correct and confirmed." /></ListItem>
           <ListItem><ListItemText primary="💳 Step 6: Payment Request" secondary="Use Edit & Payment page, generate secure payment link." /></ListItem>
           <ListItem><ListItemText primary="⏱ Step 7: Track Status" secondary="Follow up gently. Use dashboard for payment tracking." /></ListItem>
-          <ListItem><ListItemText primary="📱 Step 8: Assist Remotely" secondary="Help shops via WhatsApp or call if you're not nearby." /></ListItem>
+          <ListItem><ListItemText primary="📱 Step 8: Assist Remotely" secondary="Help shops via WhatsApp or call." /></ListItem>
           <ListItem><ListItemText primary="🔍 Step 9: Verification" secondary="Localz team reviews every entry before publishing." /></ListItem>
           <ListItem><ListItemText primary="💰 Step 10: Weekly Payouts" secondary="Earnings are credited to your UPI every Friday." /></ListItem>
         </List>
@@ -140,8 +139,8 @@ const LocalPartnerTrainingPage = () => {
           Simple Way to Explain Localz to Shops
         </Typography>
         <Typography>
-          “Sir/Madam, nowadays people search for shops on Google or Maps. Localz helps your shop show up when someone nearby searches for your service — even if you don’t have a website.”<br /><br />
-          “It works like a mini-site — with WhatsApp, call, and map links in one place. More visibility, more customers, and no technical skills needed.”
+          “Sir/Madam, nowadays people search for shops on. Localz helps your shop show up when someone nearby searches for your service — even if you don’t have a website.”<br /><br />
+          “It works like a mini-site — with WhatsApp, call, and map links in one place, also you can attract more customers by show you best offering, More visibility, more customers, and no technical skills needed.”
         </Typography>
       </Box>
 
@@ -167,7 +166,7 @@ const LocalPartnerTrainingPage = () => {
         <List>
           <ListItem><ListItemText primary="📱 Mobile phone with internet access" /></ListItem>
           <ListItem><ListItemText primary="💬 WhatsApp for communication" /></ListItem>
-          <ListItem><ListItemText primary="🔑 Partner login access" /></ListItem>
+          <ListItem><ListItemText primary="🔑 Login access" /></ListItem>
           <ListItem><ListItemText primary="🧠 Local knowledge and confidence" /></ListItem>
         </List>
       </Box>
