@@ -111,9 +111,10 @@ const LocalPartnerTrainingPage = () => {
         <List>
           <ListItem><ListItemText primary="🔐 Step 1: Log In" secondary="Go to https://about.localz.online/login and sign in with your Partner ID." /></ListItem>
           <ListItem><ListItemText primary="📊 Step 2: Access Your Dashboard" secondary="Track store entries, payment status, and commissions here." /></ListItem>
-          <ListItem><ListItemText primary="➕ Step 3: Add a Store" secondary="Fill in shop details accurately — name, phone, tags, address, hours." /></ListItem>
+          <ListItem><ListItemText primary="➕ Step 3: Add a Store" secondary="Fill in shop details accurately — name, phone, tags, address." /></ListItem>
           <ListItem><ListItemText primary="🔎 Step 4: Search to Avoid Duplicates" secondary="Make sure the store isn’t already listed before adding it." /></ListItem>
-          <ListItem><ListItemText primary="📨 Step 5: Submit Form & Payment Request" secondary="Once submitted, a payment link is auto-sent to the shop owner." /></ListItem>
+          <ListItem><ListItemText primary="📨 Step 5: Submit Form" secondary="Once submitted all required details." /></ListItem>
+          <ListItem><ListItemText primary="💳 Step 5: Payment Request" secondary="Go to Edit & payment page search store and request payment, a payment link is auto-sent to the shop owner." /></ListItem>
           <ListItem><ListItemText primary="⏱ Step 6: Track Payments & Send Reminders" secondary="Use your dashboard to follow up if required — be kind and helpful." /></ListItem>
           <ListItem><ListItemText primary="📱 Step 7: Communicate via WhatsApp/Call" secondary="If you can’t meet the shop, collect details and assist remotely." /></ListItem>
           <ListItem><ListItemText primary="🔍 Step 8: Verification by Our Team" secondary="We verify all entries to ensure quality and trust for customers." /></ListItem>
