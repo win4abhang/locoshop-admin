@@ -23,7 +23,7 @@ const About = () => {
           If you have any questions, feel free to contact us at: <br />
           <strong>📍 Address:</strong> Nana Abhangwasti Vidani, Phaltan, Satara, Maharashtra, India – 415523<br />
           <strong>📞 Mobile:</strong> 7248924224<br />
-          <strong>📧 Email:</strong> localz.are.online@gmail.com
+          <strong>📧 Email:</strong> connect@localz.online
         </Typography>
       </Box>
     </Container>

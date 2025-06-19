@@ -54,7 +54,7 @@ const TermsConditions = () => {
           6. Contact Information
         </Typography>
         <Typography variant="body1" paragraph>
-          For questions regarding these Terms, please contact us at <strong>localz.are.online@gmail.com</strong> or call <strong>7248924224</strong>.
+          For questions regarding these Terms, please contact us at <strong>connect@localz.online</strong> or call <strong>7248924224</strong>.
         </Typography>
 
         <Typography variant="body2" color="text.secondary">

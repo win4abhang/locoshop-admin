@@ -73,7 +73,7 @@ const PrivacyPolicy = () => {
           8. Contact
         </Typography>
         <Typography variant="body1" paragraph>
-          For any privacy-related concerns, contact us at <strong>localz.are.online@gmail.com</strong> or call <strong>7248924224</strong>.
+          For any privacy-related concerns, contact us at <strong>connect@localz.online</strong> or call <strong>7248924224</strong>.
         </Typography>
 
         <Typography variant="body2" color="text.secondary">

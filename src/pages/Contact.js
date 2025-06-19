@@ -18,7 +18,7 @@ const Contact = () => {
           <strong>Owner:</strong> Vinod Pandurang Abhang<br />
           <strong>Address:</strong> Nana Abhangwasti Vidani, Phaltan, Satara, Maharashtra, India – 415523<br />
           <strong>Phone:</strong> <Link href="tel:+917248924224">7248924224</Link><br />
-          <strong>Email:</strong> <Link href="mailto:localz.are.online@gmail.com">localz.are.online@gmail.com</Link>
+          <strong>Email:</strong> <Link href="mailto:connect@localz.online">connect@localz.online</Link>
         </Typography>
         <Typography variant="body1">
           We aim to respond to all queries within 24–48 hours.

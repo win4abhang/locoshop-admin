@@ -33,14 +33,14 @@ const ReturnRefundPolicy = () => {
           Cancellation Policy
         </Typography>
         <Typography variant="body1" paragraph>
-          If you wish to cancel your listing or subscription, please contact us at <strong>localz.are.online@gmail.com</strong>. Cancellation requests will be processed but will not qualify for any refund.
+          If you wish to cancel your listing or subscription, please contact us at <strong>connect@localz.online</strong>. Cancellation requests will be processed but will not qualify for any refund.
         </Typography>
 
         <Typography variant="h6" gutterBottom>
           Contact Us
         </Typography>
         <Typography variant="body1" paragraph>
-          For any queries regarding this policy, feel free to contact us at <strong>localz.are.online@gmail.com</strong> or call <strong>7248924224</strong>.
+          For any queries regarding this policy, feel free to contact us at <strong>connect@localz.online</strong> or call <strong>7248924224</strong>.
         </Typography>
 
         <Typography variant="body2" color="text.secondary">
