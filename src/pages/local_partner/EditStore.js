@@ -150,7 +150,7 @@ function EditStore() {
   };
 
   return (
-    <Box sx={{ maxWidth: '800px', mx: 'auto', mt: 4, px: 2 }}>
+    <Box sx={{ mx: 'auto', mt: 4, px: 2 }}>
       <Paper sx={{ p: 3, mb: 4 }} elevation={3}>
         <Typography variant="h5" gutterBottom>
           Find Store by Name (Location Required)
