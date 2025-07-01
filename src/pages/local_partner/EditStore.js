@@ -23,6 +23,8 @@ function EditStore() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
 
   const handleSelectStore = (store) => {
     setSelectedStore(store);
@@ -99,54 +101,66 @@ function EditStore() {
     setStoreList([]);
     setIsLoading(true);
 
-    if (!navigator.geolocation) {
-      alert('❌ Geolocation is not supported by your browser.');
-      setIsLoading(false);
-      return;
-    }
+    if (!latitude || !longitude) {
+      // Try geolocation only if lat/lng not already set manually
+      if (!navigator.geolocation) {
+        alert('❌ Geolocation is not supported by your browser.');
+        setIsLoading(false);
+        return;
+      }
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude.toString();
+          const lng = position.coords.longitude.toString();
 
-        try {
-          const response = await fetch(
-            `${BACKEND_URL}/stores/by-nameForLP?row_query=${encodeURIComponent(editName)}&page=1&limit=100&latitude=${lat}&longitude=${lng}`,
-            {
-              headers: {
-                'x-api-key': API_KEY,
-              },
-            }
-          );
+          setLatitude(lat);
+          setLongitude(lng);
 
-          const data = await response.json();
-
-          if (!Array.isArray(data.stores) || data.stores.length === 0) {
-            setMessage('❌ No matching stores found.');
-          } else {
-            const unpaidStores = data.stores.filter(store => store.subscription !== 'Paid');
-
-            if (unpaidStores.length === 0) {
-              setMessage('❌ All found stores are already paid.');
-            } else {
-              setStoreList(unpaidStores);
-              setMessage(`✅ Found ${unpaidStores.length} free store(s).`);
-            }
-          }
-        } catch (err) {
-          console.error('Search error:', err);
-          setMessage('❌ Failed to fetch store data.');
-        } finally {
+          await fetchStores(lat, lng);
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          alert('❌ Location access is required to load stores near you.\n\nPlease allow location and try again.');
           setIsLoading(false);
         }
-      },
-      (error) => {
-        console.error('Geolocation error:', error);
-        alert('❌ Location access is required to load stores near you.\n\nPlease allow location and try again.');
-        setIsLoading(false);
+      );
+    } else {
+      await fetchStores(latitude, longitude);
+    }
+  };
+
+  const fetchStores = async (lat, lng) => {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/stores/by-nameForLP?row_query=${encodeURIComponent(editName)}&page=1&limit=100&latitude=${lat}&longitude=${lng}`,
+        {
+          headers: {
+            'x-api-key': API_KEY,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!Array.isArray(data.stores) || data.stores.length === 0) {
+        setMessage('❌ No matching stores found.');
+      } else {
+        const unpaidStores = data.stores.filter(store => store.subscription !== 'Paid');
+
+        if (unpaidStores.length === 0) {
+          setMessage('❌ All found stores are already paid.');
+        } else {
+          setStoreList(unpaidStores);
+          setMessage(`✅ Found ${unpaidStores.length} free store(s).`);
+        }
       }
-    );
+    } catch (err) {
+      console.error('Search error:', err);
+      setMessage('❌ Failed to fetch store data.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -155,13 +169,27 @@ function EditStore() {
         <Typography variant="h5" gutterBottom>
           Find Store by Name (Location Required)
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
           <TextField
             label="Store Name"
             variant="outlined"
             fullWidth
             value={editName}
             onChange={(e) => setEditName(e.target.value)}
+          />
+          <TextField
+            label="Latitude"
+            variant="outlined"
+            value={latitude}
+            onChange={(e) => setLatitude(e.target.value)}
+            sx={{ width: 140 }}
+          />
+          <TextField
+            label="Longitude"
+            variant="outlined"
+            value={longitude}
+            onChange={(e) => setLongitude(e.target.value)}
+            sx={{ width: 140 }}
           />
           <Button
             variant="contained"
