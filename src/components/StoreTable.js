@@ -14,6 +14,9 @@ const StoreTable = ({ storeList, onSelectStore }) => {
 
   const [filterText, setFilterText] = useState('');
   const [sortKey, setSortKey] = useState('');
+  const [waMessageTemplate, setWAMessageTemplate] = useState(
+    "Hello {name}, I’m contacting you regarding your store on Locoshop."
+  );
 
   const filteredAndSortedStores = useMemo(() => {
     let filtered = storeList;
@@ -78,6 +81,15 @@ const StoreTable = ({ storeList, onSelectStore }) => {
             </Select>
           </FormControl>
         </Box>
+
+        <TextField
+          label="WhatsApp Message Template"
+          variant="outlined"
+          value={waMessageTemplate}
+          onChange={(e) => setWAMessageTemplate(e.target.value)}
+          fullWidth
+          helperText="Use {name} to insert the store name dynamically"
+        />
       </Stack>
 
       {/* Table */}
@@ -94,68 +106,74 @@ const StoreTable = ({ storeList, onSelectStore }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredAndSortedStores.map((store) => (
-              <TableRow key={store._id}>
-                <TableCell>{store.name}</TableCell>
+            {filteredAndSortedStores.map((store) => {
+              const personalizedMessage = waMessageTemplate.replace('{name}', store.name);
+              const waLink = `https://wa.me/91${store.phone.replace(/\D/g, '')}?text=${encodeURIComponent(personalizedMessage)}`;
 
-                <TableCell>
-                  <Tooltip title={store.address}>
-                    <Typography noWrap>{store.address}</Typography>
-                  </Tooltip>
-                </TableCell>
+              return (
+                <TableRow key={store._id}>
+                  <TableCell>{store.name}</TableCell>
 
-                <TableCell>
-                  <Tooltip title={store.usp || ''}>
-                    <Typography noWrap>{store.usp || '—'}</Typography>
-                  </Tooltip>
-                </TableCell>
+                  <TableCell>
+                    <Tooltip title={store.address}>
+                      <Typography noWrap>{store.address}</Typography>
+                    </Tooltip>
+                  </TableCell>
 
-                <TableCell>{store.phone}</TableCell>
+                  <TableCell>
+                    <Tooltip title={store.usp || ''}>
+                      <Typography noWrap>{store.usp || '—'}</Typography>
+                    </Tooltip>
+                  </TableCell>
 
-                <TableCell>{(store.tags || []).join(', ')}</TableCell>
+                  <TableCell>{store.phone}</TableCell>
 
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    flexWrap="nowrap"
-                    alignItems="center"
-                    sx={{ overflowX: 'auto' }}
-                  >
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      href={`tel:${store.phone}`}
-                      size="small"
-                      sx={{ minWidth: '90px' }}
+                  <TableCell>{(store.tags || []).join(', ')}</TableCell>
+
+                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      flexWrap="nowrap"
+                      alignItems="center"
+                      sx={{ overflowX: 'auto' }}
                     >
-                      📞 Call
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      href={`https://wa.me/91${store.phone.replace(/\D/g, '')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      size="small"
-                      sx={{ minWidth: '110px' }}
-                    >
-                      💬 WhatsApp
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => onSelectStore(store)}
-                      size="small"
-                      sx={{ minWidth: '120px' }}
-                    >
-                      ✏️ Edit & Pay
-                    </Button>
-                  </Stack>
-                </TableCell>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        href={`tel:${store.phone}`}
+                        size="small"
+                        sx={{ minWidth: '90px' }}
+                      >
+                        📞 Call
+                      </Button>
 
-              </TableRow>
-            ))}
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        href={waLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        size="small"
+                        sx={{ minWidth: '110px' }}
+                      >
+                        💬 WhatsApp
+                      </Button>
+
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectStore(store)}
+                        size="small"
+                        sx={{ minWidth: '120px' }}
+                      >
+                        ✏️ Edit & Pay
+                      </Button>
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
