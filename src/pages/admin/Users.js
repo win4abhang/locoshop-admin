@@ -13,7 +13,7 @@ const Users = () => {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
-  const limit = 5;
+  const limit = 20;
 
   const fetchUsers = async () => {
     try {
@@ -84,12 +84,11 @@ const Users = () => {
   const totalPages = Math.ceil(totalUsers / limit);
 
   return (
-    <div style={{ padding: '1rem', maxWidth: '800px', margin: 'auto' }}>
+    <div style={{ padding: '1rem', maxWidth: '100%', margin: 'auto' }}>
       <h2>Users Management</h2>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {/* Search Bar */}
       <input
         type="text"
         placeholder="Search by name or mobile..."
@@ -101,7 +100,6 @@ const Users = () => {
         style={{ marginBottom: '1rem', width: '100%', padding: '8px' }}
       />
 
-      {/* User Form */}
       <form onSubmit={handleSubmit} style={{ marginBottom: '2rem' }}>
         <input name="username" type="text" placeholder="Username" value={form.username} onChange={handleChange} required style={{ marginRight: '1rem' }} />
         <input name="password" type="password" placeholder={editingUserId ? 'New Password (optional)' : 'Password'} value={form.password} onChange={handleChange} style={{ marginRight: '1rem' }} />
@@ -110,6 +108,7 @@ const Users = () => {
           <option value="staff">Staff</option>
           <option value="store_owner">Store Owner</option>
           <option value="local_partner">Local Partner</option>
+          <option value="consumer">Consumer</option>
         </select>
         <button type="submit" disabled={loading}>
           {loading ? (editingUserId ? 'Updating...' : 'Creating...') : editingUserId ? 'Update User' : 'Add User'}
@@ -121,12 +120,16 @@ const Users = () => {
         )}
       </form>
 
-      {/* Users Table */}
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ borderBottom: '1px solid #ccc' }}>
             <th style={{ padding: '8px' }}>Username</th>
-            <th style={{ padding: '8px' }}>Mobile</th>
+            <th style={{ padding: '8px' }}>Name</th>
+            <th style={{ padding: '8px' }}>Phone</th>
+            <th style={{ padding: '8px' }}>Email</th>
+            <th style={{ padding: '8px' }}>PAN</th>
+            <th style={{ padding: '8px' }}>Aadhar</th>
+            <th style={{ padding: '8px' }}>Address</th>
             <th style={{ padding: '8px' }}>User Type</th>
             <th style={{ padding: '8px' }}>Created</th>
             <th style={{ padding: '8px' }}>Actions</th>
@@ -135,13 +138,18 @@ const Users = () => {
         <tbody>
           {users.length === 0 ? (
             <tr>
-              <td colSpan="5" style={{ padding: '8px', textAlign: 'center' }}>No users found</td>
+              <td colSpan="10" style={{ padding: '8px', textAlign: 'center' }}>No users found</td>
             </tr>
           ) : (
             users.map((user) => (
               <tr key={user._id} style={{ borderBottom: '1px solid #eee' }}>
                 <td style={{ padding: '8px' }}>{user.username}</td>
-                <td style={{ padding: '8px' }}>{user.mobile || '-'}</td>
+                <td style={{ padding: '8px' }}>{user.name || '-'}</td>
+                <td style={{ padding: '8px' }}>{user.phone || '-'}</td>
+                <td style={{ padding: '8px' }}>{user.email || '-'}</td>
+                <td style={{ padding: '8px' }}>{user.pan_number || '-'}</td>
+                <td style={{ padding: '8px' }}>{user.addhar_number || '-'}</td>
+                <td style={{ padding: '8px' }}>{user.address || '-'}</td>
                 <td style={{ padding: '8px' }}>{user.userType}</td>
                 <td style={{ padding: '8px' }}>{new Date(user.createdAt).toLocaleString()}</td>
                 <td style={{ padding: '8px', textAlign: 'center' }}>
@@ -158,7 +166,6 @@ const Users = () => {
         </tbody>
       </table>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div style={{ marginTop: '1rem', textAlign: 'center' }}>
           <button onClick={() => setPage(p => Math.max(p - 1, 1))} disabled={page === 1}>Prev</button>
