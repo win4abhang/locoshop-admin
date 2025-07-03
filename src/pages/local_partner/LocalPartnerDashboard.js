@@ -53,6 +53,7 @@ const LocalPartnerDashboard = () => {
     { label: '💸 Payment Request Report', path: '/local_partner/PaymentRequestsPage' },
     { label: '💰 Earnings', path: '/local_partner/earnings' },
     { label: '📗 Trainings', path: '/local_partner/trainings' },
+    { label: '📢 Marketing Material', path: '/local_partner/MarketingMaterial' },
     { label: '🚪 Logout', action: handleLogout },
   ];
 
@@ -105,6 +106,7 @@ const LocalPartnerDashboard = () => {
             <Route path="PaymentRequestsPage" element={<PaymentRequests />} />
             <Route path="earnings" element={<PartnerEarningsCard />} />
             <Route path="trainings" element={<LocalPartnerTrainingPage />} />
+            <Route path="MarketingMaterial" element={<MarketingMaterial />} />
             <Route
               path="*"
               element={
