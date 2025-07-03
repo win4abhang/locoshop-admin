@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box, Typography, Select, MenuItem, Grid, Card, CardContent,
-  CardActions, Button, Tooltip, IconButton, Divider
+  CardActions, Button, Tooltip, IconButton, Divider, Stack
 } from '@mui/material';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import axios from 'axios';
@@ -13,37 +13,42 @@ const API_KEY = 'YourStrongSecret123';
 const MarketingMaterial = () => {
   const [language, setLanguage] = useState('english');
   const [messages, setMessages] = useState([]);
+  const [page, setPage] = useState(0);
+  const messagesPerPage = 2;
 
-  // ✅ WhatsApp messages fetch
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/messages?language=${language}`, {
-      headers: { 'x-api-key': API_KEY }
-    })
-      .then(res => setMessages(res.data || []))
+    axios
+      .get(`${BACKEND_URL}/messages?language=${language}`, {
+        headers: { 'x-api-key': API_KEY }
+      })
+      .then(res => {
+        setMessages(res.data || []);
+        setPage(0); // reset pagination on language change
+      })
       .catch(err => console.error('Failed to load messages:', err));
   }, [language]);
 
-  // ✅ Copy to clipboard
   const copyText = (text) => {
     navigator.clipboard.writeText(text);
     alert('Message copied!');
   };
 
-  // ✅ Load static image list (hardcoded filenames)
   const getImageList = (lang, type) => {
-    const maxImages = 10; // adjust based on expected images
-    const imageList = [];
-
-    for (let i = 1; i <= maxImages; i++) {
-      const path = `/assets/${lang}/${type}/${i}.jpg`;
-      imageList.push({ url: path, title: `${type}-${i}` });
-    }
-
-    return imageList;
+    return [1, 2].map(i => ({
+      url: `/assets/${lang}/${type}/${i}.jpg`,
+      title: `${type}-${i}`
+    }));
   };
 
   const posters = getImageList(language, 'poster');
   const banners = getImageList(language, 'banner');
+
+  // Message Pagination Logic
+  const startIndex = page * messagesPerPage;
+  const endIndex = startIndex + messagesPerPage;
+  const paginatedMessages = messages.slice(startIndex, endIndex);
+  const hasNext = endIndex < messages.length;
+  const hasPrev = startIndex > 0;
 
   return (
     <Box sx={{ p: 4 }}>
@@ -66,10 +71,10 @@ const MarketingMaterial = () => {
       </Box>
 
       {/* 💬 WhatsApp Messages */}
-      <Box sx={{ mb: 6 }}>
+      <Box sx={{ mb: 4 }}>
         <Typography variant="h5" gutterBottom>📲 WhatsApp Messages</Typography>
         <Grid container spacing={2}>
-          {messages.map((msg, index) => (
+          {paginatedMessages.map((msg, index) => (
             <Grid item xs={12} md={6} key={index}>
               <Card variant="outlined">
                 <CardContent>
@@ -88,9 +93,18 @@ const MarketingMaterial = () => {
             </Grid>
           ))}
         </Grid>
+
+        <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+          <Button variant="outlined" onClick={() => setPage(p => p - 1)} disabled={!hasPrev}>
+            ⬅️ Back
+          </Button>
+          <Button variant="outlined" onClick={() => setPage(p => p + 1)} disabled={!hasNext}>
+            Next ➡️
+          </Button>
+        </Stack>
       </Box>
 
-      {/* 🖼️ Image Sections */}
+      {/* 🖼️ Posters & Banners */}
       {[{ title: '🖼️ Posters', data: posters }, { title: '📢 Banners', data: banners }].map((section, i) => (
         <Box key={i} sx={{ mb: 6 }}>
           <Typography variant="h5" gutterBottom>{section.title}</Typography>
@@ -104,7 +118,7 @@ const MarketingMaterial = () => {
                   <img
                     src={img.url}
                     alt={img.title}
-                    onError={(e) => e.target.style.display = 'none'} // Hide missing images
+                    onError={(e) => e.target.style.display = 'none'}
                     style={{ width: '100%', height: 'auto' }}
                   />
                   <CardActions>
