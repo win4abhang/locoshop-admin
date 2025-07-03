@@ -35,7 +35,7 @@ const MarketingMaterial = () => {
   // ✅ Dynamically import images from public folder
   const importImages = (lang, type) => {
     try {
-      const context = require.context(`../../public/assets/${lang}/${type}`, false, /\.(png|jpe?g)$/);
+      const context = require.context(`/assets/${lang}/${type}`, false, /\.(png|jpe?g)$/);
       return context.keys().map((key) => ({
         url: `/assets/${lang}/${type}/${key.replace('./', '')}`,
         title: key.replace('./', '').split('.')[0],
