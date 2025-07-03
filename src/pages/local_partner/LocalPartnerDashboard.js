@@ -5,6 +5,7 @@ import EditStore from './EditStore';
 import PaymentRequests from './PaymentRequestsPage';
 import PartnerEarningsCard from '../../components/PartnerEarningsCard';
 import LocalPartnerTrainingPage from './LocalPartnerTrainingPage';
+import MarketingMaterial from './MarketingMaterial';
 
 import {
   Box,
