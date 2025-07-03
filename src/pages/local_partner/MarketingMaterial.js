@@ -6,28 +6,39 @@ import {
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import axios from 'axios';
 
+// ✅ Use .env variable and secure API key
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = 'YourStrongSecret123';
+
 const MarketingMaterial = () => {
   const [language, setLanguage] = useState('english');
   const [messages, setMessages] = useState([]);
 
+  // ✅ Fetch WhatsApp messages from backend API
   useEffect(() => {
-    axios.get(`/api/messages?language=${language}`).then(res => {
-      setMessages(res.data || []);
-    });
+    axios
+      .get(`${BACKEND_URL}/api/messages?language=${language}`, {
+        headers: {
+          'x-api-key': API_KEY,
+        },
+      })
+      .then((res) => setMessages(res.data || []))
+      .catch((err) => console.error('Failed to load messages:', err));
   }, [language]);
 
+  // ✅ Copy message to clipboard
   const copyText = (text) => {
     navigator.clipboard.writeText(text);
     alert('Message copied!');
   };
 
-  // Automatically fetch images using require.context
+  // ✅ Dynamically import images from public folder
   const importImages = (lang, type) => {
     try {
-      const r = require.context(`../../public/assets/${lang}/${type}`, false, /\.(png|jpe?g)$/);
-      return r.keys().map((key) => ({
+      const context = require.context(`../../public/assets/${lang}/${type}`, false, /\.(png|jpe?g)$/);
+      return context.keys().map((key) => ({
         url: `/assets/${lang}/${type}/${key.replace('./', '')}`,
-        title: key.replace('./', '').split('.')[0]
+        title: key.replace('./', '').split('.')[0],
       }));
     } catch {
       return [];
@@ -39,9 +50,11 @@ const MarketingMaterial = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h4" gutterBottom textAlign="center">📢 Marketing Material</Typography>
+      <Typography variant="h4" gutterBottom textAlign="center">
+        📢 Marketing Material
+      </Typography>
 
-      {/* Language Selector */}
+      {/* 🔽 Language Selector */}
       <Box sx={{ mb: 4, maxWidth: 300, mx: 'auto' }}>
         <Typography variant="subtitle1" gutterBottom>Select Language:</Typography>
         <Select
@@ -55,7 +68,7 @@ const MarketingMaterial = () => {
         </Select>
       </Box>
 
-      {/* WhatsApp Messages */}
+      {/* 💬 WhatsApp Messages */}
       <Box sx={{ mb: 6 }}>
         <Typography variant="h5" gutterBottom>📲 WhatsApp Messages</Typography>
         <Grid container spacing={2}>
@@ -63,11 +76,13 @@ const MarketingMaterial = () => {
             <Grid item xs={12} md={6} key={index}>
               <Card variant="outlined">
                 <CardContent>
-                  <Typography variant="subtitle2" color="text.secondary">{msg.occasion}</Typography>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    {msg.occasion}
+                  </Typography>
                   <Divider sx={{ my: 1 }} />
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant="body2" sx={{ pr: 1 }}>{msg.text}</Typography>
-                    <Tooltip title="Copy">
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="body2" sx={{ pr: 2 }}>{msg.text}</Typography>
+                    <Tooltip title="Copy Message">
                       <IconButton onClick={() => copyText(msg.text)}><FileCopyIcon /></IconButton>
                     </Tooltip>
                   </Box>
@@ -78,11 +93,8 @@ const MarketingMaterial = () => {
         </Grid>
       </Box>
 
-      {/* Image Templates */}
-      {[
-        { title: '🖼️ Posters', data: posters },
-        { title: '📢 Banners', data: banners }
-      ].map((section, i) => (
+      {/* 🖼️ Image Sections */}
+      {[{ title: '🖼️ Posters', data: posters }, { title: '📢 Banners', data: banners }].map((section, i) => (
         <Box key={i} sx={{ mb: 6 }}>
           <Typography variant="h5" gutterBottom>{section.title}</Typography>
           <Grid container spacing={3}>
@@ -94,7 +106,13 @@ const MarketingMaterial = () => {
                   </CardContent>
                   <img src={img.url} alt={img.title} style={{ width: '100%', height: 'auto' }} />
                   <CardActions>
-                    <Button href={img.url} download fullWidth variant="contained" color="success">
+                    <Button
+                      href={img.url}
+                      download
+                      fullWidth
+                      variant="contained"
+                      color="success"
+                    >
                       Download
                     </Button>
                   </CardActions>
