@@ -6,7 +6,7 @@ import {
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import axios from 'axios';
 
-// ✅ Use .env variable and secure API key
+// ✅ Environment variables
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_KEY = 'YourStrongSecret123';
 
@@ -14,39 +14,36 @@ const MarketingMaterial = () => {
   const [language, setLanguage] = useState('english');
   const [messages, setMessages] = useState([]);
 
-  // ✅ Fetch WhatsApp messages from backend API
+  // ✅ WhatsApp messages fetch
   useEffect(() => {
-    axios
-      .get(`${BACKEND_URL}/api/messages?language=${language}`, {
-        headers: {
-          'x-api-key': API_KEY,
-        },
-      })
-      .then((res) => setMessages(res.data || []))
-      .catch((err) => console.error('Failed to load messages:', err));
+    axios.get(`${BACKEND_URL}/messages?language=${language}`, {
+      headers: { 'x-api-key': API_KEY }
+    })
+      .then(res => setMessages(res.data || []))
+      .catch(err => console.error('Failed to load messages:', err));
   }, [language]);
 
-  // ✅ Copy message to clipboard
+  // ✅ Copy to clipboard
   const copyText = (text) => {
     navigator.clipboard.writeText(text);
     alert('Message copied!');
   };
 
-  // ✅ Dynamically import images from public folder
-  const importImages = (lang, type) => {
-    try {
-      const context = require.context(`/assets/${lang}/${type}`, false, /\.(png|jpe?g)$/);
-      return context.keys().map((key) => ({
-        url: `/assets/${lang}/${type}/${key.replace('./', '')}`,
-        title: key.replace('./', '').split('.')[0],
-      }));
-    } catch {
-      return [];
+  // ✅ Load static image list (hardcoded filenames)
+  const getImageList = (lang, type) => {
+    const maxImages = 10; // adjust based on expected images
+    const imageList = [];
+
+    for (let i = 1; i <= maxImages; i++) {
+      const path = `/assets/${lang}/${type}/${i}.jpg`;
+      imageList.push({ url: path, title: `${type}-${i}` });
     }
+
+    return imageList;
   };
 
-  const posters = importImages(language, 'poster');
-  const banners = importImages(language, 'banner');
+  const posters = getImageList(language, 'poster');
+  const banners = getImageList(language, 'banner');
 
   return (
     <Box sx={{ p: 4 }}>
@@ -54,7 +51,7 @@ const MarketingMaterial = () => {
         📢 Marketing Material
       </Typography>
 
-      {/* 🔽 Language Selector */}
+      {/* 🌐 Language Selector */}
       <Box sx={{ mb: 4, maxWidth: 300, mx: 'auto' }}>
         <Typography variant="subtitle1" gutterBottom>Select Language:</Typography>
         <Select
@@ -76,14 +73,14 @@ const MarketingMaterial = () => {
             <Grid item xs={12} md={6} key={index}>
               <Card variant="outlined">
                 <CardContent>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    {msg.occasion}
-                  </Typography>
+                  <Typography variant="subtitle2" color="text.secondary">{msg.occasion}</Typography>
                   <Divider sx={{ my: 1 }} />
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="body2" sx={{ pr: 2 }}>{msg.text}</Typography>
                     <Tooltip title="Copy Message">
-                      <IconButton onClick={() => copyText(msg.text)}><FileCopyIcon /></IconButton>
+                      <IconButton onClick={() => copyText(msg.text)}>
+                        <FileCopyIcon />
+                      </IconButton>
                     </Tooltip>
                   </Box>
                 </CardContent>
@@ -104,7 +101,12 @@ const MarketingMaterial = () => {
                   <CardContent>
                     <Typography>{img.title}</Typography>
                   </CardContent>
-                  <img src={img.url} alt={img.title} style={{ width: '100%', height: 'auto' }} />
+                  <img
+                    src={img.url}
+                    alt={img.title}
+                    onError={(e) => e.target.style.display = 'none'} // Hide missing images
+                    style={{ width: '100%', height: 'auto' }}
+                  />
                   <CardActions>
                     <Button
                       href={img.url}
