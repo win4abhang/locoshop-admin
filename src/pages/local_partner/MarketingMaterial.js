@@ -35,7 +35,7 @@ const MarketingMaterial = () => {
 
   const getImageList = (lang, type) => {
     return [1, 2].map(i => ({
-      url: `/assets/${lang}/${type}/${i}.jpg`,
+      url: `/assets/${lang}/${type}/${i}.png`,
       title: `${type}-${i}`
     }));
   };
