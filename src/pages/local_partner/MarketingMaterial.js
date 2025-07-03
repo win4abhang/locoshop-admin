@@ -39,6 +39,8 @@ const MarketingMaterial = () => {
       title: `${type}-${i}`
     }));
   };
+  // Fetch Posters and Banners
+  // Note: Assuming these images are stored in a similar structure
 
   const posters = getImageList(language, 'poster');
   const banners = getImageList(language, 'banner');
