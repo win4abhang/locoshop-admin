@@ -15,7 +15,7 @@ const StoreTable = ({ storeList, onSelectStore }) => {
   const [filterText, setFilterText] = useState('');
   const [sortKey, setSortKey] = useState('');
   const [waMessageTemplate, setWAMessageTemplate] = useState(
-    "Hello {name}, I’m contacting you regarding your store on Locoshop."
+    "Hello {name},"
   );
 
   const filteredAndSortedStores = useMemo(() => {
@@ -98,8 +98,7 @@ const StoreTable = ({ storeList, onSelectStore }) => {
           <TableHead>
             <TableRow>
               <TableCell sx={{ minWidth: 180 }}><strong>Name</strong></TableCell>
-              <TableCell sx={{ minWidth: 200 }}><strong>Address</strong></TableCell>
-              <TableCell sx={{ minWidth: 200 }}><strong>Offer</strong></TableCell>
+              <TableCell sx={{ minWidth: 100 }}><strong>Address</strong></TableCell>
               <TableCell sx={{ minWidth: 150 }}><strong>Phone</strong></TableCell>
               <TableCell sx={{ minWidth: 180 }}><strong>Tags</strong></TableCell>
               <TableCell sx={{ minWidth: 260 }}><strong>Actions</strong></TableCell>
@@ -116,13 +115,15 @@ const StoreTable = ({ storeList, onSelectStore }) => {
 
                   <TableCell>
                     <Tooltip title={store.address}>
-                      <Typography noWrap>{store.address}</Typography>
-                    </Tooltip>
-                  </TableCell>
-
-                  <TableCell>
-                    <Tooltip title={store.usp || ''}>
-                      <Typography noWrap>{store.usp || '—'}</Typography>
+                      <Typography
+                        sx={{
+                          maxWidth: 180,
+                          whiteSpace: 'normal',
+                          wordWrap: 'break-word',
+                        }}
+                      >
+                        {store.address}
+                      </Typography>
                     </Tooltip>
                   </TableCell>
 
@@ -167,7 +168,7 @@ const StoreTable = ({ storeList, onSelectStore }) => {
                         size="small"
                         sx={{ minWidth: '120px' }}
                       >
-                        ✏️ Edit & Pay
+                        ✏️ Edit & Pay Request
                       </Button>
                     </Stack>
                   </TableCell>

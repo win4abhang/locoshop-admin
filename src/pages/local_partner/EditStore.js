@@ -167,7 +167,7 @@ function EditStore() {
     <Box sx={{ mx: 'auto', mt: 4, px: 2 }}>
       <Paper sx={{ p: 3, mb: 4 }} elevation={3}>
         <Typography variant="h5" gutterBottom>
-          Find Store by Name (Location Required)
+        Search Store by Name / product / Service (Location Required)
         </Typography>
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
           <TextField
