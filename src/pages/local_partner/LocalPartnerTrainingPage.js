@@ -13,7 +13,7 @@ const LocalPartnerTrainingPage = () => {
 
   // ✅ Correct external URLs for audio files
   const audioSrc = language === 'english'
-    ? 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+    ? 'https://about.localz.online/audio/Podcast_English.mp3'
     : 'https://about.localz.online/audio/Podcast_Hindi.mp3';
 
   return (
@@ -47,7 +47,11 @@ const LocalPartnerTrainingPage = () => {
           </Select>
         </FormControl>
 
-        <audio controls style={{ width: '100%', maxWidth: 500 }}>
+        <audio
+          key={language} // ✅ Re-render when language changes
+          controls
+          style={{ width: '100%', maxWidth: 500 }}
+        >
           <source src={audioSrc} type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
