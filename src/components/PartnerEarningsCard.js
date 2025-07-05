@@ -88,6 +88,13 @@ const PartnerEarningsCard = () => {
               <Typography variant="h5" fontWeight="bold" color="success.main">
                 ₹{todayEarnings}
               </Typography>
+              
+              {todayEarnings === 0 && (
+                <Typography variant="body2" color="text.secondary" mt={1}>
+                  Start by completing the training to unlock your first earnings and onboard local shops faster.
+                </Typography>
+              )}
+              
             </Box>
           </Box>
 
