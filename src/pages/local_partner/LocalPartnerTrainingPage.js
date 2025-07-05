@@ -13,7 +13,7 @@ const LocalPartnerTrainingPage = () => {
 
   // ✅ Correct external URLs for audio files
   const audioSrc = language === 'english'
-    ? 'https://about.localz.online/audio/Podcast_English.mp3'
+    ? 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
     : 'https://about.localz.online/audio/Podcast_Hindi.mp3';
 
   return (
