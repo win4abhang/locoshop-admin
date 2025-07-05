@@ -6,7 +6,12 @@ import {
   Stack,
   Divider,
   Box,
-  useTheme
+  useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button
 } from '@mui/material';
 import axios from 'axios';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
@@ -17,6 +22,7 @@ const PartnerEarningsCard = () => {
   const [todayEarnings, setTodayEarnings] = useState(0);
   const [upcomingPayment, setUpcomingPayment] = useState(0);
   const [nextPaymentDate, setNextPaymentDate] = useState('');
+  const [showTrainingPrompt, setShowTrainingPrompt] = useState(false);
   const theme = useTheme();
 
   const username = localStorage.getItem('username');
@@ -35,9 +41,16 @@ const PartnerEarningsCard = () => {
         );
 
         const data = res.data;
-        setTodayEarnings(data.todayEarnings || 0);
-        setUpcomingPayment(data.upcomingPayment || 0);
+        const today = data.todayEarnings || 0;
+        const upcoming = data.upcomingPayment || 0;
+
+        setTodayEarnings(today);
+        setUpcomingPayment(upcoming);
         setNextPaymentDate(getNextFriday());
+
+        if (today === 0 && upcoming === 0) {
+          setShowTrainingPrompt(true);
+        }
       } catch (error) {
         console.error('Error fetching earnings:', error);
       }
@@ -66,71 +79,83 @@ const PartnerEarningsCard = () => {
   };
 
   return (
-    <Card
-      sx={{
-        maxWidth: 500,
-        margin: 'auto',
-        p: 3,
-        boxShadow: 6,
-        borderRadius: 3,
-        backgroundColor: theme.palette.background.paper,
-      }}
-    >
-      <CardContent>
-        <Stack spacing={4}>
-          {/* Today’s Earnings */}
-          <Box display="flex" alignItems="center" gap={2}>
-            <PaidIcon color="success" fontSize="large" />
-            <Box>
-              <Typography variant="subtitle2" color="text.secondary">
-                Today’s Earnings
-              </Typography>
-              <Typography variant="h5" fontWeight="bold" color="success.main">
-                ₹{todayEarnings}
-              </Typography>
-              
-              {todayEarnings === 0 && (
-                <Typography variant="body2" color="text.secondary" mt={1}>
-                  Start by completing the training to unlock your first earnings and onboard local shops faster.
+    <>
+      {/* Earnings Card */}
+      <Card
+        sx={{
+          maxWidth: 500,
+          margin: 'auto',
+          p: 3,
+          boxShadow: 6,
+          borderRadius: 3,
+          backgroundColor: theme.palette.background.paper,
+        }}
+      >
+        <CardContent>
+          <Stack spacing={4}>
+            {/* Today’s Earnings */}
+            <Box display="flex" alignItems="center" gap={2}>
+              <PaidIcon color="success" fontSize="large" />
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Today’s Earnings
                 </Typography>
+                <Typography variant="h5" fontWeight="bold" color="success.main">
+                  ₹{todayEarnings}
+                </Typography>
+              </Box>
+            </Box>
+
+            <Divider />
+
+            {/* Upcoming Payment */}
+            <Box display="flex" alignItems="center" gap={2}>
+              <CurrencyRupeeIcon color="success" fontSize="large" />
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Upcoming Payment
+                </Typography>
+                <Typography variant="h5" fontWeight="bold" color="warning.main">
+                  ₹{upcomingPayment}
+                </Typography>
+              </Box>
+            </Box>
+
+            <Divider />
+
+            {/* Next Payment Date */}
+            <Box display="flex" alignItems="center" gap={2}>
+              <AccessTimeIcon color="info" fontSize="large" />
+              {nextPaymentDate && (
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Next Payment:
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" color="text.disabled">
+                    {nextPaymentDate}
+                  </Typography>
+                </Box>
               )}
-              
             </Box>
-          </Box>
+          </Stack>
+        </CardContent>
+      </Card>
 
-          <Divider />
-
-          {/* Upcoming Payment */}
-          <Box display="flex" alignItems="center" gap={2}>
-            <CurrencyRupeeIcon color="success" fontSize="large" />
-            <Box>
-              <Typography variant="subtitle2" color="text.secondary">
-                Upcoming Payment
-              </Typography>
-              <Typography variant="h5" fontWeight="bold" color="warning.main">
-                ₹{upcomingPayment}
-              </Typography>
-            </Box>
-          </Box>
-          <Divider />
-
-          <Box display="flex" alignItems="center" gap={2}>  
-          <AccessTimeIcon color="info" fontSize="large" />     
-          {nextPaymentDate && (
-            <Box> 
-              <Typography variant="subtitle2" color="text.secondary">
-              Next Payment:
-                </Typography>                
-              <Typography variant="body1" fontWeight="bold" color='textDisabled'>
-              {nextPaymentDate}
-              </Typography> 
-            </Box>               
-              )}               
-            </Box>
-
-        </Stack>
-      </CardContent>
-    </Card>
+      {/* Training Prompt Dialog */}
+      <Dialog open={showTrainingPrompt} onClose={() => setShowTrainingPrompt(false)}>
+        <DialogTitle>Get Started with Training</DialogTitle>
+        <DialogContent>
+          <Typography>
+            💡 To start earning, complete the <strong>Local Partner Training</strong> available in the <strong>Menu</strong> section. It’s your key to onboarding shops and unlocking your first commission.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowTrainingPrompt(false)} variant="contained" color="primary">
+            Got it
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 
