@@ -11,9 +11,10 @@ const LocalPartnerTrainingPage = () => {
     setLanguage(event.target.value);
   };
 
+  // ✅ Correct external URLs for audio files
   const audioSrc = language === 'english'
-    ? '/audio/Podcast_English.mp3'
-    : '/audio/Podcast_Hindi.mp3';
+    ? 'https://about.localz.online/audio/Podcast_English.mp3'
+    : 'https://about.localz.online/audio/Podcast_Hindi.mp3';
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
