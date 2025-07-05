@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Container, Typography, Box, List, ListItem, ListItemText
+  Container, Typography, Box, List, ListItem, ListItemText,
+  Select, MenuItem, FormControl, InputLabel
 } from '@mui/material';
 
 const LocalPartnerTrainingPage = () => {
+  const [language, setLanguage] = useState('hindi');
+
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
+  };
+
+  const audioSrc = language === 'english'
+    ? '/audio/Podcast_English.mp3'
+    : '/audio/Podcast_Hindi.mp3';
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       {/* Page Title */}
@@ -15,6 +26,31 @@ const LocalPartnerTrainingPage = () => {
       <Typography variant="h6" align="center" paragraph>
         Welcome Partner! Help local shops grow — and earn for each one onboarded successfully.
       </Typography>
+
+      {/* 🎧 Audio Summary Section */}
+      <Box my={4} display="flex" flexDirection="column" alignItems="center">
+        <Typography variant="subtitle1" fontWeight="medium" mb={1}>
+          🎧 Listen to Training Summary
+        </Typography>
+
+        <FormControl sx={{ minWidth: 200, mb: 2 }}>
+          <InputLabel id="language-select-label">Language</InputLabel>
+          <Select
+            labelId="language-select-label"
+            value={language}
+            label="Language"
+            onChange={handleLanguageChange}
+          >
+            <MenuItem value="hindi">Hindi</MenuItem>
+            <MenuItem value="english">English</MenuItem>
+          </Select>
+        </FormControl>
+
+        <audio controls style={{ width: '100%', maxWidth: 500 }}>
+          <source src={audioSrc} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      </Box>
 
       {/* Hero Image */}
       <Box display="flex" justifyContent="center" my={3}>
@@ -31,11 +67,9 @@ const LocalPartnerTrainingPage = () => {
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
           How to Convince Shop Owners
         </Typography>
-
         <Typography gutterBottom>
           Your role is to educate shop owners about how Localz can bring them more customers.
         </Typography>
-
         <List>
           <ListItem><ListItemText primary="📞 Identify Shops" secondary="Explore local areas or online directories." /></ListItem>
           <ListItem><ListItemText primary="🤝 Introduce Yourself" secondary="Say you're a Localz Partner helping shops grow online." /></ListItem>
@@ -43,12 +77,9 @@ const LocalPartnerTrainingPage = () => {
           <ListItem><ListItemText primary="📝 Choose Simple Tags" secondary="Example: 'Tailor', 'Mobile Repair', etc. Easy search terms." /></ListItem>
           <ListItem><ListItemText primary="💳 Mention Plan" secondary="₹365/year only. No app or tech required. 10% commission to you." /></ListItem>
         </List>
-
-        {/* Sales Pitch */}
         <Typography mt={3} fontStyle="italic">
           Example Pitch: <br />
-          “Sir/Madam, people search for services when they need something urgently — like a tailor, plumber, or repair. Localz helps your shop show up at that exact moment. It’s not a website — it’s smart local listing and online promotion. With one link, customers nearby can call, WhatsApp, or find you on Maps. That’s how you close more deals — by showing up when it matters.
-          ”
+          “Sir/Madam, people search for services when they need something urgently — like a tailor, plumber, or repair. Localz helps your shop show up at that exact moment. It’s not a website — it’s smart local listing and online promotion. With one link, customers nearby can call, WhatsApp, or find you on Maps. That’s how you close more deals — by showing up when it matters.”
         </Typography>
       </Box>
 
@@ -70,7 +101,6 @@ const LocalPartnerTrainingPage = () => {
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
           How to Use the Platform (Dashboard Guide)
         </Typography>
-
         <List>
           <ListItem><ListItemText primary="🔐 Login" secondary="Go to https://about.localz.online/login using your Partner ID." /></ListItem>
           <ListItem><ListItemText primary="📊 Dashboard" secondary="Track all your stores, payments, and earnings." /></ListItem>
@@ -99,7 +129,6 @@ const LocalPartnerTrainingPage = () => {
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
           Best Practices for Success
         </Typography>
-
         <List>
           <ListItem><ListItemText primary="✅ Double-check shop info" /></ListItem>
           <ListItem><ListItemText primary="✅ Always be respectful" /></ListItem>
