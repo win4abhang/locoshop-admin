@@ -43,10 +43,6 @@ const PaymentRequestsPage = () => {
 
   return (
     <Box p={3}>
-      <Typography variant="h5" gutterBottom>
-        Payment Request Report
-      </Typography>
-
       <TextField
         label="Filter by Local Partner Username"
         value={usernameFilter}

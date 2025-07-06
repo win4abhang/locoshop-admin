@@ -108,7 +108,6 @@ function EditStore() {
 
   return (
     <div>
-      <h2>Edit Store by Name</h2>
       <input
         type="text"
         placeholder="Enter store name"

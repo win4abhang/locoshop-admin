@@ -119,7 +119,6 @@ function AddStore() {
 
   return (
     <div className="App" style={{ padding: '1rem' }}>
-      <h2>Add Store</h2>
       <form onSubmit={handleSubmit}>
       <input
           type="text"

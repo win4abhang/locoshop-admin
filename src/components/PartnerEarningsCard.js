@@ -95,7 +95,7 @@ const PartnerEarningsCard = () => {
           <Stack spacing={4}>
             {/* Today’s Earnings */}
             <Box display="flex" alignItems="center" gap={2}>
-              <PaidIcon color="success" fontSize="large" />
+              <CurrencyRupeeIcon color="success" fontSize="large" />
               <Box>
                 <Typography variant="subtitle2" color="text.secondary">
                   Today’s Earnings

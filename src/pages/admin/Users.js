@@ -85,7 +85,6 @@ const Users = () => {
 
   return (
     <div style={{ padding: '1rem', maxWidth: '100%', margin: 'auto' }}>
-      <h2>Users Management</h2>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 

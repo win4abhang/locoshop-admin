@@ -1,28 +1,39 @@
 import React from 'react';
-import { Routes, Route, Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate, Link as RouterLink } from 'react-router-dom';
 import AddStore from './AddStore';
 import EditStore from './EditStore';
 import Users from './Users';
-import PaymentsPage from './PaymentsPage'; // adjust path if needed
-import PaymentRequestsPage from './PaymentRequestsPage'; // adjust path if needed
+import PaymentsPage from './PaymentsPage';
+import PaymentRequestsPage from './PaymentRequestsPage';
+import LocalPartnerPayments from './LocalPartnerPayments'; // ✅ New page
 
 import {
   Box,
   Button,
   Typography,
   Stack,
-  Link,
   Divider,
   Container
 } from '@mui/material';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     localStorage.clear();
     navigate('/login');
   };
+
+  // Button list
+  const navButtons = [
+    { label: '➕ Add Store', path: '/admin/add-store' },
+    { label: '✏️ Edit Store', path: '/admin/edit-store' },
+    { label: '👥 Manage Users', path: '/admin/users' },
+    { label: '💰 Payments Received', path: '/admin/payments' },
+    { label: '💳 Payment Requests', path: '/admin/payment-requests' },
+    { label: '🤝 Partner Payments', path: '/admin/local-partner-payments' } // ✅ New
+  ];
 
   return (
     <Container sx={{ py: 4 }}>
@@ -30,29 +41,26 @@ const AdminDashboard = () => {
         Admin Dashboard
       </Typography>
 
-      {/* Navigation Links */}
+      {/* Navigation Buttons */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
-        spacing={2}
+        spacing={1.5}
         alignItems="center"
-        sx={{ mb: 3 }}
         flexWrap="wrap"
+        sx={{ mb: 3 }}
       >
-        <Link component={RouterLink} to="/admin/add-store" underline="hover">
-          ➕ Add Store
-        </Link>
-        <Link component={RouterLink} to="/admin/edit-store" underline="hover">
-          ✏️ Edit Store
-        </Link>
-        <Link component={RouterLink} to="/admin/users" underline="hover">
-          👥 Manage Users
-        </Link>
-        <Link component={RouterLink} to="/admin/payments" underline="hover">
-          💰 Payments Received
-        </Link>
-        <Link component={RouterLink} to="/admin/payment-requests" underline="hover">
-          💳 Payments Requests
-        </Link>
+        {navButtons.map(({ label, path }) => (
+          <Button
+            key={path}
+            component={RouterLink}
+            to={path}
+            variant={location.pathname === path ? 'contained' : 'outlined'}
+            color={location.pathname === path ? 'primary' : 'inherit'}
+            size="small"
+          >
+            {label}
+          </Button>
+        ))}
         <Button
           onClick={handleLogout}
           variant="outlined"
@@ -74,6 +82,7 @@ const AdminDashboard = () => {
           <Route path="users" element={<Users />} />
           <Route path="payments" element={<PaymentsPage />} />
           <Route path="payment-requests" element={<PaymentRequestsPage />} />
+          <Route path="local-partner-payments" element={<LocalPartnerPayments />} /> {/* ✅ New Route */}
           <Route
             path="*"
             element={<Typography color="error">404 - Page Not Found in Admin</Typography>}
