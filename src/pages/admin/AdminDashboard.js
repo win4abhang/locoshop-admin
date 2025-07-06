@@ -25,7 +25,7 @@ const AdminDashboard = () => {
     navigate('/login');
   };
 
-  // Button list
+  // Navigation buttons list
   const navButtons = [
     { label: '➕ Add Store', path: '/admin/add-store' },
     { label: '✏️ Edit Store', path: '/admin/edit-store' },
@@ -55,8 +55,22 @@ const AdminDashboard = () => {
             component={RouterLink}
             to={path}
             variant={location.pathname === path ? 'contained' : 'outlined'}
-            color={location.pathname === path ? 'primary' : 'inherit'}
+            color="primary"
             size="small"
+            sx={{
+              borderRadius: 3,
+              textTransform: 'none',
+              fontWeight: 500,
+              px: 2,
+              py: 1,
+              boxShadow: location.pathname === path ? 2 : 0,
+              transition: 'all 0.3s ease-in-out',
+              bgcolor: location.pathname === path ? 'primary.main' : 'background.paper',
+              '&:hover': {
+                boxShadow: 3,
+                bgcolor: location.pathname === path ? 'primary.dark' : 'grey.100',
+              }
+            }}
           >
             {label}
           </Button>
@@ -66,6 +80,18 @@ const AdminDashboard = () => {
           variant="outlined"
           color="error"
           size="small"
+          sx={{
+            borderRadius: 3,
+            textTransform: 'none',
+            fontWeight: 500,
+            px: 2,
+            py: 1,
+            transition: 'all 0.3s ease-in-out',
+            '&:hover': {
+              bgcolor: 'error.main',
+              color: '#fff',
+            }
+          }}
         >
           🚪 Logout
         </Button>
@@ -82,7 +108,7 @@ const AdminDashboard = () => {
           <Route path="users" element={<Users />} />
           <Route path="payments" element={<PaymentsPage />} />
           <Route path="payment-requests" element={<PaymentRequestsPage />} />
-          <Route path="local-partner-payments" element={<LocalPartnerPayments />} /> {/* ✅ New Route */}
+          <Route path="local-partner-payments" element={<LocalPartnerPayments />} />
           <Route
             path="*"
             element={<Typography color="error">404 - Page Not Found in Admin</Typography>}
