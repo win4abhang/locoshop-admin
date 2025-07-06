@@ -4,6 +4,7 @@ import AddStore from './AddStore';
 import EditStore from './EditStore';
 import Users from './Users';
 import PaymentsPage from './PaymentsPage'; // adjust path if needed
+import PaymentRequestsPage from './PaymentRequestsPage'; // adjust path if needed
 
 import {
   Box,
@@ -69,6 +70,7 @@ const AdminDashboard = () => {
           <Route path="edit-store" element={<EditStore />} />
           <Route path="users" element={<Users />} />
           <Route path="payments" element={<PaymentsPage />} />
+          <Route path="payment-requests" element={<PaymentRequestsPage />} />
           <Route
             path="*"
             element={<Typography color="error">404 - Page Not Found in Admin</Typography>}
