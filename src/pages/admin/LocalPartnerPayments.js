@@ -27,7 +27,7 @@ const LocalPartnerPayments = () => {
     if (!username.trim()) return;
     try {
       setLoading(true);
-      const response = await axios.get(`${BACKEND_URL}/payments/local-partner`, {
+      const response = await axios.get(`${BACKEND_URL}/payment/local-partner`, {
         params: { username },
         headers: { 'x-api-key': API_KEY },
       });
@@ -42,7 +42,7 @@ const LocalPartnerPayments = () => {
   const handleMarkAsPaid = async () => {
     try {
       await axios.post(
-        `${BACKEND_URL}/payments/mark-paid-to-local-partner`,
+        `${BACKEND_URL}/payment/mark-paid-to-local-partner`,
         { username },
         {
           headers: { 'x-api-key': API_KEY },
