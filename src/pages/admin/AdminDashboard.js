@@ -37,10 +37,6 @@ const AdminDashboard = () => {
 
   return (
     <Container sx={{ py: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Admin Dashboard
-      </Typography>
-
       {/* Navigation Buttons */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
