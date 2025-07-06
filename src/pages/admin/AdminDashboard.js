@@ -50,6 +50,9 @@ const AdminDashboard = () => {
         <Link component={RouterLink} to="/admin/payments" underline="hover">
           💰 Payments Received
         </Link>
+        <Link component={RouterLink} to="/admin/payment-requests" underline="hover">
+          💳 Payments Requests
+        </Link>
         <Button
           onClick={handleLogout}
           variant="outlined"
