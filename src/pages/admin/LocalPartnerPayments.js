@@ -12,9 +12,11 @@ import {
   TableRow,
   Paper,
   Stack,
-  Divider
 } from '@mui/material';
 import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_KEY = 'YourStrongSecret123'; // Replace with the same key as in your backend .env
 
 const LocalPartnerPayments = () => {
   const [username, setUsername] = useState('');
@@ -25,10 +27,10 @@ const LocalPartnerPayments = () => {
     if (!username.trim()) return;
     try {
       setLoading(true);
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000'}/api/payments/local-partner`,
-        { params: { username } }
-      );
+      const response = await axios.get(`${BACKEND_URL}/payments/local-partner`, {
+        params: { username },
+        headers: { 'x-api-key': API_KEY },
+      });
       setRecords(response.data || []);
     } catch (error) {
       console.error('Error fetching partner payments:', error);
@@ -40,10 +42,13 @@ const LocalPartnerPayments = () => {
   const handleMarkAsPaid = async () => {
     try {
       await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000'}/api/payments/mark-paid-to-local-partner`,
-        { username }
+        `${BACKEND_URL}/payments/mark-paid-to-local-partner`,
+        { username },
+        {
+          headers: { 'x-api-key': API_KEY },
+        }
       );
-      fetchPayments(); // reload
+      fetchPayments(); // refresh
     } catch (err) {
       console.error('Error updating status:', err);
     }
