@@ -58,9 +58,6 @@ const LocalPartnerPayments = () => {
 
   return (
     <Box>
-      <Typography variant="h6" gutterBottom>
-        🤝 Local Partner Payments
-      </Typography>
 
       <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
         <TextField

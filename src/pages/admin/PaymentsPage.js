@@ -56,7 +56,6 @@ const PaymentsPage = () => {
 
   return (
     <Container maxWidth="lg">
-      <Typography variant="h4" sx={{ my: 4 }}>Payments Received</Typography>
       <Paper>
         <Table>
           <TableHead>
