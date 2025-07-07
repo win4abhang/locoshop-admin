@@ -79,6 +79,7 @@ function AddStore() {
           'x-api-key': API_KEY
         }
       };
+      console.log("Sending storeData:", storeData);
       await axios.post(`${BACKEND_URL}/stores/add`, storeData, config);
       setMessage('✅ Store added successfully!');
       setFormData({
