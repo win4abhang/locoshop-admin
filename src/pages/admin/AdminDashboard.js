@@ -109,7 +109,7 @@ const AdminDashboard = () => {
           <Route path="local-partner-payments" element={<LocalPartnerPayments />} />
           <Route
             path="*"
-            element={<Typography color="error">404 - Page Not Found in Admin</Typography>}
+            element={<AnalyticsDashboard />}
           />
         </Routes>
       </Box>
