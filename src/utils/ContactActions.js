@@ -1,3 +1,5 @@
+// ContactActions.js
+
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -7,7 +9,7 @@ export const logUserActivity = async (action, store) => {
   try {
     const username = localStorage.getItem('username') || 'Unknown';
 
-    await axios.post(`${BACKEND_URL}/api/partner-log`, {
+    await axios.post(`${BACKEND_URL}/partner-log`, {
       username,
       action,
       storeName: store.name,
