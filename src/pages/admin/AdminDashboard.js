@@ -6,6 +6,7 @@ import Users from './Users';
 import PaymentsPage from './PaymentsPage';
 import PaymentRequestsPage from './PaymentRequestsPage';
 import LocalPartnerPayments from './LocalPartnerPayments'; // ✅ New page
+import AnalyticsDashboard from './AnalyticsDashboard'; // 👈 Add this at top
 
 import {
   Box,
@@ -32,7 +33,8 @@ const AdminDashboard = () => {
     { label: '👥 Manage Users', path: '/admin/users' },
     { label: '💰 Payments Received', path: '/admin/payments' },
     { label: '💳 Payment Requests', path: '/admin/payment-requests' },
-    { label: '🤝 Partner Payments', path: '/admin/local-partner-payments' } // ✅ New
+    { label: '🤝 Partner Payments', path: '/admin/local-partner-payments' }, // ✅ New
+    { label: '📊 Dashboard', path: '/admin' }, // 👈 Add this to navButtons array
   ];
 
   return (
@@ -98,7 +100,7 @@ const AdminDashboard = () => {
       {/* Admin Routes */}
       <Box>
         <Routes>
-          <Route index element={<Typography>Welcome to Admin Panel</Typography>} />
+          <Route index element={<AnalyticsDashboard />} /> {/* 👈 Show on /admin */}
           <Route path="add-store" element={<AddStore />} />
           <Route path="edit-store" element={<EditStore />} />
           <Route path="users" element={<Users />} />
