@@ -8,6 +8,8 @@ import {
 import { useTheme } from '@mui/material/styles';
 import ClearIcon from '@mui/icons-material/Clear';
 
+import { logUserActivity } from '../utils/ContactActions';
+
 const StoreTable = ({ storeList, onSelectStore }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -15,7 +17,7 @@ const StoreTable = ({ storeList, onSelectStore }) => {
   const [filterText, setFilterText] = useState('');
   const [sortKey, setSortKey] = useState('');
   const [waMessageTemplate, setWAMessageTemplate] = useState(
-    "Hello {name},"
+    "Hello {name}, please complete your payment using the link."
   );
 
   const filteredAndSortedStores = useMemo(() => {
@@ -145,6 +147,7 @@ const StoreTable = ({ storeList, onSelectStore }) => {
                         href={`tel:${store.phone}`}
                         size="small"
                         sx={{ minWidth: '90px' }}
+                        onClick={() => logUserActivity('call_clicked', store)}
                       >
                         📞 Call
                       </Button>
@@ -157,6 +160,7 @@ const StoreTable = ({ storeList, onSelectStore }) => {
                         rel="noopener noreferrer"
                         size="small"
                         sx={{ minWidth: '110px' }}
+                        onClick={() => logUserActivity('whatsapp_clicked', store)}
                       >
                         💬 WhatsApp
                       </Button>
@@ -164,7 +168,10 @@ const StoreTable = ({ storeList, onSelectStore }) => {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => onSelectStore(store)}
+                        onClick={() => {
+                          logUserActivity('edit_store_clicked', store);
+                          onSelectStore(store);
+                        }}
                         size="small"
                         sx={{ minWidth: '120px' }}
                       >

@@ -5,6 +5,8 @@ import {
 } from '@mui/material';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import PhoneIcon from '@mui/icons-material/Phone';
+import { logUserActivity } from '../utils/ContactActions';
+
 
 const STAGES = ['Pending', 'Sent reminder', 'Expired','Paid']; // ❌ removed "paid"
 
@@ -98,6 +100,10 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
               color="primary"
               href={`tel:+91${request?.customerPhone}`}
               startIcon={<PhoneIcon />}
+              onClick={() => logUserActivity('call_clicked', {
+                name: request?.customerName,
+                phone: request?.customerPhone
+              })}
             >
               Call
             </Button>
@@ -108,6 +114,10 @@ const PaymentRequestDialog = ({ open, handleClose, request, onUpdate }) => {
               target="_blank"
               href={`https://wa.me/91${request?.customerPhone}?text=Hi ${request?.customerName}, please complete your payment: ${request?.link_url}`}
               startIcon={<WhatsAppIcon />}
+              onClick={() => logUserActivity('whatsapp_clicked', {
+                name: request?.customerName,
+                phone: request?.customerPhone
+              })}
             >
               WhatsApp
             </Button>

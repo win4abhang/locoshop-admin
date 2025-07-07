@@ -3,6 +3,7 @@ import axios from 'axios';
 import StoreTable from '../../components/StoreTable';
 import StoreEditDialog from '../../components/StoreEditDialog';
 import PaymentLinkCard from '../../components/PaymentLinkCard';
+import { logUserActivity } from '../../utils/ContactActions';
 import {
   Box,
   Button,
@@ -58,16 +59,15 @@ function EditStore() {
       setMessage('❌ ' + errorMessage);
     }
   };
-
   const handleRequestPayment = async (store) => {
     if (!store?._id) {
       alert('❌ Invalid store selected for payment.');
       return;
     }
-
+  
     try {
       const localPartnerUsername = localStorage.getItem('username') || 'UnknownUser';
-
+  
       const response = await axios.post(`${BACKEND_URL}/payment/request`, {
         order_amount: "365",
         order_currency: "INR",
@@ -79,13 +79,17 @@ function EditStore() {
       }, {
         headers: { 'x-api-key': API_KEY },
       });
-
+  
       if (response.data.success) {
         setPaymentDetails({
           storeName: store.name,
           phone: store.phone,
           paymentLink: response.data.link_url,
         });
+  
+        // ✅ Log payment request
+        logUserActivity('payment_request', store);
+  
         alert('✅ Payment request sent! Payment Link expires in 24 hours');
       } else {
         alert('❌ Payment link creation failed');
@@ -95,6 +99,7 @@ function EditStore() {
       alert('❌ Payment request failed');
     }
   };
+  
 
   const handleLoad = async () => {
     setMessage('');

@@ -4,6 +4,8 @@ import {
   Button, TextField, Grid, useMediaQuery, Stack
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { logUserActivity } from '../utils/ContactActions';
+
 
 const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment }) => {
   const [formData, setFormData] = useState({});
@@ -51,7 +53,12 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
       return;
     }
     onUpdate(formData);
+    logUserActivity('store_updated', {
+      name: formData.name,
+      phone: formData.phone
+    });
   };
+  
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
@@ -83,8 +90,14 @@ const StoreEditDialog = ({ open, handleClose, store, onUpdate, onRequestPayment 
           spacing={2}
           sx={{ width: '100%', p: 2 }}
         >       
-           <Button
-            onClick={() => onRequestPayment(formData)}
+          <Button
+            onClick={() => {
+              logUserActivity('payment_request_clicked', {
+                name: formData.name,
+                phone: formData.phone
+              });
+              onRequestPayment(formData);
+            }}
             variant="contained"
             color='primary'
             fullWidth={isMobile}
