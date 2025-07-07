@@ -69,7 +69,8 @@ function AddStore() {
           parseFloat(formData.longitude),
           parseFloat(formData.latitude)
         ]
-      }
+      },
+      username: localStorage.getItem('username') || 'Unknown'
     };
 
     try {
