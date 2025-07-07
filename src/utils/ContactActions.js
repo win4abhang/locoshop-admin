@@ -9,7 +9,7 @@ export const logUserActivity = async (action, store) => {
   try {
     const username = localStorage.getItem('username') || 'Unknown';
 
-    await axios.post(`${BACKEND_URL}/partner-log`, {
+    await axios.post(`${BACKEND_URL}/partner-log/log`, {
       username,
       action,
       storeName: store.name,
