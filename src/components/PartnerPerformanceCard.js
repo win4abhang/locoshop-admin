@@ -14,7 +14,7 @@ const PartnerPerformanceCard = () => {
   const fetchSummary = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${API_URL}/api/analytics/partner-summary`, {
+      const res = await axios.get(`${API_URL}/analytics/partner-summary`, {
         params: { username },
         headers: { 'x-api-key': 'YourStrongSecret123' },
       });
