@@ -14,7 +14,7 @@ const EarningsSummary = () => {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const res = await axios.get(`${API_URL}/payments/summary`, {
+        const res = await axios.get(`${API_URL}/payment/summary`, {
           headers: { 'x-api-key': 'YourStrongSecret123' },
         });
         setSummary(res.data);
