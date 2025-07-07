@@ -22,6 +22,7 @@ const EarningsSummary = () => {
         console.error('Failed to load earnings summary:', err.message);
       }
     };
+    // Fetch summary data on component mount
 
     fetchSummary();
   }, []);
