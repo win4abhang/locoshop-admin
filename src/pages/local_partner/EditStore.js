@@ -3,7 +3,7 @@ import axios from 'axios';
 import StoreTable from '../../components/StoreTable';
 import StoreEditDialog from '../../components/StoreEditDialog';
 import PaymentLinkCard from '../../components/PaymentLinkCard';
-import { logUserActivity } from '../../utils/ContactActions';
+
 import {
   Box,
   Button,
@@ -88,7 +88,7 @@ function EditStore() {
         });
   
         // ✅ Log payment request
-        logUserActivity('payment_request', store);
+        
   
         alert('✅ Payment request sent! Payment Link expires in 24 hours');
       } else {
