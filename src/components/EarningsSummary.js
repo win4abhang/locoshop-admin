@@ -57,7 +57,7 @@ const EarningsSummary = () => {
         <CardItem title="📈 This Week's Earnings" amount={summary.week} />
       </Grid>
       <Grid item xs={12} sm={4}>
-        <CardItem title="📆 This Month's Earnings...." amount={summary.month} />
+        <CardItem title="📆 This Month's Earnings" amount={summary.month} />
       </Grid>
 
       {/* Earnings Table */}

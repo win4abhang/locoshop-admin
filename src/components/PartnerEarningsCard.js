@@ -11,12 +11,18 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper
 } from '@mui/material';
 import axios from 'axios';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import PaidIcon from '@mui/icons-material/Paid';
 
 const PartnerEarningsCard = () => {
   const [todayEarnings, setTodayEarnings] = useState(0);
@@ -141,12 +147,54 @@ const PartnerEarningsCard = () => {
         </CardContent>
       </Card>
 
+      {/* Bonus Table */}
+      <Box sx={{ maxWidth: 600, margin: '30px auto' }}>
+        <Typography variant="h6" gutterBottom>
+          💼 Weekly Earnings Example (Per Store Basis)
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell><strong>Stores</strong></TableCell>
+                <TableCell><strong>Commission (₹36.50/store)</strong></TableCell>
+                <TableCell><strong>Bonus/Store</strong></TableCell>
+                <TableCell><strong>Total Bonus</strong></TableCell>
+                <TableCell><strong>Total Payout</strong></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {[
+                { stores: 5, commission: 182.5, bonusPer: 0, totalBonus: 0, total: 182.5 },
+                { stores: 10, commission: 365, bonusPer: 13.5, totalBonus: 135, total: 500 },
+                { stores: 25, commission: 912.5, bonusPer: 22.39, totalBonus: 559.72, total: 1472.22 },
+                { stores: 50, commission: 1825, bonusPer: 41.28, totalBonus: 2063.93, total: 3888.93 },
+                { stores: 100, commission: 3650, bonusPer: 63.5, totalBonus: 6350, total: 10000 }
+              ].map((row, idx) => (
+                <TableRow key={idx}>
+                  <TableCell>{row.stores}</TableCell>
+                  <TableCell>₹{row.commission.toLocaleString('en-IN')}</TableCell>
+                  <TableCell>₹{row.bonusPer.toFixed(2)}</TableCell>
+                  <TableCell>₹{row.totalBonus.toLocaleString('en-IN')}</TableCell>
+                  <TableCell>₹{row.total.toLocaleString('en-IN')}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Typography variant="body2" color="text.secondary" mt={1}>
+          📝 <strong>Note:</strong> If the store count falls between slabs, the lower slab bonus will apply. <br />
+          <i>उदा.: 27 स्टोअर्स असतील तर 25 स्टोअर्सचा बोनस लागू होईल.</i>
+        </Typography>
+      </Box>
+
       {/* Training Prompt Dialog */}
       <Dialog open={showTrainingPrompt} onClose={() => setShowTrainingPrompt(false)}>
         <DialogTitle>Get Started with Training</DialogTitle>
         <DialogContent>
           <Typography>
-            💡 To start earning, complete the <strong>Local Partner Training</strong> available in the <strong>Menu</strong> section. It’s your key to onboarding shops and unlocking your first commission.
+            💡 To start earning, complete the <strong>Local Partner Training</strong> available in the <strong>Menu</strong> section.
+            It’s your key to onboarding shops and unlocking your first commission.
           </Typography>
         </DialogContent>
         <DialogActions>
