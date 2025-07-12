@@ -102,7 +102,7 @@ const EarningsSummary = () => {
         <Card elevation={2} sx={{ backgroundColor: '#f9f9f9' }}>
           <CardContent>
             <Typography variant="body2" color="text.secondary">
-              📝 <strong>Note:</strong> If the total store count falls between the given slabs,
+              📝 <strong>Note: </strong> If the total store count falls between the given slabs,
               the bonus will be calculated based on the lower slab. <br />
               <i>E.g.: If there are 27 stores, the bonus for 25 stores will be applicable.</i>
             </Typography>
