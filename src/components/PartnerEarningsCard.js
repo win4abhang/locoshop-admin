@@ -184,7 +184,7 @@ const PartnerEarningsCard = () => {
         </TableContainer>
         <Typography variant="body2" color="text.secondary" mt={1}>
           📝 <strong>Note:</strong> If the store count falls between slabs, the lower slab bonus will apply. <br />
-          <i>उदा.: 27 स्टोअर्स असतील तर 25 स्टोअर्सचा बोनस लागू होईल.</i>
+          <i>E.g.: If there are 27 stores, the bonus for 25 stores will be applicable.</i>
         </Typography>
       </Box>
 
