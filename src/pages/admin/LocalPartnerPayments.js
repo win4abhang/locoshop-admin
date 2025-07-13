@@ -133,7 +133,7 @@ const LocalPartnerPayments = () => {
           <Typography>🛍️ Stores Added: <strong>{weeklyBonus.storeCount}</strong></Typography>
           <Typography>💼 Commission (₹36.5/store): <strong>₹{weeklyBonus.weeklyCommission.toFixed(2)}</strong></Typography>
           <Typography>🎁 Bonus: <strong>₹{weeklyBonus.bonusAmount.toFixed(2)}</strong></Typography>
-          <Typography>🧾 Total Weekly Earning: <strong>₹{weeklyBonus.totalWeeklyEarning.toFixed(2)}</strong></Typography>
+          <Typography>🧾 Total Weekly Earning : <strong>₹{weeklyBonus.totalWeeklyEarning.toFixed(2)}</strong></Typography>
 
           {weeklyBonus.nextTarget && (
             <Typography sx={{ mt: 1, color: 'orange' }}>
