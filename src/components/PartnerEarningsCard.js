@@ -113,33 +113,6 @@ const PartnerEarningsCard = () => {
               </Box>
             </Box>
 
-            {/* Progress to Next Slab */}
-            <Box>
-              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                Weekly Slab Progress
-              </Typography>
-              <Typography variant="body2">
-                {nextTarget
-                  ? `You’ve added ${storeCount} / ${nextTarget.stores} stores`
-                  : `🎉 You've reached the highest slab!`}
-              </Typography>
-
-              {nextTarget && (
-                <>
-                  <LinearProgress
-                    variant="determinate"
-                    value={(storeCount / nextTarget.stores) * 100}
-                    sx={{ mt: 1, height: 10, borderRadius: 5 }}
-                    color="success"
-                  />
-                  <Typography variant="caption" color="text.secondary">
-                    {nextTarget.stores - storeCount} more store{nextTarget.stores - storeCount > 1 ? 's' : ''} to reach ₹
-                    {nextTarget.total?.toLocaleString('en-IN')}
-                  </Typography>
-                </>
-              )}
-            </Box>
-
             <Divider />
 
             {/* Weekly Earning */}
@@ -152,6 +125,36 @@ const PartnerEarningsCard = () => {
                 </Typography>
               </Box>
             </Box>
+            
+
+            <Box>
+            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              Weekly Slab Progress
+            </Typography>
+
+           
+            {nextTarget && (
+              <>
+                <LinearProgress
+                  variant="determinate"
+                  value={(storeCount / nextTarget.stores) * 100}
+                  sx={{ mt: 1, height: 10, borderRadius: 5 }}
+                  color="success"
+                />
+
+                <Typography variant="caption" color="text.secondary">
+                  {nextTarget.stores - storeCount} more store{nextTarget.stores - storeCount > 1 ? 's' : ''} to reach ₹
+                  {nextTarget.total?.toLocaleString('en-IN')}
+                </Typography>
+
+                {/* 💰 New line: Earnings on target store count */}
+                <Typography variant="body2" sx={{ mt: 1 }} color="primary">
+                  Earn ₹{nextTarget.total?.toLocaleString('en-IN')} on completing {nextTarget.stores} store{nextTarget.stores > 1 ? 's' : ''}
+                </Typography>
+              </>
+            )}
+          </Box>
+
 
             <Divider />
 
