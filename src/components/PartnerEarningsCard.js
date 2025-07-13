@@ -11,7 +11,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 const PartnerEarningsCard = () => {
   const [storeCount, setStoreCount] = useState(0);
-  const [commission, setCommission] = useState(0);
+  const [weeklyCommission, setWeeklyCommission] = useState(0);
   const [bonus, setBonus] = useState(0);
   const [totalEarning, setTotalEarning] = useState(0);
   const [nextPaymentDate, setNextPaymentDate] = useState('');
@@ -41,9 +41,9 @@ const PartnerEarningsCard = () => {
 
       const data = res.data || {};
       setStoreCount(data.storeCount || 0);
-      setCommission(data.commission || 0);
-      setBonus(data.bonus || 0);
-      setTotalEarning(data.totalEarning || 0);
+      setWeeklyCommission(data.weeklyCommission || 0);
+      setBonus(data.bonusAmount || 0);
+      setTotalEarning(data.totalWeeklyEarning || 0);
       setNextTarget(data.nextTarget || null);
 
       if ((data.storeCount || 0) === 0) {
@@ -93,7 +93,7 @@ const PartnerEarningsCard = () => {
               <Box>
                 <Typography variant="subtitle2" color="text.secondary">Weekly Commission</Typography>
                 <Typography variant="h5" fontWeight="bold" color="success.main">
-                  ₹{(commission || 0).toFixed(2)}
+                  ₹{(weeklyCommission || 0).toFixed(2)}
                 </Typography>
               </Box>
             </Box>
@@ -167,38 +167,33 @@ const PartnerEarningsCard = () => {
         </CardContent>
       </Card>
 
-      {/* Slab Table */}
+      {/* Slab Table for Reference */}
       {slabs.length > 0 && (
         <Box sx={{ maxWidth: 600, margin: '30px auto' }}>
           <Typography variant="h6" gutterBottom>
-            💼 Weekly earnings calculation
+            💼 Weekly earnings calculation (for reference)
           </Typography>
           <TableContainer component={Paper}>
             <Table size="small">
               <TableHead>
                 <TableRow>
                   <TableCell><strong>Stores</strong></TableCell>
-                  <TableCell><strong>Commission (₹36.5/store)</strong></TableCell>
+                  <TableCell><strong>Commission</strong></TableCell>
                   <TableCell><strong>Bonus/Store</strong></TableCell>
                   <TableCell><strong>Total Bonus</strong></TableCell>
                   <TableCell><strong>Total Payout</strong></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {slabs.map((row, idx) => {
-                  const commission = row.stores * 36.5;
-                  const totalBonus = row.stores * row.bonusPer;
-                  const total = commission + totalBonus;
-                  return (
-                    <TableRow key={idx}>
-                      <TableCell>{row.stores}</TableCell>
-                      <TableCell>₹{commission.toLocaleString('en-IN')}</TableCell>
-                      <TableCell>₹{row.bonusPer.toFixed(2)}</TableCell>
-                      <TableCell>₹{totalBonus.toLocaleString('en-IN')}</TableCell>
-                      <TableCell>₹{total.toLocaleString('en-IN')}</TableCell>
-                    </TableRow>
-                  );
-                })}
+                {slabs.map((row, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell>{row.stores}</TableCell>
+                    <TableCell>₹{(row.commission || 0).toLocaleString('en-IN')}</TableCell>
+                    <TableCell>₹{(row.bonusPer || 0).toFixed(2)}</TableCell>
+                    <TableCell>₹{(row.totalBonus || 0).toLocaleString('en-IN')}</TableCell>
+                    <TableCell>₹{(row.total || 0).toLocaleString('en-IN')}</TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>

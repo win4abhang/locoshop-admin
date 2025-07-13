@@ -64,11 +64,6 @@ const LocalPartnerPayments = () => {
     }
   };
 
-  const totalCommission = records.reduce((sum, item) => {
-    const amount = Number(item.order_amount) || 0;
-    return sum + (amount * 0.1);
-  }, 0);
-
   return (
     <Box>
       <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
@@ -119,27 +114,24 @@ const LocalPartnerPayments = () => {
         </TableContainer>
       )}
 
-      {/* COMMISSION */}
-      {records.length > 0 && (
-        <>
-          <Typography variant="subtitle1" sx={{ mb: 1 }}>
-            💸 Total Commission (10%): ₹{totalCommission.toFixed(2)}
-          </Typography>
-          <Button variant="contained" color="success" onClick={handleMarkAsPaid}>
-            ✅ Mark All as Paid
-          </Button>
-        </>
-      )}
-
       {/* WEEKLY SUMMARY */}
       {weeklySummary && (
         <Box sx={{ mt: 4, p: 2, border: '1px solid #ccc', borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>📈 Weekly Summary</Typography>
           <Typography>🛍️ Stores Added: <strong>{weeklySummary.storeCount || 0}</strong></Typography>
-          <Typography>💼 Commission (₹36.5/store): <strong>₹{(weeklySummary.commission || 0).toFixed(2)}</strong></Typography>
-          <Typography>🎁 Bonus (based on slab): <strong>₹{(weeklySummary.bonus || 0).toFixed(2)}</strong></Typography>
-          <Typography>🧾 Total Weekly Earning: <strong>₹{(weeklySummary.totalEarning || 0).toFixed(2)}</strong></Typography>
+          <Typography>💼 Commission (₹36.5/store): <strong>₹{(weeklySummary.weeklyCommission || 0).toFixed(2)}</strong></Typography>
+          <Typography>🎁 Bonus (based on slab): <strong>₹{(weeklySummary.bonusAmount || 0).toFixed(2)}</strong></Typography>
+          <Typography>🧾 Total Weekly Earning: <strong>₹{(weeklySummary.totalWeeklyEarning || 0).toFixed(2)}</strong></Typography>
         </Box>
+      )}
+
+      {/* Mark Paid */}
+      {records.length > 0 && (
+        <>
+          <Button variant="contained" color="success" onClick={handleMarkAsPaid}>
+            ✅ Mark All as Paid
+          </Button>
+        </>
       )}
 
       {records.length === 0 && username && !loading && (
