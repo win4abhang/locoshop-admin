@@ -38,6 +38,8 @@ const PartnerEarningsCard = () => {
         { username },
         { headers: { 'x-api-key': API_KEY } }
       );
+      console.log('🧾 Weekly Summary API response:', res.data); // ✅ Log full response
+      
 
       const data = res.data || {};
       setStoreCount(data.storeCount || 0);
