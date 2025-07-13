@@ -17,6 +17,7 @@ const PartnerEarningsCard = () => {
   const [nextPaymentDate, setNextPaymentDate] = useState('');
   const [nextTarget, setNextTarget] = useState(null);
   const [showTrainingPrompt, setShowTrainingPrompt] = useState(false);
+  const [slabs, setSlabs] = useState([]);
   const theme = useTheme();
 
   const username = localStorage.getItem('username');
@@ -26,6 +27,7 @@ const PartnerEarningsCard = () => {
   useEffect(() => {
     if (!username) return;
     fetchWeeklySummary();
+    fetchBonusSlabs();
     setNextPaymentDate(getNextFriday());
   }, [username]);
 
@@ -37,18 +39,29 @@ const PartnerEarningsCard = () => {
         { headers: { 'x-api-key': API_KEY } }
       );
 
-      const data = res.data;
-      setStoreCount(data.storeCount);
-      setCommission(data.commission);
-      setBonus(data.bonus);
-      setTotalEarning(data.totalEarning);
+      const data = res.data || {};
+      setStoreCount(data.storeCount || 0);
+      setCommission(data.commission || 0);
+      setBonus(data.bonus || 0);
+      setTotalEarning(data.totalEarning || 0);
       setNextTarget(data.nextTarget || null);
 
-      if (data.storeCount === 0) {
+      if ((data.storeCount || 0) === 0) {
         setShowTrainingPrompt(true);
       }
     } catch (err) {
       console.error('Error fetching weekly summary:', err);
+    }
+  };
+
+  const fetchBonusSlabs = async () => {
+    try {
+      const res = await axios.get(`${BACKEND_URL}/payment/bonus-slabs`, {
+        headers: { 'x-api-key': API_KEY }
+      });
+      setSlabs(res.data || []);
+    } catch (err) {
+      console.error('Error fetching bonus slabs:', err);
     }
   };
 
@@ -79,7 +92,9 @@ const PartnerEarningsCard = () => {
               <CurrencyRupeeIcon color="success" fontSize="large" />
               <Box>
                 <Typography variant="subtitle2" color="text.secondary">Weekly Commission</Typography>
-                <Typography variant="h5" fontWeight="bold" color="success.main">₹{commission.toFixed(2)}</Typography>
+                <Typography variant="h5" fontWeight="bold" color="success.main">
+                  ₹{(commission || 0).toFixed(2)}
+                </Typography>
               </Box>
             </Box>
 
@@ -92,7 +107,9 @@ const PartnerEarningsCard = () => {
                 <Typography variant="subtitle2" color="text.secondary">
                   Weekly Bonus (for {storeCount} stores)
                 </Typography>
-                <Typography variant="h5" fontWeight="bold" color="info.main">₹{bonus.toFixed(2)}</Typography>
+                <Typography variant="h5" fontWeight="bold" color="info.main">
+                  ₹{(bonus || 0).toFixed(2)}
+                </Typography>
               </Box>
             </Box>
 
@@ -117,7 +134,7 @@ const PartnerEarningsCard = () => {
                   />
                   <Typography variant="caption" color="text.secondary">
                     {nextTarget.stores - storeCount} more store{nextTarget.stores - storeCount > 1 ? 's' : ''} to reach ₹
-                    {nextTarget.total.toLocaleString('en-IN')} slab
+                    {nextTarget.total?.toLocaleString('en-IN')}
                   </Typography>
                 </>
               )}
@@ -131,7 +148,7 @@ const PartnerEarningsCard = () => {
               <Box>
                 <Typography variant="subtitle2" color="text.secondary">Weekly Earning</Typography>
                 <Typography variant="h5" fontWeight="bold" color="primary.main">
-                  ₹{totalEarning.toLocaleString('en-IN')}
+                  ₹{(totalEarning || 0).toLocaleString('en-IN')}
                 </Typography>
               </Box>
             </Box>
@@ -151,47 +168,42 @@ const PartnerEarningsCard = () => {
       </Card>
 
       {/* Slab Table */}
-      <Box sx={{ maxWidth: 600, margin: '30px auto' }}>
-        <Typography variant="h6" gutterBottom>
-          💼 Weekly earnings calculation
-        </Typography>
-        <TableContainer component={Paper}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell><strong>Stores</strong></TableCell>
-                <TableCell><strong>Commission (₹36.5/store)</strong></TableCell>
-                <TableCell><strong>Bonus/Store</strong></TableCell>
-                <TableCell><strong>Total Bonus</strong></TableCell>
-                <TableCell><strong>Total Payout</strong></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {[
-                { stores: 5, bonusPer: 10 },
-                { stores: 10, bonusPer: 16 },
-                { stores: 25, bonusPer: 20 },
-                { stores: 50, bonusPer: 40 },
-                { stores: 75, bonusPer: 55 },
-                { stores: 100, bonusPer: 64 }
-              ].map((row, idx) => {
-                const commission = row.stores * 36.5;
-                const totalBonus = row.stores * row.bonusPer;
-                const total = commission + totalBonus;
-                return (
-                  <TableRow key={idx}>
-                    <TableCell>{row.stores}</TableCell>
-                    <TableCell>₹{commission.toLocaleString('en-IN')}</TableCell>
-                    <TableCell>₹{row.bonusPer.toFixed(2)}</TableCell>
-                    <TableCell>₹{totalBonus.toLocaleString('en-IN')}</TableCell>
-                    <TableCell>₹{total.toLocaleString('en-IN')}</TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+      {slabs.length > 0 && (
+        <Box sx={{ maxWidth: 600, margin: '30px auto' }}>
+          <Typography variant="h6" gutterBottom>
+            💼 Weekly earnings calculation
+          </Typography>
+          <TableContainer component={Paper}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell><strong>Stores</strong></TableCell>
+                  <TableCell><strong>Commission (₹36.5/store)</strong></TableCell>
+                  <TableCell><strong>Bonus/Store</strong></TableCell>
+                  <TableCell><strong>Total Bonus</strong></TableCell>
+                  <TableCell><strong>Total Payout</strong></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {slabs.map((row, idx) => {
+                  const commission = row.stores * 36.5;
+                  const totalBonus = row.stores * row.bonusPer;
+                  const total = commission + totalBonus;
+                  return (
+                    <TableRow key={idx}>
+                      <TableCell>{row.stores}</TableCell>
+                      <TableCell>₹{commission.toLocaleString('en-IN')}</TableCell>
+                      <TableCell>₹{row.bonusPer.toFixed(2)}</TableCell>
+                      <TableCell>₹{totalBonus.toLocaleString('en-IN')}</TableCell>
+                      <TableCell>₹{total.toLocaleString('en-IN')}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      )}
 
       {/* Training Prompt */}
       <Dialog open={showTrainingPrompt} onClose={() => setShowTrainingPrompt(false)}>
