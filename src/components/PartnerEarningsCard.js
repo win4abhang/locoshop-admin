@@ -11,7 +11,6 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 const PartnerEarningsCard = () => {
   const [todayCommission, setTodayCommission] = useState(0);
-  const [upcomingPayment, setUpcomingPayment] = useState(0);
   const [bonusAmount, setBonusAmount] = useState(0);
   const [storeCount, setStoreCount] = useState(0);
   const [nextPaymentDate, setNextPaymentDate] = useState('');
@@ -46,13 +45,10 @@ const PartnerEarningsCard = () => {
       );
 
       const today = res.data.todayEarnings || 0;
-      const upcoming = res.data.upcomingPayment || 0;
-
       setTodayCommission(today);
-      setUpcomingPayment(upcoming);
       setNextPaymentDate(getNextFriday());
 
-      if (today === 0 && upcoming === 0) {
+      if (today === 0) {
         setShowTrainingPrompt(true);
       }
     } catch (err) {
@@ -84,7 +80,6 @@ const PartnerEarningsCard = () => {
       const bonus = slab ? slab.total - commission : 0;
       setBonusAmount(bonus);
 
-      // Find next target slab
       const next = slabs.slice().reverse().find(s => count < s.stores);
       setNextTarget(next);
     } catch (err) {
@@ -125,13 +120,14 @@ const PartnerEarningsCard = () => {
     });
   };
 
-  const totalUpcoming = upcomingPayment + bonusAmount;
+  const totalEarnings = todayCommission + bonusAmount;
 
   return (
     <>
       <Card sx={{ maxWidth: 500, margin: 'auto', p: 3, boxShadow: 6, borderRadius: 3 }}>
         <CardContent>
           <Stack spacing={4}>
+            {/* Today’s Commission */}
             <Box display="flex" alignItems="center" gap={2}>
               <CurrencyRupeeIcon color="success" fontSize="large" />
               <Box>
@@ -142,14 +138,7 @@ const PartnerEarningsCard = () => {
 
             <Divider />
 
-            <Box display="flex" alignItems="center" gap={2}>
-              <CurrencyRupeeIcon color="success" fontSize="large" />
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">Upcoming Payment</Typography>
-                <Typography variant="h5" fontWeight="bold" color="warning.main">₹{upcomingPayment}</Typography>
-              </Box>
-            </Box>
-
+            {/* Weekly Bonus */}
             <Box display="flex" alignItems="center" gap={2}>
               <CurrencyRupeeIcon color="info" fontSize="large" />
               <Box>
@@ -160,7 +149,7 @@ const PartnerEarningsCard = () => {
               </Box>
             </Box>
 
-            {/* 🔁 Progress to Next Slab */}
+            {/* Slab Progress */}
             <Box>
               <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                 Weekly Slab Progress
@@ -189,18 +178,20 @@ const PartnerEarningsCard = () => {
 
             <Divider />
 
+            {/* Total Earnings */}
             <Box display="flex" alignItems="center" gap={2}>
               <CurrencyRupeeIcon color="primary" fontSize="large" />
               <Box>
-                <Typography variant="subtitle2" color="text.secondary">Total Upcoming Earnings</Typography>
+                <Typography variant="subtitle2" color="text.secondary">Total Earnings</Typography>
                 <Typography variant="h5" fontWeight="bold" color="primary.main">
-                  ₹{totalUpcoming.toLocaleString('en-IN')}
+                  ₹{totalEarnings.toLocaleString('en-IN')}
                 </Typography>
               </Box>
             </Box>
 
             <Divider />
 
+            {/* Next Payment Date */}
             <Box display="flex" alignItems="center" gap={2}>
               <AccessTimeIcon color="info" fontSize="large" />
               <Box>
@@ -212,7 +203,7 @@ const PartnerEarningsCard = () => {
         </CardContent>
       </Card>
 
-      {/* Bonus Slab Table (optional) */}
+      {/* Slab Table */}
       <Box sx={{ maxWidth: 600, margin: '30px auto' }}>
         <Typography variant="h6" gutterBottom>
           💼 Weekly earnings calculation
@@ -249,7 +240,7 @@ const PartnerEarningsCard = () => {
         </TableContainer>
       </Box>
 
-      {/* Training Dialog */}
+      {/* Training Prompt */}
       <Dialog open={showTrainingPrompt} onClose={() => setShowTrainingPrompt(false)}>
         <DialogTitle>Get Started with Training</DialogTitle>
         <DialogContent>
