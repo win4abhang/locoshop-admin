@@ -1,79 +1,120 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Card,
-  CardContent,
-  Typography,
-  Stack,
-  Divider,
-  Box,
-  useTheme,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper
+  Card, CardContent, Typography, Stack, Divider, Box, useTheme,
+  Dialog, DialogTitle, DialogContent, DialogActions, Button,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+  LinearProgress
 } from '@mui/material';
 import axios from 'axios';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 const PartnerEarningsCard = () => {
-  const [todayEarnings, setTodayEarnings] = useState(0);
+  const [todayCommission, setTodayCommission] = useState(0);
   const [upcomingPayment, setUpcomingPayment] = useState(0);
+  const [bonusAmount, setBonusAmount] = useState(0);
+  const [storeCount, setStoreCount] = useState(0);
   const [nextPaymentDate, setNextPaymentDate] = useState('');
   const [showTrainingPrompt, setShowTrainingPrompt] = useState(false);
+  const [nextTarget, setNextTarget] = useState(null);
   const theme = useTheme();
 
   const username = localStorage.getItem('username');
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const API_KEY = 'YourStrongSecret123';
 
+  const slabs = [
+    { stores: 100, total: 10000 },
+    { stores: 50, total: 3888.93 },
+    { stores: 25, total: 1472.22 },
+    { stores: 10, total: 500 },
+    { stores: 5, total: 182.5 }
+  ];
+
   useEffect(() => {
-    const fetchEarnings = async () => {
-      try {
-        const res = await axios.post(
-          `${BACKEND_URL}/payment/partner-earnings`,
-          { username },
-          {
-            headers: { 'x-api-key': API_KEY }
-          }
-        );
-
-        const data = res.data;
-        const today = data.todayEarnings || 0;
-        const upcoming = data.upcomingPayment || 0;
-
-        setTodayEarnings(today);
-        setUpcomingPayment(upcoming);
-        setNextPaymentDate(getNextFriday());
-
-        if (today === 0 && upcoming === 0) {
-          setShowTrainingPrompt(true);
-        }
-      } catch (error) {
-        console.error('Error fetching earnings:', error);
-      }
-    };
-
-    if (username) {
-      fetchEarnings();
-    }
+    if (!username) return;
+    fetchTodayEarnings();
+    fetchWeeklyStores();
   }, [username]);
+
+  const fetchTodayEarnings = async () => {
+    try {
+      const res = await axios.post(
+        `${BACKEND_URL}/payment/partner-earnings`,
+        { username },
+        { headers: { 'x-api-key': API_KEY } }
+      );
+
+      const today = res.data.todayEarnings || 0;
+      const upcoming = res.data.upcomingPayment || 0;
+
+      setTodayCommission(today);
+      setUpcomingPayment(upcoming);
+      setNextPaymentDate(getNextFriday());
+
+      if (today === 0 && upcoming === 0) {
+        setShowTrainingPrompt(true);
+      }
+    } catch (err) {
+      console.error('Error fetching earnings:', err);
+    }
+  };
+
+  const fetchWeeklyStores = async () => {
+    try {
+      const { start, end } = getCurrentWeekRange();
+
+      const res = await axios.post(
+        `${BACKEND_URL}/payment/partner-weekly-stores`,
+        { username },
+        { headers: { 'x-api-key': API_KEY } }
+      );
+
+      const allStores = res.data || [];
+      const filteredStores = allStores.filter(store => {
+        const created = new Date(store.createdAt);
+        return created >= start && created <= end;
+      });
+
+      const count = filteredStores.length;
+      setStoreCount(count);
+
+      const commission = count * 36.5;
+      const slab = slabs.find(s => count >= s.stores);
+      const bonus = slab ? slab.total - commission : 0;
+      setBonusAmount(bonus);
+
+      // Find next target slab
+      const next = slabs.slice().reverse().find(s => count < s.stores);
+      setNextTarget(next);
+    } catch (err) {
+      console.error('Error fetching store count:', err);
+    }
+  };
+
+  const getCurrentWeekRange = () => {
+    const today = new Date();
+    const day = today.getDay();
+
+    const lastFriday = new Date(today);
+    lastFriday.setDate(today.getDate() - ((day + 2) % 7));
+    lastFriday.setHours(0, 0, 0, 0);
+
+    const thisThursday = new Date(today);
+    const diffToThursday = (4 - day + 7) % 7;
+    thisThursday.setDate(today.getDate() + diffToThursday);
+    thisThursday.setHours(23, 59, 59, 999);
+
+    return { start: lastFriday, end: thisThursday };
+  };
 
   const getNextFriday = () => {
     const today = new Date();
-    const day = today.getDay(); // 0 (Sun) to 6 (Sat)
-    const diff = (5 - day + 7) % 7 || 7; // Days until Friday
+    const day = today.getDay();
+    const diff = (5 - day + 7) % 7 || 7;
     const nextFriday = new Date(today);
     nextFriday.setDate(today.getDate() + diff);
-    nextFriday.setHours(18, 0, 0, 0); // 6 PM
+    nextFriday.setHours(18, 0, 0, 0);
     return nextFriday.toLocaleDateString('en-IN', {
       weekday: 'short',
       year: 'numeric',
@@ -84,80 +125,104 @@ const PartnerEarningsCard = () => {
     });
   };
 
+  const totalUpcoming = upcomingPayment + bonusAmount;
+
   return (
     <>
-      {/* Earnings Card */}
-      <Card
-        sx={{
-          maxWidth: 500,
-          margin: 'auto',
-          p: 3,
-          boxShadow: 6,
-          borderRadius: 3,
-          backgroundColor: theme.palette.background.paper,
-        }}
-      >
+      <Card sx={{ maxWidth: 500, margin: 'auto', p: 3, boxShadow: 6, borderRadius: 3 }}>
         <CardContent>
           <Stack spacing={4}>
-            {/* Today’s Earnings */}
             <Box display="flex" alignItems="center" gap={2}>
               <CurrencyRupeeIcon color="success" fontSize="large" />
               <Box>
+                <Typography variant="subtitle2" color="text.secondary">Today’s Commission</Typography>
+                <Typography variant="h5" fontWeight="bold" color="success.main">₹{todayCommission}</Typography>
+              </Box>
+            </Box>
+
+            <Divider />
+
+            <Box display="flex" alignItems="center" gap={2}>
+              <CurrencyRupeeIcon color="success" fontSize="large" />
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">Upcoming Payment</Typography>
+                <Typography variant="h5" fontWeight="bold" color="warning.main">₹{upcomingPayment}</Typography>
+              </Box>
+            </Box>
+
+            <Box display="flex" alignItems="center" gap={2}>
+              <CurrencyRupeeIcon color="info" fontSize="large" />
+              <Box>
                 <Typography variant="subtitle2" color="text.secondary">
-                  Today’s Earnings
+                  Weekly Bonus (for {storeCount} stores)
                 </Typography>
-                <Typography variant="h5" fontWeight="bold" color="success.main">
-                  ₹{todayEarnings}
+                <Typography variant="h5" fontWeight="bold" color="info.main">₹{bonusAmount.toFixed(2)}</Typography>
+              </Box>
+            </Box>
+
+            {/* 🔁 Progress to Next Slab */}
+            <Box>
+              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                Weekly Slab Progress
+              </Typography>
+              <Typography variant="body2">
+                {nextTarget
+                  ? `You’ve added ${storeCount} / ${nextTarget.stores} stores`
+                  : `🎉 You've reached the highest slab!`}
+              </Typography>
+
+              {nextTarget && (
+                <>
+                  <LinearProgress
+                    variant="determinate"
+                    value={(storeCount / nextTarget.stores) * 100}
+                    sx={{ mt: 1, height: 10, borderRadius: 5 }}
+                    color="success"
+                  />
+                  <Typography variant="caption" color="text.secondary">
+                    {nextTarget.stores - storeCount} more store{nextTarget.stores - storeCount > 1 ? 's' : ''} to reach ₹
+                    {nextTarget.total.toLocaleString('en-IN')} slab
+                  </Typography>
+                </>
+              )}
+            </Box>
+
+            <Divider />
+
+            <Box display="flex" alignItems="center" gap={2}>
+              <CurrencyRupeeIcon color="primary" fontSize="large" />
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">Total Upcoming Earnings</Typography>
+                <Typography variant="h5" fontWeight="bold" color="primary.main">
+                  ₹{totalUpcoming.toLocaleString('en-IN')}
                 </Typography>
               </Box>
             </Box>
 
             <Divider />
 
-            {/* Upcoming Payment */}
-            <Box display="flex" alignItems="center" gap={2}>
-              <CurrencyRupeeIcon color="success" fontSize="large" />
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Upcoming Payment
-                </Typography>
-                <Typography variant="h5" fontWeight="bold" color="warning.main">
-                  ₹{upcomingPayment}
-                </Typography>
-              </Box>
-            </Box>
-
-            <Divider />
-
-            {/* Next Payment Date */}
             <Box display="flex" alignItems="center" gap={2}>
               <AccessTimeIcon color="info" fontSize="large" />
-              {nextPaymentDate && (
-                <Box>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Next Payment:
-                  </Typography>
-                  <Typography variant="body1" fontWeight="bold" color="text.disabled">
-                    {nextPaymentDate}
-                  </Typography>
-                </Box>
-              )}
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">Next Payment:</Typography>
+                <Typography variant="body1" fontWeight="bold" color="text.disabled">{nextPaymentDate}</Typography>
+              </Box>
             </Box>
           </Stack>
         </CardContent>
       </Card>
 
-      {/* Bonus Table */}
+      {/* Bonus Slab Table (optional) */}
       <Box sx={{ maxWidth: 600, margin: '30px auto' }}>
         <Typography variant="h6" gutterBottom>
-          💼 Weekly Earnings Example (Per Store Basis)
+          💼 Weekly earnings calculation
         </Typography>
         <TableContainer component={Paper}>
           <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell><strong>Stores</strong></TableCell>
-                <TableCell><strong>Commission (₹36.50/store)</strong></TableCell>
+                <TableCell><strong>Commission ₹36.50/store</strong></TableCell>
                 <TableCell><strong>Bonus/Store</strong></TableCell>
                 <TableCell><strong>Total Bonus</strong></TableCell>
                 <TableCell><strong>Total Payout</strong></TableCell>
@@ -182,19 +247,14 @@ const PartnerEarningsCard = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <Typography variant="body2" color="text.secondary" mt={1}>
-          📝 <strong>Note:</strong> If the store count falls between slabs, the lower slab bonus will apply. <br />
-          <i>E.g.: If there are 27 stores, the bonus for 25 stores will be applicable.</i>
-        </Typography>
       </Box>
 
-      {/* Training Prompt Dialog */}
+      {/* Training Dialog */}
       <Dialog open={showTrainingPrompt} onClose={() => setShowTrainingPrompt(false)}>
         <DialogTitle>Get Started with Training</DialogTitle>
         <DialogContent>
           <Typography>
             💡 To start earning, complete the <strong>Local Partner Training</strong> available in the <strong>Menu</strong> section.
-            It’s your key to onboarding shops and unlocking your first commission.
           </Typography>
         </DialogContent>
         <DialogActions>
