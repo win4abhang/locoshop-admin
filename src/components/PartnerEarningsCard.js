@@ -180,36 +180,42 @@ const PartnerEarningsCard = () => {
 
       {/* Slab Table for Reference */}
       {slabs.length > 0 && (
-        <Box sx={{ maxWidth: 600, margin: '30px auto' }}>
-          <Typography variant="h6" gutterBottom>
-            💼 Weekly earnings calculation (for reference)
-          </Typography>
-          <TableContainer component={Paper}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell><strong>Stores</strong></TableCell>
-                  <TableCell><strong>Commission</strong></TableCell>
-                  <TableCell><strong>Bonus/Store</strong></TableCell>
-                  <TableCell><strong>Total Bonus</strong></TableCell>
-                  <TableCell><strong>Total Payout</strong></TableCell>
+      <Box sx={{ maxWidth: 600, margin: '30px auto' }}>
+        <Typography variant="h6" gutterBottom>
+          💼 Weekly earnings calculation (for reference)
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell><strong>Stores</strong></TableCell>
+                <TableCell><strong>Commission</strong></TableCell>
+                <TableCell><strong>Bonus/Store</strong></TableCell>
+                <TableCell><strong>Total Bonus</strong></TableCell>
+                <TableCell><strong>Total Payout</strong></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {slabs.map((row, idx) => (
+                <TableRow key={idx}>
+                  <TableCell>{row.stores}</TableCell>
+                  <TableCell>₹{(row.commission || 0).toLocaleString('en-IN')}</TableCell>
+                  <TableCell>₹{(row.bonusPerStore || 0).toFixed(2)}</TableCell>
+                  <TableCell>₹{(row.totalBonus || 0).toLocaleString('en-IN')}</TableCell>
+                  <TableCell>₹{(row.total || 0).toLocaleString('en-IN')}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {slabs.map((row, idx) => (
-                  <TableRow key={idx}>
-                    <TableCell>{row.stores}</TableCell>
-                    <TableCell>₹{(row.commission || 0).toLocaleString('en-IN')}</TableCell>
-                    <TableCell>₹{(row.bonusPerStore || 0).toFixed(2)}</TableCell>
-                    <TableCell>₹{(row.totalBonus || 0).toLocaleString('en-IN')}</TableCell>
-                    <TableCell>₹{(row.total || 0).toLocaleString('en-IN')}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      )}
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Typography variant="body2" color="text.secondary" mt={1}>
+          <strong>Note:</strong> If the total store count falls between the given slabs, the bonus will be calculated based on the lower slab.
+          <br />
+          <em>E.g.:</em> If there are 27 stores, the bonus for 25 stores will be applicable.
+        </Typography>
+      </Box>
+    )}
+
 
       {/* Training Prompt */}
       <Dialog open={showTrainingPrompt} onClose={() => setShowTrainingPrompt(false)}>
