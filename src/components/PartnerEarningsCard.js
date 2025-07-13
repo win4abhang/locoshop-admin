@@ -39,7 +39,7 @@ const PartnerEarningsCard = () => {
         { headers: { 'x-api-key': API_KEY } }
       );
       console.log('🧾 Weekly Summary API response:', res.data); // ✅ Log full response
-      
+
 
       const data = res.data || {};
       setStoreCount(data.storeCount || 0);
@@ -200,7 +200,7 @@ const PartnerEarningsCard = () => {
                   <TableRow key={idx}>
                     <TableCell>{row.stores}</TableCell>
                     <TableCell>₹{(row.commission || 0).toLocaleString('en-IN')}</TableCell>
-                    <TableCell>₹{(row.bonusPer || 0).toFixed(2)}</TableCell>
+                    <TableCell>₹{(row.bonusPerStore || 0).toFixed(2)}</TableCell>
                     <TableCell>₹{(row.totalBonus || 0).toLocaleString('en-IN')}</TableCell>
                     <TableCell>₹{(row.total || 0).toLocaleString('en-IN')}</TableCell>
                   </TableRow>
