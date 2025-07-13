@@ -10,83 +10,46 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 const PartnerEarningsCard = () => {
-  const [weeklyCommission, setWeeklyCommission] = useState(0);
-  const [bonusAmount, setBonusAmount] = useState(0);
   const [storeCount, setStoreCount] = useState(0);
+  const [commission, setCommission] = useState(0);
+  const [bonus, setBonus] = useState(0);
+  const [totalEarning, setTotalEarning] = useState(0);
   const [nextPaymentDate, setNextPaymentDate] = useState('');
-  const [showTrainingPrompt, setShowTrainingPrompt] = useState(false);
   const [nextTarget, setNextTarget] = useState(null);
+  const [showTrainingPrompt, setShowTrainingPrompt] = useState(false);
   const theme = useTheme();
 
   const username = localStorage.getItem('username');
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const API_KEY = 'YourStrongSecret123';
 
-  const slabs = [
-    { stores: 100, total: 10000 },
-    { stores: 50, total: 3888.93 },
-    { stores: 25, total: 1472.22 },
-    { stores: 10, total: 500 },
-    { stores: 5, total: 182.5 }
-  ];
-
   useEffect(() => {
     if (!username) return;
-    fetchWeeklyStores();
+    fetchWeeklySummary();
     setNextPaymentDate(getNextFriday());
   }, [username]);
 
-  const fetchWeeklyStores = async () => {
+  const fetchWeeklySummary = async () => {
     try {
-      const { start, end } = getCurrentWeekRange();
-
       const res = await axios.post(
-        `${BACKEND_URL}/payment/partner-weekly-stores`,
+        `${BACKEND_URL}/payment/weekly-summary`,
         { username },
         { headers: { 'x-api-key': API_KEY } }
       );
 
-      const allStores = res.data || [];
-      const filteredStores = allStores.filter(store => {
-        const created = new Date(store.createdAt);
-        return created >= start && created <= end;
-      });
+      const data = res.data;
+      setStoreCount(data.storeCount);
+      setCommission(data.commission);
+      setBonus(data.bonus);
+      setTotalEarning(data.totalEarning);
+      setNextTarget(data.nextTarget || null);
 
-      const count = filteredStores.length;
-      setStoreCount(count);
-
-      const commission = count * 36.5;
-      setWeeklyCommission(commission);
-
-      const slab = slabs.find(s => count >= s.stores);
-      const bonus = slab ? slab.total - commission : 0;
-      setBonusAmount(bonus);
-
-      const next = slabs.slice().reverse().find(s => count < s.stores);
-      setNextTarget(next);
-
-      if (count === 0) {
+      if (data.storeCount === 0) {
         setShowTrainingPrompt(true);
       }
     } catch (err) {
-      console.error('Error fetching store count:', err);
+      console.error('Error fetching weekly summary:', err);
     }
-  };
-
-  const getCurrentWeekRange = () => {
-    const today = new Date();
-    const day = today.getDay();
-
-    const lastFriday = new Date(today);
-    lastFriday.setDate(today.getDate() - ((day + 2) % 7));
-    lastFriday.setHours(0, 0, 0, 0);
-
-    const thisThursday = new Date(today);
-    const diffToThursday = (4 - day + 7) % 7;
-    thisThursday.setDate(today.getDate() + diffToThursday);
-    thisThursday.setHours(23, 59, 59, 999);
-
-    return { start: lastFriday, end: thisThursday };
   };
 
   const getNextFriday = () => {
@@ -106,8 +69,6 @@ const PartnerEarningsCard = () => {
     });
   };
 
-  const totalWeeklyEarning = weeklyCommission + bonusAmount;
-
   return (
     <>
       <Card sx={{ maxWidth: 500, margin: 'auto', p: 3, boxShadow: 6, borderRadius: 3 }}>
@@ -118,7 +79,7 @@ const PartnerEarningsCard = () => {
               <CurrencyRupeeIcon color="success" fontSize="large" />
               <Box>
                 <Typography variant="subtitle2" color="text.secondary">Weekly Commission</Typography>
-                <Typography variant="h5" fontWeight="bold" color="success.main">₹{weeklyCommission.toFixed(2)}</Typography>
+                <Typography variant="h5" fontWeight="bold" color="success.main">₹{commission.toFixed(2)}</Typography>
               </Box>
             </Box>
 
@@ -131,7 +92,7 @@ const PartnerEarningsCard = () => {
                 <Typography variant="subtitle2" color="text.secondary">
                   Weekly Bonus (for {storeCount} stores)
                 </Typography>
-                <Typography variant="h5" fontWeight="bold" color="info.main">₹{bonusAmount.toFixed(2)}</Typography>
+                <Typography variant="h5" fontWeight="bold" color="info.main">₹{bonus.toFixed(2)}</Typography>
               </Box>
             </Box>
 
@@ -170,7 +131,7 @@ const PartnerEarningsCard = () => {
               <Box>
                 <Typography variant="subtitle2" color="text.secondary">Weekly Earning</Typography>
                 <Typography variant="h5" fontWeight="bold" color="primary.main">
-                  ₹{totalWeeklyEarning.toLocaleString('en-IN')}
+                  ₹{totalEarning.toLocaleString('en-IN')}
                 </Typography>
               </Box>
             </Box>
@@ -199,7 +160,7 @@ const PartnerEarningsCard = () => {
             <TableHead>
               <TableRow>
                 <TableCell><strong>Stores</strong></TableCell>
-                <TableCell><strong>Commission ₹36.50/store</strong></TableCell>
+                <TableCell><strong>Commission (₹36.5/store)</strong></TableCell>
                 <TableCell><strong>Bonus/Store</strong></TableCell>
                 <TableCell><strong>Total Bonus</strong></TableCell>
                 <TableCell><strong>Total Payout</strong></TableCell>
@@ -207,20 +168,26 @@ const PartnerEarningsCard = () => {
             </TableHead>
             <TableBody>
               {[
-                { stores: 5, commission: 182.5, bonusPer: 0, totalBonus: 0, total: 182.5 },
-                { stores: 10, commission: 365, bonusPer: 13.5, totalBonus: 135, total: 500 },
-                { stores: 25, commission: 912.5, bonusPer: 22.39, totalBonus: 559.72, total: 1472.22 },
-                { stores: 50, commission: 1825, bonusPer: 41.28, totalBonus: 2063.93, total: 3888.93 },
-                { stores: 100, commission: 3650, bonusPer: 63.5, totalBonus: 6350, total: 10000 }
-              ].map((row, idx) => (
-                <TableRow key={idx}>
-                  <TableCell>{row.stores}</TableCell>
-                  <TableCell>₹{row.commission.toLocaleString('en-IN')}</TableCell>
-                  <TableCell>₹{row.bonusPer.toFixed(2)}</TableCell>
-                  <TableCell>₹{row.totalBonus.toLocaleString('en-IN')}</TableCell>
-                  <TableCell>₹{row.total.toLocaleString('en-IN')}</TableCell>
-                </TableRow>
-              ))}
+                { stores: 5, bonusPer: 10 },
+                { stores: 10, bonusPer: 16 },
+                { stores: 25, bonusPer: 20 },
+                { stores: 50, bonusPer: 40 },
+                { stores: 75, bonusPer: 55 },
+                { stores: 100, bonusPer: 64 }
+              ].map((row, idx) => {
+                const commission = row.stores * 36.5;
+                const totalBonus = row.stores * row.bonusPer;
+                const total = commission + totalBonus;
+                return (
+                  <TableRow key={idx}>
+                    <TableCell>{row.stores}</TableCell>
+                    <TableCell>₹{commission.toLocaleString('en-IN')}</TableCell>
+                    <TableCell>₹{row.bonusPer.toFixed(2)}</TableCell>
+                    <TableCell>₹{totalBonus.toLocaleString('en-IN')}</TableCell>
+                    <TableCell>₹{total.toLocaleString('en-IN')}</TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>

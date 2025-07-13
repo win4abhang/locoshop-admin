@@ -22,7 +22,7 @@ const LocalPartnerPayments = () => {
   const [username, setUsername] = useState('');
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [weeklyBonus, setWeeklyBonus] = useState(null);
+  const [weeklySummary, setWeeklySummary] = useState(null);
 
   const fetchPayments = async () => {
     if (!username.trim()) return;
@@ -36,14 +36,14 @@ const LocalPartnerPayments = () => {
       });
       setRecords(response.data || []);
 
-      // Get weekly bonus summary
+      // Get weekly earnings
       const bonusRes = await axios.post(`${BACKEND_URL}/payment/weekly-summary`, {
         username,
       }, {
         headers: { 'x-api-key': API_KEY },
       });
-      setWeeklyBonus(bonusRes.data);
 
+      setWeeklySummary(bonusRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -127,19 +127,13 @@ const LocalPartnerPayments = () => {
       )}
 
       {/* WEEKLY BONUS SUMMARY */}
-      {weeklyBonus && (
+      {weeklySummary && (
         <Box sx={{ mt: 4, p: 2, border: '1px solid #ccc', borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>📈 Weekly Summary</Typography>
-          <Typography>🛍️ Stores Added: <strong>{weeklyBonus.storeCount}</strong></Typography>
-          <Typography>💼 Commission (₹36.5/store): <strong>₹{weeklyBonus.weeklyCommission.toFixed(2)}</strong></Typography>
-          <Typography>🎁 Bonus: <strong>₹{weeklyBonus.bonusAmount.toFixed(2)}</strong></Typography>
-          <Typography>🧾 Total Weekly Earning : <strong>₹{weeklyBonus.totalWeeklyEarning.toFixed(2)}</strong></Typography>
-
-          {weeklyBonus.nextTarget && (
-            <Typography sx={{ mt: 1, color: 'orange' }}>
-              🔔 Add {weeklyBonus.nextTarget.stores - weeklyBonus.storeCount} more store(s) to reach the ₹{weeklyBonus.nextTarget.total} slab!
-            </Typography>
-          )}
+          <Typography>🛍️ Stores Added: <strong>{weeklySummary.storeCount}</strong></Typography>
+          <Typography>💼 Commission (₹36.5/store): <strong>₹{weeklySummary.commission.toFixed(2)}</strong></Typography>
+          <Typography>🎁 Bonus (based on slab): <strong>₹{weeklySummary.bonus.toFixed(2)}</strong></Typography>
+          <Typography>🧾 Total Weekly Earning: <strong>₹{weeklySummary.totalEarning.toFixed(2)}</strong></Typography>
         </Box>
       )}
 
