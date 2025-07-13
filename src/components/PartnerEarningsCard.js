@@ -10,7 +10,7 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 const PartnerEarningsCard = () => {
-  const [todayCommission, setTodayCommission] = useState(0);
+  const [weeklyCommission, setWeeklyCommission] = useState(0);
   const [bonusAmount, setBonusAmount] = useState(0);
   const [storeCount, setStoreCount] = useState(0);
   const [nextPaymentDate, setNextPaymentDate] = useState('');
@@ -32,29 +32,9 @@ const PartnerEarningsCard = () => {
 
   useEffect(() => {
     if (!username) return;
-    fetchTodayEarnings();
     fetchWeeklyStores();
+    setNextPaymentDate(getNextFriday());
   }, [username]);
-
-  const fetchTodayEarnings = async () => {
-    try {
-      const res = await axios.post(
-        `${BACKEND_URL}/payment/partner-earnings`,
-        { username },
-        { headers: { 'x-api-key': API_KEY } }
-      );
-
-      const today = res.data.todayEarnings || 0;
-      setTodayCommission(today);
-      setNextPaymentDate(getNextFriday());
-
-      if (today === 0) {
-        setShowTrainingPrompt(true);
-      }
-    } catch (err) {
-      console.error('Error fetching earnings:', err);
-    }
-  };
 
   const fetchWeeklyStores = async () => {
     try {
@@ -76,12 +56,18 @@ const PartnerEarningsCard = () => {
       setStoreCount(count);
 
       const commission = count * 36.5;
+      setWeeklyCommission(commission);
+
       const slab = slabs.find(s => count >= s.stores);
       const bonus = slab ? slab.total - commission : 0;
       setBonusAmount(bonus);
 
       const next = slabs.slice().reverse().find(s => count < s.stores);
       setNextTarget(next);
+
+      if (count === 0) {
+        setShowTrainingPrompt(true);
+      }
     } catch (err) {
       console.error('Error fetching store count:', err);
     }
@@ -120,19 +106,19 @@ const PartnerEarningsCard = () => {
     });
   };
 
-  const totalEarnings = todayCommission + bonusAmount;
+  const totalWeeklyEarning = weeklyCommission + bonusAmount;
 
   return (
     <>
       <Card sx={{ maxWidth: 500, margin: 'auto', p: 3, boxShadow: 6, borderRadius: 3 }}>
         <CardContent>
           <Stack spacing={4}>
-            {/* Today’s Commission */}
+            {/* Weekly Commission */}
             <Box display="flex" alignItems="center" gap={2}>
               <CurrencyRupeeIcon color="success" fontSize="large" />
               <Box>
-                <Typography variant="subtitle2" color="text.secondary">Today’s Commission</Typography>
-                <Typography variant="h5" fontWeight="bold" color="success.main">₹{todayCommission}</Typography>
+                <Typography variant="subtitle2" color="text.secondary">Weekly Commission</Typography>
+                <Typography variant="h5" fontWeight="bold" color="success.main">₹{weeklyCommission.toFixed(2)}</Typography>
               </Box>
             </Box>
 
@@ -149,7 +135,7 @@ const PartnerEarningsCard = () => {
               </Box>
             </Box>
 
-            {/* Slab Progress */}
+            {/* Progress to Next Slab */}
             <Box>
               <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                 Weekly Slab Progress
@@ -178,13 +164,13 @@ const PartnerEarningsCard = () => {
 
             <Divider />
 
-            {/* Total Earnings */}
+            {/* Weekly Earning */}
             <Box display="flex" alignItems="center" gap={2}>
               <CurrencyRupeeIcon color="primary" fontSize="large" />
               <Box>
-                <Typography variant="subtitle2" color="text.secondary">Total Earnings</Typography>
+                <Typography variant="subtitle2" color="text.secondary">Weekly Earning</Typography>
                 <Typography variant="h5" fontWeight="bold" color="primary.main">
-                  ₹{totalEarnings.toLocaleString('en-IN')}
+                  ₹{totalWeeklyEarning.toLocaleString('en-IN')}
                 </Typography>
               </Box>
             </Box>
