@@ -126,41 +126,40 @@ const PartnerEarningsCard = () => {
               </Box>
             </Box>
 
-            <Box>
+            <Box mt={2}>
             <Typography variant="subtitle2" color="text.secondary" gutterBottom>
               Weekly Slab Progress
             </Typography>
 
-            {nextTarget ? (
-              <>
-                <Typography variant="body2">
-                  You’ve added {storeCount} / {nextTarget.stores} stores
-                </Typography>
+            <Typography variant="body2">
+              {nextTarget
+                ? `You’ve added ${storeCount} / ${nextTarget.stores} stores`
+                : `🎉 You've reached the highest slab!!`}
+            </Typography>
 
+            {/* Show progress bar & earnings only if there's a next target */}
+            {nextTarget && (
+              <>
                 <LinearProgress
                   variant="determinate"
                   value={(storeCount / nextTarget.stores) * 100}
                   sx={{ mt: 1, height: 10, borderRadius: 5 }}
                   color="success"
                 />
-
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                <Typography variant="caption" color="text.secondary">
                   {nextTarget.stores - storeCount} more store
                   {nextTarget.stores - storeCount > 1 ? 's' : ''} to reach ₹
                   {nextTarget.total?.toLocaleString('en-IN')}
                 </Typography>
-
-                <Typography variant="body2" color="primary" sx={{ mt: 0.5 }}>
-                  Earn ₹{nextTarget.total?.toLocaleString('en-IN')} on completing {nextTarget.stores} stores
+                <Typography variant="caption" color="primary" fontWeight="bold" display="block">
+                  Earn ₹{nextTarget.total?.toLocaleString('en-IN')} when you reach {nextTarget.stores} stores
                 </Typography>
               </>
-            ) : (
-              <Typography variant="body2" color="success.main">
-                🎉 You've reached the highest slab!!
-              </Typography>
             )}
-          </Box>        
+          </Box>
 
+
+      
 
 
             <Divider />
