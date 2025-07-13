@@ -125,16 +125,18 @@ const PartnerEarningsCard = () => {
                 </Typography>
               </Box>
             </Box>
-            
 
             <Box>
             <Typography variant="subtitle2" color="text.secondary" gutterBottom>
               Weekly Slab Progress
             </Typography>
 
-           
-            {nextTarget && (
+            {nextTarget ? (
               <>
+                <Typography variant="body2">
+                  You’ve added {storeCount} / {nextTarget.stores} stores
+                </Typography>
+
                 <LinearProgress
                   variant="determinate"
                   value={(storeCount / nextTarget.stores) * 100}
@@ -142,18 +144,23 @@ const PartnerEarningsCard = () => {
                   color="success"
                 />
 
-                <Typography variant="caption" color="text.secondary">
-                  {nextTarget.stores - storeCount} more store{nextTarget.stores - storeCount > 1 ? 's' : ''} to reach ₹
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  {nextTarget.stores - storeCount} more store
+                  {nextTarget.stores - storeCount > 1 ? 's' : ''} to reach ₹
                   {nextTarget.total?.toLocaleString('en-IN')}
                 </Typography>
 
-                {/* 💰 New line: Earnings on target store count */}
-                <Typography variant="body2" sx={{ mt: 1 }} color="primary">
-                  Earn ₹{nextTarget.total?.toLocaleString('en-IN')} on completing {nextTarget.stores} store{nextTarget.stores > 1 ? 's' : ''}
+                <Typography variant="body2" color="primary" sx={{ mt: 0.5 }}>
+                  Earn ₹{nextTarget.total?.toLocaleString('en-IN')} on completing {nextTarget.stores} stores
                 </Typography>
               </>
+            ) : (
+              <Typography variant="body2" color="success.main">
+                🎉 You've reached the highest slab!!
+              </Typography>
             )}
-          </Box>
+          </Box>        
+
 
 
             <Divider />
