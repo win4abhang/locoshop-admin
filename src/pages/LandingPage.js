@@ -76,7 +76,7 @@ function LandingPage() {
             <Typography variant="body1" color="textSecondary">
               • Be seen when people nearby search<br />
               • Customers contact you directly via call or WhatsApp<br />
-              • We promote your store through local ads<br />
+              • We promote your store through local ads on Meta and Google<br />
               • Just ₹365/year — no commissions, no surprises
             </Typography>
           </Grid>
