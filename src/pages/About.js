@@ -24,7 +24,7 @@ const About = () => {
         </Typography>
         <Typography variant="body1" paragraph>
           If you have any questions, feel free to contact us at: <br />
-          <strong>📍 Address:</strong> Nana Abhangwasti Vidani, Phaltan, Satara, Maharashtra, India – 415523<br />
+          <strong>📍 Address:</strong> 1ST FLOOR, HOME NO. 396, NEAR MAHADEV MANDIR, PHALTAN SATARA ROAD, GHADGEWADI, Satara, Maharashtra, 415523<br />
           <strong>📞 Mobile:</strong> 7248924224<br />
           <strong>📧 Email:</strong> connect@localz.online
         </Typography>

@@ -16,7 +16,7 @@ const Contact = () => {
         <Typography variant="body1" paragraph>
           <strong>Business Name:</strong> localz.online<br />
           <strong>Owner:</strong> Vinod Pandurang Abhang<br />
-          <strong>Address:</strong> Nana Abhangwasti Vidani, Phaltan, Satara, Maharashtra, India – 415523<br />
+          <strong>Address:</strong> 1ST FLOOR, HOME NO. 396, NEAR MAHADEV MANDIR, PHALTAN SATARA ROAD, GHADGEWADI, Satara, Maharashtra, 415523<br />
           <strong>Phone:</strong> <Link href="tel:+917248924224">7248924224</Link><br />
           <strong>Email:</strong> <Link href="mailto:connect@localz.online">connect@localz.online</Link>
         </Typography>
