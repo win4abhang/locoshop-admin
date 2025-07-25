@@ -6,7 +6,7 @@ const About = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
       <Menu />
-      <Box sx={{ mt: 4 }} >
+      <Box sx={{ mt: 4 }}>
         <Typography variant="h4" gutterBottom>
           About Us
         </Typography>
@@ -18,6 +18,9 @@ const About = () => {
         </Typography>
         <Typography variant="body1" paragraph>
           This platform is proudly created and managed by <strong>Vinod Pandurang Abhang</strong>, based in Satara, Maharashtra.
+        </Typography>
+        <Typography variant="body1" paragraph>
+          <strong>localz.online</strong> is a part of <strong>Agronome Pvt. Ltd.</strong>
         </Typography>
         <Typography variant="body1" paragraph>
           If you have any questions, feel free to contact us at: <br />

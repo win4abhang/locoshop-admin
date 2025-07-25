@@ -12,7 +12,6 @@ const Footer = () => {
           alignItems="center"
           flexWrap="wrap"
         >
-
           <Link component={RouterLink} to="/about" underline="hover" color="text.secondary">
             About Us
           </Link>
@@ -39,7 +38,15 @@ const Footer = () => {
           align="center"
           sx={{ mt: 2 }}
         >
-          © {new Date().getFullYear()} Localz.online All rights reserved.
+          © {new Date().getFullYear()} Localz.online. All rights reserved.
+        </Typography>
+        
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          align="center"
+        >
+          A product of <strong>Agronome Pvt. Ltd.</strong>
         </Typography>
       </Container>
     </Box>
